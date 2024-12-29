@@ -16,22 +16,22 @@ class MainWindow(Gtk.Window):
         self.add(self.grid)
 
         # Button to trigger graph display
-        button_add_graph = Gtk.Button(label="Adicione o gráfico aqui!")
+        button_add_graph = Gtk.Button(label="Adicione o gráfico aqui!/python bin")
         button_add_graph.connect("clicked", self.apper_new_graph)
         self.grid.add(button_add_graph)
 
         # Atualiza Button
-        button_new_graph = Gtk.Button(label="Mudar de gráfico")
+        button_new_graph = Gtk.Button(label="python arabico")
         button_new_graph.connect("clicked", self.display_graph)
         self.grid.attach(button_new_graph, 1, 0, 1, 1)
 
         # Primary Label
-        self.label = Gtk.Label(label="Isso é um teste de label")
+        self.label = Gtk.Label(label="Isso é um teste de tradução")
         self.label.set_halign(Gtk.Align.END)
         self.grid.attach(self.label, 0, 1, 2, 1)
 
         # Secondary Label (to be dynamically added)
-        self.labelTeste = Gtk.Label(label="Label Teste adicionada!")
+        self.labelTeste = Gtk.Label(label="PYTHON!!!")
         self.labelTeste.set_halign(Gtk.Align.CENTER)
 
         # Placeholder for Matplotlib graph
@@ -52,25 +52,28 @@ class MainWindow(Gtk.Window):
             self.show_all()  # Refresh the interface to display the new label
 
         if button_clicked == "TunaButton":
-            print("Você clicou no Tuna")
-            self.label.set_text("Graph: Tuna")
+            print("Você clicou no python em forma arabica")
+            self.label.set_text("Graph: python")
             self.update_graph([1, 2, 3], [1, 4, 9])
         else:
-            print("Você clicou no outro")
-            self.label.set_text("Graph: Other")
-            self.update_graph([1, 2, 3, 4], [2, 3, 5, 7])
-
-    def update_graph(self, x, y):
-        # Clear previous graph
-        self.ax.clear()
-        self.ax.plot(x, y, label="Updated Graph")
-        self.ax.legend()
-        self.canvas.draw()
+            print(f"Você clicou no python bin ")
+            self.label.set_text("Graph: graph")
     
     def apper_new_graph(self, widget):
         a = [1, 2, 3, 4]
         b = [0, 4, 9, 16]
+        def palavra_para_binario(palavra):
+            binarios = []  
+            for char in palavra:
+                valor_binario = format(ord(char), '08b')
+                binarios.append(valor_binario)  # Adiciona o valor binário à lista
+            return binarios
 
+        # Exemplo de uso
+        palavra = "python"
+        resultado = palavra_para_binario(palavra)
+        print(f"A palavra '{palavra}' em binário é: {resultado}")
+        self.label.set_text(f"{resultado} = python em bin")
         def new_a_and_b(button):  # Recebe o botão como argumento
             global a, b  # Usa as variáveis globais
             a = [1, 2, 3, 4, 5]
@@ -89,13 +92,12 @@ class MainWindow(Gtk.Window):
         # you can access the window or vbox attributes this way
         manager = fig.canvas.manager
         toolbar = manager.toolbar
-        toolbar1 = manager.toolbar
         vbox = manager.vbox
 
 
         # now let's add a button to the toolbar
 
-        button1 = Gtk.Button(label='Click me2')
+        button1 = Gtk.Button(label='Click me 1')
         button1.show()
         button1.connect('clicked', lambda button: print('hi mom!!!'))
 
@@ -105,10 +107,10 @@ class MainWindow(Gtk.Window):
         toolitem1.set_tooltip_text('Click me for fun and profit')
         toolitem1.add(button1)
 
-        pos1 = 9  # where to insert this in the toolbar
+        pos1 = 11  # where to insert this in the toolbar
         toolbar.insert(toolitem1, pos1)
 
-        button2 = Gtk.Button(label='Click me3')
+        button2 = Gtk.Button(label='Click me 2')
         button2.show()
         button2.connect('clicked', new_a_and_b,)
 
@@ -119,8 +121,8 @@ class MainWindow(Gtk.Window):
         toolitem2.add(button2)
 
 
-        pos2 = 3  # where to insert this in the toolbar
-        toolbar1.insert(toolitem2, pos2)
+        pos2 = 9  # where to insert this in the toolbar
+        toolbar.insert(toolitem2, pos2)
 
         # now let's add a widget to the vbox
         label = Gtk.Label()
