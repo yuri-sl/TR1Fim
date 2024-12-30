@@ -17,31 +17,50 @@ class MainWindow(Gtk.Window):
 
         # Create a grid layout
         self.grid = Gtk.Grid()
+        self.grid.set_halign(Gtk.Align.CENTER)
+
+        #Aplicar um ID ao widget da janela
+        self.set_name("minha-janela")
         self.add(self.grid)
+
+        #Configura o CSS para estilização
+        css_provider = Gtk.CssProvider()
+        css_provider.load_from_path("styles.css")
+        #Conecta o CSS ao estilo da aplicação
+        style_context = Gtk.StyleContext()
+        screen = Gtk.Screen.get_default()
+        style_context.add_provider_for_screen(
+        screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
+
+        #Criação de label de bem-vindo
+        label_welcome = Gtk.Label(label="Bem vindo ao simulador InfraWeb!")
+        label_welcome.set_name("label-welcome")
+        self.grid.attach(label_welcome, 0, 0, 1, 1)
         
         # Criação da instância da EntryWindow (do arquivo caixa_texto.py)
         self.entry_window = EntryWindow()
-        self.grid.attach(self.entry_window, 0, 0, 1, 1)
+        self.grid.attach(self.entry_window, 0, 1, 1, 1)
 
         # Button to trigger graph display
         button_add_graph = Gtk.Button(label="Adicione o gráfico aqui!/python bin")
         button_add_graph.connect("clicked", self.apper_new_graph)
-        self.grid.attach(button_add_graph, 0, 1, 1, 1)
+        self.grid.attach(button_add_graph, 0, 2, 1, 1)
 
         # Button para aparecer a palavra em binario
         button_add_graph = Gtk.Button(label="Palavra em bin")
         button_add_graph.connect("clicked", self.apper_WordToBin)
-        self.grid.attach(button_add_graph, 1, 0, 1, 1)
+        self.grid.attach(button_add_graph, 0, 3, 1, 1)
 
         # Atualiza Button
         button_new_graph = Gtk.Button(label="palavra em arabico")
         button_new_graph.connect("clicked", self.display_Word)
-        self.grid.attach(button_new_graph, 1, 1, 1, 1)
+        self.grid.attach(button_new_graph, 0, 4, 1, 1)
 
         # Primary Label
         self.label = Gtk.Label(label="Irá aparecer o texto em binario aqui")
         self.label.set_halign(Gtk.Align.END)
-        self.grid.attach(self.label, 0, 2, 2, 1)
+        self.grid.attach(self.label, 0, 5, 2, 1)
 
         # Secondary Label (to be dynamically added)
         self.labelTeste = Gtk.Label(label="PYTHON!!!")

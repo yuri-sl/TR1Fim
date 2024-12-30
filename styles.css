@@ -1,0 +1,13 @@
+#minha-janela{
+    background-color: white;
+    margin: 2rem;
+}
+
+#label-welcome{
+    color: black;
+    font-size: 2rem;
+}
+.button{
+    background-color: red;
+    color: blue;
+}
