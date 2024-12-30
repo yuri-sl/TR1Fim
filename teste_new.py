@@ -1,10 +1,14 @@
 import gi
+gi.require_version("Gtk", "3.0")
+from gi.repository import Gtk
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
 from matplotlib.figure import Figure
+
+
 from caixa_texto import EntryWindow
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk
+from graficos import Apper_graph
 
 class MainWindow(Gtk.Window):
     def __init__(self):
@@ -54,7 +58,7 @@ class MainWindow(Gtk.Window):
             valor_binario = format(ord(char), '08b')
             binarios.append(valor_binario)  # Adiciona o valor binário à lista
         self.label.set_text(f"{binarios} = {palavra} em bin")
-
+    #da pra usar em alguma coisa ainda
     def display_Word(self, widget):
         button_clicked = widget.get_label()
         if not self.label_added:  # Check if the label has already been added
@@ -72,71 +76,7 @@ class MainWindow(Gtk.Window):
     def apper_new_graph(self, widget):
         a = [1, 2, 3, 4]
         b = [0, 4, 9, 16]
-        def new_a_and_b(button):  # Recebe o botão como argumento
-            global a, b  # Usa as variáveis "globais"
-            a = [1, 2, 3, 4, 5]
-            b = [0, 4, 9, 16, 25]
-            ax.clear()
-            ax.plot(a, 'ro-', label='easy as 1 2 3')
-            ax.plot(b, 'gs--', label='easy as 1 2 3 squared')
-            ax.legend()
-            fig.canvas.draw() 
-
-        fig, ax = plt.subplots()
-        ax.plot(a, 'ro-', label='easy as 1 2 3')
-        ax.plot(b, 'gs--', label='easy as 1 2 3 squared')
-        ax.legend()
-
-        # you can access the window or vbox attributes this way
-        manager = fig.canvas.manager
-        toolbar = manager.toolbar
-        vbox = manager.vbox
-
-
-        # now let's add a button to the toolbar
-
-        button1 = Gtk.Button(label='Click me 1')
-        button1.show()
-        button1.connect('clicked', lambda button: print('hi mom!!!'))
-
-
-        toolitem1 = Gtk.ToolItem()
-        toolitem1.show()
-        toolitem1.set_tooltip_text('Click me for fun and profit')
-        toolitem1.add(button1)
-
-        pos1 = 11  # where to insert this in the toolbar
-        toolbar.insert(toolitem1, pos1)
-
-        button2 = Gtk.Button(label='Click me 2')
-        button2.show()
-        button2.connect('clicked', new_a_and_b,)
-
-
-        toolitem2 = Gtk.ToolItem()
-        toolitem2.show()
-        toolitem2.set_tooltip_text('Click meeeeeee for fun and profit')
-        toolitem2.add(button2)
-
-
-        pos2 = 9  # where to insert this in the toolbar
-        toolbar.insert(toolitem2, pos2)
-
-        # now let's add a widget to the vbox
-        label = Gtk.Label()
-        label.set_markup('Drag mouse over axes for position')
-        label.show()
-        vbox.pack_start(label, False, False, 0)
-        vbox.reorder_child(toolbar, -1)
-
-        def update(event):
-            if event.xdata is None:
-                label.set_markup('Drag mouse over axes for position')
-            else:
-                label.set_markup(
-                    f'<span color="#ef0000">x,y=({event.xdata}, {event.ydata})</span>')
-        fig.canvas.mpl_connect('motion_notify_event', update)
-        plt.show()
+        Apper_graph(a,b)
     
 window = MainWindow()
 window.connect("delete-event", Gtk.main_quit)
