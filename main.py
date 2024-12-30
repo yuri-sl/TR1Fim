@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
 from matplotlib.figure import Figure
 
-
+from apper_graph_nrz import Apper_graph_nrz
 from caixa_texto import EntryWindow
 from graficos import Apper_graph
 
@@ -34,8 +34,8 @@ class MainWindow(Gtk.Window):
         self.grid.attach(button_add_graph, 1, 0, 1, 1)
 
         # Atualiza Button
-        button_new_graph = Gtk.Button(label="palavra em arabico")
-        button_new_graph.connect("clicked", self.display_Word)
+        button_new_graph = Gtk.Button(label="grafico em nrz")
+        button_new_graph.connect("clicked", self.graph_NRZ)
         self.grid.attach(button_new_graph, 1, 1, 1, 1)
 
         # Primary Label
@@ -44,13 +44,14 @@ class MainWindow(Gtk.Window):
         self.grid.attach(self.label, 0, 2, 2, 1)
 
         # Secondary Label (to be dynamically added)
-        self.labelTeste = Gtk.Label(label="PYTHON!!!")
+        self.labelTeste = Gtk.Label(label=f"PYTHON!!!")
         self.labelTeste.set_halign(Gtk.Align.CENTER)
 
         self.label_added = False  # Control flag for adding label
 
         self.maximize()
 
+    #Aparece a palavra em binário
     def apper_WordToBin(self, widget):
         palavra = self.entry_window.get_text()
         binarios = []  
@@ -58,26 +59,29 @@ class MainWindow(Gtk.Window):
             valor_binario = format(ord(char), '08b')
             binarios.append(valor_binario)  # Adiciona o valor binário à lista
         self.label.set_text(f"{binarios} = {palavra} em bin")
-    #da pra usar em alguma coisa ainda
-    def display_Word(self, widget):
-        button_clicked = widget.get_label()
-        if not self.label_added:  # Check if the label has already been added
-            self.grid.attach(self.labelTeste, 0, 3, 2, 1)
-            self.label_added = True
-            self.show_all()  # Refresh the interface to display the new label
 
-        if button_clicked == "TunaButton":
-            print("Você clicou no python em forma arabica")
-            self.label.set_text("Graph: python")
-        else:
-            print(f"Você clicou no python bin ")
-            self.label.set_text("Graph: graph")
-    
+
+    def graph_NRZ(self, widget):
+        palavra = self.entry_window.get_text()
+        binarios = [] 
+        for char in palavra:
+            valor_binario = format(ord(char), '08b')  # Converte o caractere para binário de 8 bits
+            binarios.extend(list(valor_binario))  # Quebra a string binária em uma lista de caracteres e adiciona à lista binarios
+        # Agora, binarios conterá todos os bits individuais como 0 e 1
+        binarios = [int(bit) for bit in binarios]
+        for i in range(len(binarios)):
+            if binarios[i] == 0:
+                binarios[i] = -1
+        binarios.append(binarios[-1])
+        Apper_graph_nrz(binarios)
+
+
     def apper_new_graph(self, widget):
         a = [1, 2, 3, 4]
         b = [0, 4, 9, 16]
         Apper_graph(a,b)
     
+
 window = MainWindow()
 window.connect("delete-event", Gtk.main_quit)
 window.show_all()
