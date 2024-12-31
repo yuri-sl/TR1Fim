@@ -2,6 +2,8 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
+import numpy as np
+
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
 from matplotlib.figure import Figure
@@ -51,6 +53,7 @@ class MainWindow(Gtk.Window):
 
         self.maximize()
 
+
     #Aparece a palavra em binário
     def apper_WordToBin(self, widget):
         palavra = self.entry_window.get_text()
@@ -73,7 +76,13 @@ class MainWindow(Gtk.Window):
             if binarios[i] == 0:
                 binarios[i] = -1
         binarios.append(binarios[-1])
-        Apper_graph_nrz(binarios)
+
+        canvas = Apper_graph_nrz(binarios).apper_new_graph()
+        canvas.set_hexpand(True)
+        canvas.set_vexpand(True)
+        # Adiciona o gráfico ao grid na posição especificada
+        self.grid.attach(canvas, 0, 4, 4, 4)  # Coluna 4, linha 4, ocupando 2x2 células
+        self.show_all()
 
 
     def apper_new_graph(self, widget):
