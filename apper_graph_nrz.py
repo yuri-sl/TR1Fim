@@ -15,7 +15,8 @@ class Apper_graph_nrz:
         self.apper_new_graph()
 
     def apper_new_graph(self):
-        fig, ax = plt.subplots()
+        fig = Figure(figsize=(5, 4), dpi=100)
+        ax = fig.add_subplot(111)
         t = np.arange(len(self.a))
 
         # Plotando o sinal digital NRZ
@@ -24,7 +25,11 @@ class Apper_graph_nrz:
         ax.set_xlabel("Tempo")
         ax.set_ylabel("Valor")
         ax.legend()
-        
+        #Se quiser voltar para o codigo anterior tire as "" e
+        #essas duas linhas abaixo
+        canvas = FigureCanvas(fig)
+        return canvas
+        """
         def new_a_and_b(button):  # Recebe o botão como argumento
             self.a = [1, 2, 3, 4, 5]
             ax.clear()
@@ -35,7 +40,6 @@ class Apper_graph_nrz:
 
         # you can access the window or vbox attributes this way
         manager = fig.canvas.manager
-        toolbar = manager.toolbar
         vbox = manager.vbox
 
 
@@ -83,3 +87,4 @@ class Apper_graph_nrz:
                     f'<span color="#ef0000">x,y=({event.xdata}, {event.ydata})</span>')
         fig.canvas.mpl_connect('motion_notify_event', update)
         plt.show()
+        """
