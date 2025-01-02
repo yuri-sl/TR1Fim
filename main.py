@@ -19,6 +19,7 @@ class MainWindow(Gtk.Window):
 
         # Create a grid layout
         self.grid = Gtk.Grid()
+        self.grid.set_halign(Gtk.Align.CENTER)
         self.add(self.grid)
         
         # Criação da instância da EntryWindow (do arquivo caixa_texto.py)
