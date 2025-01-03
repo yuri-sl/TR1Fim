@@ -13,7 +13,7 @@ class EntryWindow(Gtk.Box):
 
         # Criação da entrada de texto
         self.entry = Gtk.Entry()
-        self.entry.set_text("Hello World")  # Texto inicial
+        self.entry.set_text("a")  # Texto inicial
         self.pack_start(self.entry, True, True, 0)
 
     def get_text(self):
