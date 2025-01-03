@@ -20,8 +20,8 @@ class Apper_graph_manchester:
         t = np.arange(len(self.a))
 
         # Plotando o sinal digital NRZ
-        ax.step(t, self.a, where='post', label='Sinal NRZ', linewidth=2)  # 'post' garante que o valor seja mantido após a transição
-        ax.set_title("Sinal Digital NRZ")
+        ax.step(t, self.a, where='post', label='Sinal Manchester', linewidth=2)  # 'post' garante que o valor seja mantido após a transição
+        ax.set_title("Sinal Digital Manchester")
         ax.set_xlabel("Tempo")
         ax.set_ylabel("Valor")
         ax.legend()
