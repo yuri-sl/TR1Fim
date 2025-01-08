@@ -1,0 +1,33 @@
+
+	Col
+	0		1		2		3		4
+Line
+
+0	EnW		btAdGrf						MenuSusp
+	
+1	
+
+2	lblTxtBin	lblTxtBin
+
+3
+
+4
+
+5
+
+
+	Col
+	0		1		2		3		4
+Line
+
+0	Fechar				lblWelcomeTxt								
+	
+1			EnW		EnW
+
+2			btAdGrf		lblTxtBin	lblTxtBin
+
+3			MenuSusp
+
+4
+
+5

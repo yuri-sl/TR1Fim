@@ -23,43 +23,74 @@ class MainWindow(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self, title="Simulador transmissores e receptores")
         self.set_border_width(10)
-        self.set_default_size(400,200)
+        self.set_default_size(500,400)
 
         self.setup_css()
 
 
         # Create a grid layout
         self.grid = Gtk.Grid()
-        self.grid.set_row_spacing(10)   #Espaçamento entre linhas
-        self.grid.set_column_spacing(10) #Espaçamento entre colunas
-        self.add(self.grid)
+        self.grid.set_hexpand(True)
+        self.grid.set_vexpand(True)
+        self.grid.set_row_spacing(20)   #Espaçamento entre linhas
+        self.grid.set_column_spacing(20) #Espaçamento entre colunas
+        self.grid.get_style_context().add_class("grid") #Classe CSS
+
+
+        self.grid.set_halign(Gtk.Align.CENTER)
         
+        self.add(self.grid)
+
+        #LabelWelcome
+        lblWelcomeTxt = Gtk.Label(label="Bem-vindo ao simulador transmissor!")
+        lblWelcomeTxt.get_style_context().add_class("primary-label")
+        lblWelcomeTxt.set_halign(Gtk.Align.CENTER)
+        self.grid.attach(lblWelcomeTxt,0,0,2,1)
+
+        #BtnCloseApp
+        button_close_app = Gtk.Button(label="Fechar Simulador")
+        button_close_app.set_halign(Gtk.Align.CENTER)
+        button_close_app.connect("clicked",self.closeApp)
+        button_close_app.set_name("close-app")
+        #self.grid.attach(button_close_app,0,1,1,1)
+
         # Criação da instância da EntryWindow (do arquivo caixa_texto.py)
         self.entry_window = EntryWindow()
-        self.grid.attach(self.entry_window, 0, 0, 1, 1)
+        self.entry_window.set_halign(Gtk.Align.CENTER)
+        self.grid.attach(self.entry_window, 1, 1, 1, 1)
+
 
         # Button para aparecer a palavra em binario
         button_add_graph = Gtk.Button(label="Palavra em bin")
         button_add_graph.set_halign(Gtk.Align.CENTER)
         button_add_graph.connect("clicked", self.apper_WordToBin)
         button_add_graph.get_style_context().add_class("grid-button") #Classe CSS
-        self.grid.attach(button_add_graph, 1, 0, 1, 1) #Coluna 1 linha 0 ocupando 1x1
+        self.grid.attach(button_add_graph, 0, 2, 1, 1) #Coluna 1 linha 0 ocupando 1x1
 
         # Primary Label
         self.label = Gtk.Label(label="Irá aparecer o texto em binario aqui")
         self.label.get_style_context().add_class("primary-label") #Add Classe CSS
         self.label.set_halign(Gtk.Align.CENTER)
-        self.grid.attach(self.label, 0, 2, 2, 1) #Coluna 0 linha 2 ocupando 2x1
+        self.grid.attach(self.label, 1, 2, 1, 1) #Coluna 0 linha 2 ocupando 2x1
+
+        #Transmitir para o Receptor
+        button_submit = Gtk.Button(label="Transmitir mensagem codificada")
+        self.grid.attach(button_submit,4,3,1,1)
+
 
 
         # Criação da instância da menu_suspenso (do arquivo menu_suspenso.py)
         self.menu = MenuSuspenso(self)
-        self.grid.attach(self.menu, 4, 0, 1, 1)
+        self.menu.set_halign(Gtk.Align.CENTER)
+        self.grid.attach(self.menu, 0, 3, 2, 1)
 
 
         self.label_added = False  # Control flag for adding label
         self.maximize()
-        self.grid.show_all()         
+        self.grid.show_all()   
+
+    def closeApp(self,button):
+        Gtk.main_quit()      
 
     #Aparece a palavra em binário
     def apper_WordToBin(self, widget):
@@ -87,7 +118,7 @@ class MainWindow(Gtk.Window):
         canvas.set_hexpand(True)
         canvas.set_vexpand(True)
         # Adiciona o gráfico ao grid na posição especificada
-        self.grid.attach(canvas, 0, 4, 4, 4)  # Coluna 4, linha 4, ocupando 2x2 células
+        self.grid.attach(canvas, 0, 4, 8, 8)  # Coluna 4, linha 4, ocupando 2x2 células
         self.show_all()
 
 
@@ -115,7 +146,7 @@ class MainWindow(Gtk.Window):
         canvas = Apper_graph_bipolar(binarios).apper_new_graph()
         canvas.set_hexpand(True)
         canvas.set_vexpand(True)
-        self.grid.attach(canvas, 0, 4, 4, 4)
+        self.grid.attach(canvas, 0, 4, 8, 8)
         self.show_all()
 
     def graph_Manchester(self):
@@ -139,7 +170,7 @@ class MainWindow(Gtk.Window):
         canvas.set_hexpand(True)
         canvas.set_vexpand(True)
 
-        self.grid.attach(canvas, 0,4,4,4)
+        self.grid.attach(canvas, 0,4,8,8)
         self.show_all()
 
 

@@ -7,11 +7,22 @@ button{
 }
 button:hover{
     background-color: #19771d;
-    padding: 12px;
 }
 
 label{
     font-weight: bold;
     font-size: 14px;
     color: white;
+}
+
+.grid{
+    
+}
+
+#close-app{
+    background-color: red;
+    border-radius: 5px;
+    color: white;
+    font-size: 1.2rem;
+
 }
