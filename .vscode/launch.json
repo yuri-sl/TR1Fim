@@ -2,23 +2,11 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "C/C++ Runner: Debug Session",
-      "type": "cppdbg",
+      "name": "Python Debugger: Current File",
+      "type": "debugpy",
       "request": "launch",
-      "args": [],
-      "stopAtEntry": false,
-      "externalConsole": false,
-      "cwd": "/home/yoru/Desktop/UnB/semestre_5/TR1/TR1Final",
-      "program": "/home/yoru/Desktop/UnB/semestre_5/TR1/TR1Final/build/Debug/outDebug",
-      "MIMode": "gdb",
-      "miDebuggerPath": "gdb",
-      "setupCommands": [
-        {
-          "description": "Enable pretty-printing for gdb",
-          "text": "-enable-pretty-printing",
-          "ignoreFailures": true
-        }
-      ]
-    }
+      "program": "main.py",
+      "console": "integratedTerminal"
+    },
   ]
 }
