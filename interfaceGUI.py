@@ -7,18 +7,72 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
 from matplotlib.figure import Figure
-
-from caixa_texto import EntryWindow
-from menu_suspenso import MenuSuspenso
-
-from graficos.apper_graph_nrz import Apper_graph_nrz
-from graficos.apper_graph_bipolar import Apper_graph_bipolar
-from graficos.apper_graph_manchester import Apper_graph_manchester
-from graficos.apper_graph_ask import Apper_graph_ask
-from graficos.apper_graph_fsk import Apper_graph_fsk
-from graficos.apper_graph_8qam import Apper_graph_8qam
+from camadaFisica import *
 
 
+
+
+
+class MenuSuspenso(Gtk.Box):
+    def __init__(self, main_window):  # Recebe a referência para a classe principal
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+
+        self.main_window = main_window  # Armazena a referência da classe principal
+
+        self.menu_suspenso = Gtk.ComboBoxText()
+
+        # Adicionando itens ao combo box
+        graficos = [
+            "Gráfico NRZ",
+            "Gráfico Bipolar",
+            "Gráfico Manchester",
+            "Gráfico ASK",
+            "Gráfico FSK",
+            "Gráfico 8-QAM"
+        ]
+        for graphs in graficos:
+            self.menu_suspenso.append_text(graphs)
+
+        #Quando um evento acontecer 
+        self.menu_suspenso.connect("changed", self.grafico_escolhido)
+        self.pack_start(self.menu_suspenso, False, False, 0)
+
+    def grafico_escolhido(self, widget):
+        grafico = self.menu_suspenso.get_active_text()
+        print(f"Você escolheu: {grafico}")
+        # Chama os métodos da classe principal com base no texto selecionado
+        if grafico == "Gráfico NRZ":
+            self.main_window.graph_NRZ()
+        elif grafico == "Gráfico Bipolar":
+            self.main_window.graph_Bipolar()
+        elif grafico == "Gráfico Manchester":
+            self.main_window.graph_Manchester()
+        elif grafico == "Gráfico ASK":
+            self.main_window.graph_ASK()
+        elif grafico == "Gráfico FSK":
+            self.main_window.graph_FSK()
+        elif grafico == "Gráfico 8-QAM":
+            self.main_window.graph_8QAM()
+        return grafico
+
+class EntryWindow(Gtk.Box):
+    def __init__(self):
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+
+        # Criação da entrada de texto
+        self.entry = Gtk.Entry()
+        self.entry.set_text("a")  # Texto inicial
+        self.pack_start(self.entry, True, True, 0)
+
+    def get_text(self):
+        # Método para obter o texto da entrada
+        return self.entry.get_text()
+
+    def get_text(self):
+        # Método para obter o texto da entrada
+        return self.entry.get_text()
+    
+ 
 class MainWindow(Gtk.Window):
     def __init__(self):
         Gtk.Window.__init__(self, title="Simulador transmissores e receptores")
@@ -48,11 +102,6 @@ class MainWindow(Gtk.Window):
         self.grid.attach(lblWelcomeTxt,0,0,2,1)
 
         #BtnCloseApp
-        button_close_app = Gtk.Button(label="Fechar Simulador")
-        button_close_app.set_halign(Gtk.Align.CENTER)
-        button_close_app.connect("clicked",self.closeApp)
-        button_close_app.set_name("close-app")
-        #self.grid.attach(button_close_app,0,1,1,1)
 
         # Criação da instância da EntryWindow (do arquivo caixa_texto.py)
         self.entry_window = EntryWindow()
@@ -95,10 +144,7 @@ class MainWindow(Gtk.Window):
     #Aparece a palavra em binário
     def apper_WordToBin(self, widget):
         palavra = self.entry_window.get_text()
-        binarios = []  
-        for char in palavra:
-            valor_binario = format(ord(char), '08b')
-            binarios.append(valor_binario)  # Adiciona o valor binário à lista
+        binarios = converterBinario(palavra)
         self.label.set_text(f"{binarios} = {palavra} em bin")
 
     def graph_NRZ(self):
