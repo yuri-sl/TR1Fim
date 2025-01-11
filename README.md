@@ -1,4 +1,4 @@
-###Bem-Vindo ao Simulador SimulNet!###
+#Bem-Vindo ao Simulador SimulNet!
 
 - Este é um programa que simula o funcionamento de um sistema de transmissão
 e recepção de dados.
