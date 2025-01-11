@@ -8,7 +8,6 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
 from matplotlib.figure import Figure
 
-#Gráficos a serem implementados
 
 def converterBinario(palavra):
     binarios = []
@@ -17,6 +16,8 @@ def converterBinario(palavra):
         binarios.append(valor_binario)  # Adiciona o valor binário à lista
     return binarios
 
+
+#Modulação Digital
 #Gráfico NRZ
 class Apper_graph_nrz:
     def __init__(self, a = []):
@@ -132,3 +133,5 @@ class Apper_graph_8qam:
         #essas duas linhas abaixo
         canvas = FigureCanvas(fig)
         return canvas
+    
+#Modulação por portadora
