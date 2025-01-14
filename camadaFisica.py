@@ -1,5 +1,6 @@
 import gi
 import numpy as np
+import random
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
@@ -16,6 +17,24 @@ def converterBinario(palavra):
         binarios.append(valor_binario)  # Adiciona o valor binário à lista
     return binarios
 
+
+#Simulação de erro no meio fisico
+class ErroMeioFisico:
+    def __init__(self, lista = [], chance = 0.9):
+        self.lista = lista
+        self.chance = chance
+
+    def erro(self):
+        nova_lista = []
+        for item in self.lista:
+            novo_item = ""
+            for bit in item:  # Itera por cada bit no item (representação binária)
+                if random.random() < self.chance:
+                    novo_item += "1" if bit == "0" else "0"  # Inverte o bit
+                else:
+                    novo_item += bit  # Mantém o bit
+            nova_lista.append(novo_item)
+        return nova_lista
 
 #Modulação Digital
 #Gráfico NRZ
