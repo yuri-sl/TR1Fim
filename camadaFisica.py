@@ -20,7 +20,7 @@ def converterBinario(palavra):
 
 #Simulação de erro no meio fisico
 class ErroMeioFisico:
-    def __init__(self, lista = [], chance = 0.9):
+    def __init__(self, lista = [], chance = 0.01):
         self.lista = lista
         self.chance = chance
 
@@ -35,6 +35,35 @@ class ErroMeioFisico:
                     novo_item += bit  # Mantém o bit
             nova_lista.append(novo_item)
         return nova_lista
+"""
+def teste_erro_meio_fisico():
+    palavra = "Test"
+    print("Palavra original:", palavra)
+
+    # Converte a palavra para binário
+    binarios = converterBinario(palavra)
+    print("Binário original:", binarios)
+
+    # Aplica o erro no meio físico
+    simulacao_erro = ErroMeioFisico(lista=binarios, chance=0.1)
+    binarios_com_erro = simulacao_erro.erro()
+    print("Binário com erro:", binarios_com_erro)
+
+    # Verifica se há diferenças
+    alteracoes = [
+        (original, modificado)
+        for original, modificado in zip(binarios, binarios_com_erro)
+        if original != modificado
+    ]
+    print(f"Número de alterações detectadas: {len(alteracoes)}")
+    for original, modificado in alteracoes:
+        print(f"Original: {original}, Modificado: {modificado}")
+
+
+# Executa o teste
+teste_erro_meio_fisico()
+"""
+
 
 #Modulação Digital
 #Gráfico NRZ
