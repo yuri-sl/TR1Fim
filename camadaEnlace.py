@@ -1,3 +1,18 @@
+from camadaFisica import converterBinario
+
+class ContagemDeCaracteres:
+    def __init__(self, lista = None):
+        if lista is None:
+            self.lista = []
+        else:
+            self.lista = lista #["01011010","01011010","01011010"] -> (3 em ascii é decw51 ou 0x33) ->["00110011","01011010","01011010","01011010"]
+
+    def contar_caracteres(self):
+        tamanho = len(self.lista)
+        bin_tamanho = converterBinario(str(tamanho))
+        self.lista.insert(0,bin_tamanho[0])
+        return self.lista
+
 def criar_quadro_binario(dados_binarios):
     """
     Cria um quadro com contagem de caracteres para dados binários.
