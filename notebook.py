@@ -191,7 +191,6 @@ class MyWindow(Gtk.Window):
 
         btnStartServer = Gtk.Button(label="Iniciar servidor")
         page2.add(btnStartServer)
-        lblServerStarted = Gtk.Label(label="Server has been started!")
         
         ##Receber Sinal - Sem Demodular
         lblSgnBfr = Gtk.Label(label="Sinal Recebido(Antes de Demodular)")
@@ -209,6 +208,7 @@ class MyWindow(Gtk.Window):
         entryMsgRecv.get_style_context().add_class("entry")
         lblMsgRcv = Gtk.Label(label="A mensagem recebida irá aparecer aqui")
         entryMsgRecv.set_placeholder_text(lblMsgRcv.get_text())
+        entryMsgRecv.set_sensitive(False)
 
 
         ##Ocorreu Erro?
@@ -219,6 +219,8 @@ class MyWindow(Gtk.Window):
         hboxCheckError.set_halign(Gtk.Align.CENTER)
         rdSimErro = Gtk.RadioButton.new_with_label_from_widget(None,"Sim")
         rdNaoErro = Gtk.RadioButton.new_with_label_from_widget(rdSimErro,"Não")
+        rdSimErro.set_sensitive(False)
+        rdNaoErro.set_sensitive(False)
 
         hboxCheckError.pack_start(rdSimErro,False,False,0)
         hboxCheckError.pack_start(rdNaoErro,False,False,0)
@@ -229,7 +231,9 @@ class MyWindow(Gtk.Window):
         hboxWhereError = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,spacing=10)
         hboxWhereError.set_halign(Gtk.Align.CENTER)
         rdEnquadramento = Gtk.RadioButton.new_with_label_from_widget(None,"Enquadramento")
+        rdEnquadramento.set_sensitive(False)
         rdPropQuadro = Gtk.RadioButton.new_with_label_from_widget(rdEnquadramento,"Propagação do quadro")
+        rdPropQuadro.set_sensitive(False)
 
         hboxWhereError.pack_start(rdEnquadramento,False,False,0)
         hboxWhereError.pack_start(rdPropQuadro,False,False,0)
