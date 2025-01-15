@@ -1,3 +1,30 @@
+.notebook-label{
+    margin: 10px 10px 20px 20px;
+}
+
+.page2-button{
+    margin: 5px;
+
+}
+
+.lblTitle{
+    font-size: 50px;
+    font-weight: bold;
+
+}
+
+.lblSection{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#box-container{
+    padding: 10px;
+    border: 15px;
+    background-color: #D9D9D9;
+
+}
+
 button{
     background-color: #4CAF50;
     color: white;
@@ -9,13 +36,42 @@ button:hover{
     background-color: #19771d;
 }
 
-label{
+#transmissor-tab{
+    color: red;
     font-weight: bold;
-    font-size: 14px;
-    color: white;
+    text-decoration: underline;
 }
 
-.grid{
+#receptor-tab{
+    color: blue;
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+#warning{
+    color: red;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+label{
+    color: black;
+    font-size: 19px;
+}
+
+.btnLbl{
+    font-weight: bold;
+    font-size: 22px;
+}
+.entry{
+    background-color: rgb(76, 76, 76);
+    color: white;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.box{
+    background-color: white;
     
 }
 

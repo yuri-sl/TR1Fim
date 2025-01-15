@@ -1,5 +1,7 @@
 import gi
+import threading
 gi.require_version("Gtk", "3.0")
+from Simulador import start_server
 from gi.repository import Gtk, Gdk
 
 import numpy as np
@@ -126,6 +128,31 @@ class MainWindow(Gtk.Window):
         button_submit = Gtk.Button(label="Transmitir mensagem codificada")
         self.grid.attach(button_submit,4,3,1,1)
 
+        #Server Status Label
+        self.server_status_label = Gtk.Label(label="Server Status: Stopped")
+        self.server_status_label.set_halign(Gtk.Align.CENTER)
+        self.grid.attach(self.server_status_label,0,5,2,1)
+
+        #Start Server  Btn
+        btn_start_server = Gtk.Button(label="Iniciar Servidor do Receptor")
+        btn_start_server.set_halign(Gtk.Align.CENTER)
+        btn_start_server.connect("clicked",start_server)
+        btn_start_server.get_style_context().add_class("grid-button")
+        self.grid.attach(btn_start_server,0,4,1,1)
+        
+        # TextView for Logs
+        self.textview = Gtk.TextView()
+        self.textview.set_editable(False)
+        self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
+        self.textbuffer = self.textview.get_buffer()
+        self.grid.attach(self.textview,0,6,4,2)
+
+        
+        self.server_running = False
+        self.server_thread = None
+
+
+        
 
 
         # Criação da instância da menu_suspenso (do arquivo menu_suspenso.py)
@@ -137,6 +164,15 @@ class MainWindow(Gtk.Window):
         self.label_added = False  # Control flag for adding label
         self.maximize()
         self.grid.show_all()   
+
+
+    def log_message(self, message):
+        # Add log messages to the TextView
+        def update_textbuffer():
+            end_iter = self.textbuffer.get_end_iter()
+            self.textbuffer.insert(end_iter, message + "\n")
+            return False  # Returning False stops the idle_add
+        GLib.idle_add(update_textbuffer)
 
     def closeApp(self,button):
         Gtk.main_quit()      
