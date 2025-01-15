@@ -286,7 +286,7 @@ class MyWindow(Gtk.Window):
         def activatingServer(button):
             global servidorAtivo
             servidorAtivo = not servidorAtivo
-            print(servidorAtivo)
+            #print(servidorAtivo)
             insertWidgets(servidorAtivo)        
 
         btnStartServer.connect("clicked",activatingServer)
