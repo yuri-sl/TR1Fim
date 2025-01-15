@@ -6,6 +6,7 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk,Gdk
 
 
+servidorAtivo = False
 
 class MyWindow(Gtk.Window):
 
@@ -178,12 +179,118 @@ class MyWindow(Gtk.Window):
         #Criação da página de Receptor
         page2 = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,spacing= 20)
         page2.set_border_width(20)
-        lblReceptor = Gtk.Label(label="Receptor do SimulNet")
+        page2.set_name("box-container")
+        lblReceptor = Gtk.Label(label="SimulNet")
+        lblReceptor.get_style_context().add_class("lblTitle")
         page2.add(lblReceptor)
 
         tab_label_Receptor = Gtk.Label(label="Receptor")
         tab_label_Receptor.set_name("receptor-tab")
         notebook.append_page(page2,tab_label_Receptor)
+
+
+        btnStartServer = Gtk.Button(label="Iniciar servidor")
+        page2.add(btnStartServer)
+        lblServerStarted = Gtk.Label(label="Server has been started!")
+        
+        ##Receber Sinal - Sem Demodular
+        lblSgnBfr = Gtk.Label(label="Sinal Recebido(Antes de Demodular)")
+        lblSgnBfr.get_style_context().add_class("lblSection")
+
+
+        ##Receber Sinal - Depois Demodular
+        lblSgnAf = Gtk.Label(label="Sinal Recebido(Depois de demodular)")
+        lblSgnAf.get_style_context().add_class("lblSection")
+
+        ##Mensagem Recebida
+        lblMsgRec = Gtk.Label(label="Mensagem Recebida")
+        lblMsgRec.get_style_context().add_class("lblSection")
+        entryMsgRecv = Gtk.Entry()
+        entryMsgRecv.get_style_context().add_class("entry")
+        lblMsgRcv = Gtk.Label(label="A mensagem recebida irá aparecer aqui")
+        entryMsgRecv.set_placeholder_text(lblMsgRcv.get_text())
+
+
+        ##Ocorreu Erro?
+        lblErrorOccur = Gtk.Label(label="Ocorreu erro?")
+        lblErrorOccur.get_style_context().add_class("lblSection")
+
+        hboxCheckError = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,spacing=10)
+        hboxCheckError.set_halign(Gtk.Align.CENTER)
+        rdSimErro = Gtk.RadioButton.new_with_label_from_widget(None,"Sim")
+        rdNaoErro = Gtk.RadioButton.new_with_label_from_widget(rdSimErro,"Não")
+
+        hboxCheckError.pack_start(rdSimErro,False,False,0)
+        hboxCheckError.pack_start(rdNaoErro,False,False,0)
+
+        #Onde ocorreu erro?
+        lblWhereError = Gtk.Label(label="Em qual processo ocorreu o erro?")
+        lblWhereError.get_style_context().add_class("lblSection")
+        hboxWhereError = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,spacing=10)
+        hboxWhereError.set_halign(Gtk.Align.CENTER)
+        rdEnquadramento = Gtk.RadioButton.new_with_label_from_widget(None,"Enquadramento")
+        rdPropQuadro = Gtk.RadioButton.new_with_label_from_widget(rdEnquadramento,"Propagação do quadro")
+
+        hboxWhereError.pack_start(rdEnquadramento,False,False,0)
+        hboxWhereError.pack_start(rdPropQuadro,False,False,0)
+
+        #Encerrar Servidor
+        lblEndServer = Gtk.Label(label="Encerrar Servidor")
+        lblEndServer.get_style_context().add_class("lblSection")
+        btnEndServer = Gtk.Button()
+        btnEndServer.get_style_context().add_class("end-server")
+        btnEndServer.add(lblEndServer)
+
+        def insertWidgets(servidorAtivo):
+            #print("Dentro da função!")
+            #print(servidorAtivo)
+                
+            if(servidorAtivo==True):
+
+                #Adição de itens na página 2
+                page2.remove(btnStartServer)
+                page2.add(lblSgnBfr)
+                page2.add(lblSgnAf)
+                page2.add(lblMsgRec)
+                page2.pack_start(entryMsgRecv,False,False,0)
+                page2.add(lblErrorOccur)
+                page2.pack_start(hboxCheckError,False,False,0)
+                page2.add(lblWhereError)
+                page2.pack_start(hboxWhereError,False,False,0)
+                page2.add(btnEndServer)
+
+                page2.show_all()
+
+            else:
+                #Remoção de itens na página 2
+                page2.add(btnStartServer)
+                page2.remove(lblSgnBfr)
+                page2.remove(lblSgnAf)
+                page2.remove(lblMsgRec)
+                page2.remove(entryMsgRecv)
+                page2.remove(lblErrorOccur)
+                page2.remove(hboxCheckError)
+                page2.remove(lblWhereError)
+                page2.remove(hboxWhereError)
+                page2.remove(btnEndServer)
+
+            #Atualizar a UI
+            page2.show_all()
+
+
+
+        def activatingServer(button):
+            global servidorAtivo
+            servidorAtivo = not servidorAtivo
+            print(servidorAtivo)
+            insertWidgets(servidorAtivo)        
+
+        btnStartServer.connect("clicked",activatingServer)
+        btnEndServer.connect("clicked",activatingServer)
+
+
+
+            
 
         
 win = MyWindow()

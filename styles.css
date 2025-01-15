@@ -75,10 +75,14 @@ label{
     
 }
 
-#close-app{
+.end-server{
     background-color: red;
     border-radius: 5px;
     color: white;
     font-size: 1.2rem;
 
+}
+
+.end-server:hover{
+    background-color: rgb(153, 0, 0);
 }
