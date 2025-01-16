@@ -1,3 +1,4 @@
+import math
 import gi
 import threading
 gi.require_version("Gtk", "3.0")
@@ -255,17 +256,115 @@ class MainWindow(Gtk.Window):
         self.grid.attach(canvas, 0,4,8,8)
         self.show_all()
 
-    ##Enzo, mexer nessas funções de graph_ASK, FSK e 8QAM que estão aqui na interface GUI.
-    #Você pode usar essas funções de graph NRZ,Manchester e Bipolar que foram definidas aqui em cima para tentar
-    #entender a lógica de como que elas funcionam.
-    #Então, você precisa mexer nas funções de graph_ASK,FSK,8QAM e na classe de Apper_graph_ask,fsk,8qam
     def graph_ASK(self):
+        palavra = self.entry_window.get_text()
+        binarios = []
+        for char in palavra:
+            valor_binario = format(ord(char), '08b')
+            binarios.extend(list(valor_binario))
+    
+        ask = []
+        tempo = 0
+        resolucao = 4
+        frequencia = 1
+        for i in binarios:
+            if i == 0:
+                ask.extend([0 for a in resolucao])
+                tempo += resolucao
+            else:
+                for j in range(resolucao):
+                   ask.append(math.cos(2*math.pi*frequencia*tempo)) 
+                   tempo += 1
+
+        canvas = Apper_graph(ask, "Sinal ASK", "Sinal ASK", "Tempo", "Amplitude").apper_graph()
+        canvas.set_hexpand(True)
+        canvas.set_vexpand(True)
+
+        self.show_all()
+
         return None
 
     def graph_FSK(self):
+        palavra = self.entry_window.get_text()
+        binarios = []
+        for char in palavra:
+            valor_binario = format(ord(char), '08b')
+            binarios.extend(list(valor_binario))
+    
+        fsk = []
+        tempo = 0
+        resolucao = 4
+        frequencia = 1
+        for i in binarios:
+            if i == 0:
+                for j in range(resolucao):
+                   fsk.append(math.cos(2*math.pi*frequencia*tempo)) 
+                   tempo += 1
+            else:
+                for j in range(resolucao):
+                   fsk.append(math.cos(4*math.pi*frequencia*tempo)) 
+                   tempo += 1
+
+        canvas = Apper_graph(fsk, "Sinal FSK", "Sinal FSK", "Tempo", "Amplitude").apper_graph()
+        canvas.set_hexpand(True)
+        canvas.set_vexpand(True)
+
+        self.show_all()
         return None
     
     def graph_8QAM(self):
+        palavra = self.entry_window.get_text()
+        binarios = []
+        for char in palavra:
+            valor_binario = format(ord(char), '08b')
+            binarios.extend(list(valor_binario))
+
+        # faz com que a lista de binarios tenha um numero de elementos divisiveis por 3, colocando zeros no final caso não tenha
+        binarios.extend([0 for a in range(3-len(binarios)%3) if len(binarios)%3 != 0]) 
+
+        qam = []
+        tempo = 0
+        resolucao = 4
+        frequencia = 1
+        for i in range(0,len(binarios),3):
+            trio = binarios[i:i+2]
+            match trio:
+                case [0,0,0]: 
+                    ai = -1
+                    aq = -1
+                case [0,0,1]: 
+                    ai = -1
+                    aq = 0
+                case [0,1,0]: 
+                    ai = 0
+                    aq = 1
+                case [0,1,1]: 
+                    ai = -1
+                    aq = 1
+                case [1,0,0]: 
+                    ai = -1
+                    aq = 0
+                case [1,0,1]: 
+                    ai = 1
+                    aq = -1
+                case [1,1,0]: 
+                    ai = 1
+                    aq = 1
+                case [1,1,1]: 
+                    ai = 1
+                    aq = 0
+
+            for i in resolucao:
+                fase = math.atan2(aq,ai)
+                qam.append(math.cos(2*math.pi*frequencia*tempo + fase)) 
+                tempo += 1
+
+
+        canvas = Apper_graph(qam, "Sinal QAM", "Sinal QAM", "Tempo", "Amplitude").apper_graph()
+        canvas.set_hexpand(True)
+        canvas.set_vexpand(True)
+
+        self.show_all()
         return None
         
     def setup_css(self):
