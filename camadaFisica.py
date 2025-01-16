@@ -99,65 +99,37 @@ class Apper_graph_bipolar:
         return canvas
 
 
-#Modulação por portadora
-##Enzo -> mexer nas classes de Apper_graph_ask, Apper_graph_8qam, Apper_graph_ask
-#Pode olhar as classes anteriores para ter uma ideia de como que cada classe funciona
-#E também, você pode 
-#Gráfico ASK
-class Apper_graph_ask:
-    def __init__(self, a = []):
-        self.a = a
-        self.apper_new_graph()
+class Apper_graph:
+    """### Classe para criar um gráfico genérico"""
 
-    def apper_new_graph(self):
+    def __init__(self, dados:list, titulo:str, caption_label:str, xlabel:str, ylabel:str, step:bool=False):
+        """### Classe para criar um gráfico genérico 
+        ---
+        Exemplo de uso: Apper_graph([], "Sinal ASK", "Sinal ASK", "Tempo", "Amplitude", step=false)"""
+
+        self.dados = dados
+        self.titulo = titulo
+        self.caption_label = caption_label
+        self.xlabel = xlabel
+        self.ylabel = ylabel
+        self.step = step
+        self.apper_graph()
+
+    def apper_graph(self) -> FigureCanvas:
+        """Usando as opções do construtor cria um novo FigureCanvas"""
+
         fig = Figure(figsize=(5, 4), dpi=100)
         ax = fig.add_subplot(111)
-        t = np.arange(len(self.a))
+        t = np.arange(len(self.dados))
 
-        # Plotando o sinal digital NRZ
-        ax.step(t, self.a, where='post', label='Sinal NRZ', linewidth=2)  # 'post' garante que o valor seja mantido após a transição
-        ax.set_title("Sinal Digital NRZ")
-        ax.set_xlabel("Tempo")
-        ax.set_ylabel("Valor")
-        ax.legend()
-        #Se quiser voltar para o codigo anterior tire as "" e
-        #essas duas linhas abaixo
+        # Plotando o sinal
+        if self.step == True:
+            ax.plot(t, self.dados, label=self.caption_label, linewidth=2)
+        else:
+            ax.step(t, self.dados, where='post', label=self.caption_label, linewidth=2)  # 'post' garante que o valor seja mantido após a transição
+        ax.set_title(self.titulo)
+        ax.set_xlabel(self.xlabel)
+        ax.set_ylabel(self.ylabel)
+
         canvas = FigureCanvas(fig)
         return canvas
-
-#Gráfico da FSK
-class Apper_graph_fsk:
-    def __init__(self, a = []):
-        self.a = a
-        self.apper_new_graph()
-
-    def apper_new_graph(self):
-        fig = Figure(figsize=(5, 4), dpi=100)
-        ax = fig.add_subplot(111)
-        t = np.arange(len(self.a))
-
-        # Plotando o sinal digital NRZ
-        ax.step(t, self.a, where='post', label='Sinal NRZ', linewidth=2)  # 'post' garante que o valor seja mantido após a transição
-        ax.set_title("Sinal Digital NRZ")
-        ax.set_xlabel("Tempo")
-        ax.set_ylabel("Valor")
-        ax.legend()
-        #Se quiser voltar para o codigo anterior tire as "" e
-        #essas duas linhas abaixo
-        canvas = FigureCanvas(fig)
-        return canvas
-
-#Gráfico 8QAM
-class Apper_graph_8qam:
-    def __init__(self, a = []):
-        self.a = a
-        self.apper_new_graph()
-
-    def apper_new_graph(self):
-        ax.set_ylabel("Valor")
-        ax.legend()
-        #Se quiser voltar para o codigo anterior tire as "" e
-        #essas duas linhas abaixo
-        canvas = FigureCanvas(fig)
-        return canvas
-    
