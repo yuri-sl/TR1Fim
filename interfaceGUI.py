@@ -339,16 +339,16 @@ class MainWindow(Gtk.Window):
                     ai = -math.sqrt(2)/2
                     aq = -math.sqrt(2)/2
                 case ['0','0','1']: 
-                    ai = -math.sqrt(2)/2
+                    ai = -1
                     aq = 0
                 case ['0','1','0']: 
                     ai = 0
-                    aq = math.sqrt(2)/2
+                    aq = 1
                 case ['0','1','1']: 
                     ai = -math.sqrt(2)/2
                     aq = math.sqrt(2)/2
                 case ['1','0','0']: 
-                    ai = -math.sqrt(2)/2
+                    ai = -1
                     aq = 0
                 case ['1','0','1']: 
                     ai = math.sqrt(2)/2
@@ -357,7 +357,7 @@ class MainWindow(Gtk.Window):
                     ai = math.sqrt(2)/2
                     aq = math.sqrt(2)/2
                 case ['1','1','1']: 
-                    ai = math.sqrt(2)/2
+                    ai = 1
                     aq = 0
 
             for i in range(resolucao):
