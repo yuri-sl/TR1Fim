@@ -97,9 +97,36 @@ class Apper_graph_bipolar:
         #essas duas linhas abaixo
         canvas = FigureCanvas(fig)
         return canvas
-    
+
+
+#Modulação por portadora
+##Enzo -> mexer nas classes de Apper_graph_ask, Apper_graph_8qam, Apper_graph_ask
+#Pode olhar as classes anteriores para ter uma ideia de como que cada classe funciona
+#E também, você pode 
 #Gráfico ASK
 class Apper_graph_ask:
+    def __init__(self, a = []):
+        self.a = a
+        self.apper_new_graph()
+
+    def apper_new_graph(self):
+        fig = Figure(figsize=(5, 4), dpi=100)
+        ax = fig.add_subplot(111)
+        t = np.arange(len(self.a))
+
+        # Plotando o sinal digital NRZ
+        ax.step(t, self.a, where='post', label='Sinal NRZ', linewidth=2)  # 'post' garante que o valor seja mantido após a transição
+        ax.set_title("Sinal Digital NRZ")
+        ax.set_xlabel("Tempo")
+        ax.set_ylabel("Valor")
+        ax.legend()
+        #Se quiser voltar para o codigo anterior tire as "" e
+        #essas duas linhas abaixo
+        canvas = FigureCanvas(fig)
+        return canvas
+
+#Gráfico da FSK
+class Apper_graph_fsk:
     def __init__(self, a = []):
         self.a = a
         self.apper_new_graph()
@@ -134,4 +161,3 @@ class Apper_graph_8qam:
         canvas = FigureCanvas(fig)
         return canvas
     
-#Modulação por portadora
