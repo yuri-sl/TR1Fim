@@ -255,19 +255,18 @@ class MainWindow(Gtk.Window):
         self.grid.attach(canvas, 0,4,8,8)
         self.show_all()
 
-
+    ##Enzo, mexer nessas funções de graph_ASK, FSK e 8QAM que estão aqui na interface GUI.
+    #Você pode usar essas funções de graph NRZ,Manchester e Bipolar que foram definidas aqui em cima para tentar
+    #entender a lógica de como que elas funcionam.
+    #Então, você precisa mexer nas funções de graph_ASK,FSK,8QAM e na classe de Apper_graph_ask,fsk,8qam
     def graph_ASK(self):
-        a = [1, 2, 3, 4]
-        b = [0, 4, 9, 16]
-        Apper_graph_ask(a,b)
+        return None
+
     def graph_FSK(self):
-        a = [1, 2, 3, 4]
-        b = [0, 4, 9, 16]
-        Apper_graph_fsk(a,b)
+        return None
+    
     def graph_8QAM(self):
-        a = [1, 2, 3, 4]
-        b = [0, 4, 9, 16]
-        Apper_graph_8qam(a,b)
+        return None
         
     def setup_css(self):
         css_provider = Gtk.CssProvider()
