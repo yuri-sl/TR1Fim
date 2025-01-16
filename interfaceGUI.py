@@ -265,21 +265,22 @@ class MainWindow(Gtk.Window):
     
         ask = []
         tempo = 0
-        resolucao = 4
+        resolucao = 50
         frequencia = 1
         for i in binarios:
-            if i == 0:
-                ask.extend([0 for a in resolucao])
+            if i == '0':
+                ask.extend([0 for a in range(resolucao)])
                 tempo += resolucao
             else:
                 for j in range(resolucao):
                    ask.append(math.cos(2*math.pi*frequencia*tempo)) 
-                   tempo += 1
+                   tempo += 1/resolucao
 
-        canvas = Apper_graph(ask, "Sinal ASK", "Sinal ASK", "Tempo", "Amplitude").apper_graph()
+        canvas = Apper_graph(ask, "Sinal ASK", "Sinal ASK", "Tempo", "Amplitude", resolucao=resolucao).apper_graph()
         canvas.set_hexpand(True)
         canvas.set_vexpand(True)
 
+        self.grid.attach(canvas, 0,4,8,8)
         self.show_all()
 
         return None
@@ -293,22 +294,23 @@ class MainWindow(Gtk.Window):
     
         fsk = []
         tempo = 0
-        resolucao = 4
+        resolucao = 50
         frequencia = 1
         for i in binarios:
-            if i == 0:
+            if i == '0':
                 for j in range(resolucao):
                    fsk.append(math.cos(2*math.pi*frequencia*tempo)) 
-                   tempo += 1
+                   tempo += 1/resolucao
             else:
                 for j in range(resolucao):
                    fsk.append(math.cos(4*math.pi*frequencia*tempo)) 
-                   tempo += 1
+                   tempo += 1/resolucao
 
-        canvas = Apper_graph(fsk, "Sinal FSK", "Sinal FSK", "Tempo", "Amplitude").apper_graph()
+        canvas = Apper_graph(fsk, "Sinal FSK", "Sinal FSK", "Tempo", "Amplitude", resolucao=resolucao).apper_graph()
         canvas.set_hexpand(True)
         canvas.set_vexpand(True)
 
+        self.grid.attach(canvas, 0,4,8,8)
         self.show_all()
         return None
     
@@ -320,50 +322,52 @@ class MainWindow(Gtk.Window):
             binarios.extend(list(valor_binario))
 
         # faz com que a lista de binarios tenha um numero de elementos divisiveis por 3, colocando zeros no final caso não tenha
-        binarios.extend([0 for a in range(3-len(binarios)%3) if len(binarios)%3 != 0]) 
+        binarios.extend(['0' for a in range(3-len(binarios)%3) if len(binarios)%3 != 0]) 
 
         qam = []
         tempo = 0
-        resolucao = 4
+        resolucao = 50
         frequencia = 1
         for i in range(0,len(binarios),3):
-            trio = binarios[i:i+2]
+            trio = binarios[i:i+3]
+            aq = 0;ai = 0
             match trio:
-                case [0,0,0]: 
-                    ai = -1
-                    aq = -1
-                case [0,0,1]: 
-                    ai = -1
+                case ['0','0','0']: 
+                    ai = -math.sqrt(2)/2
+                    aq = -math.sqrt(2)/2
+                case ['0','0','1']: 
+                    ai = -math.sqrt(2)/2
                     aq = 0
-                case [0,1,0]: 
+                case ['0','1','0']: 
                     ai = 0
-                    aq = 1
-                case [0,1,1]: 
-                    ai = -1
-                    aq = 1
-                case [1,0,0]: 
-                    ai = -1
+                    aq = math.sqrt(2)/2
+                case ['0','1','1']: 
+                    ai = -math.sqrt(2)/2
+                    aq = math.sqrt(2)/2
+                case ['1','0','0']: 
+                    ai = -math.sqrt(2)/2
                     aq = 0
-                case [1,0,1]: 
-                    ai = 1
-                    aq = -1
-                case [1,1,0]: 
-                    ai = 1
-                    aq = 1
-                case [1,1,1]: 
-                    ai = 1
+                case ['1','0','1']: 
+                    ai = math.sqrt(2)/2
+                    aq = -math.sqrt(2)/2
+                case ['1','1','0']: 
+                    ai = math.sqrt(2)/2
+                    aq = math.sqrt(2)/2
+                case ['1','1','1']: 
+                    ai = math.sqrt(2)/2
                     aq = 0
 
-            for i in resolucao:
+            for i in range(resolucao):
                 fase = math.atan2(aq,ai)
-                qam.append(math.cos(2*math.pi*frequencia*tempo + fase)) 
-                tempo += 1
+                qam.append(math.sqrt(ai*ai+aq*aq)*math.cos(2*math.pi*frequencia*tempo + fase)) 
+                tempo += 1/resolucao
 
 
-        canvas = Apper_graph(qam, "Sinal QAM", "Sinal QAM", "Tempo", "Amplitude").apper_graph()
+        canvas = Apper_graph(qam, "Sinal QAM", "Sinal QAM", "Tempo", "Amplitude", resolucao=resolucao).apper_graph()
         canvas.set_hexpand(True)
         canvas.set_vexpand(True)
 
+        self.grid.attach(canvas, 0,4,8,8)
         self.show_all()
         return None
         

@@ -102,7 +102,7 @@ class Apper_graph_bipolar:
 class Apper_graph:
     """### Classe para criar um gráfico genérico"""
 
-    def __init__(self, dados:list, titulo:str, caption_label:str, xlabel:str, ylabel:str, step:bool=False):
+    def __init__(self, dados:list, titulo:str, caption_label:str, xlabel:str, ylabel:str, step:bool=False, resolucao:int=1):
         """### Classe para criar um gráfico genérico 
         ---
         Exemplo de uso: Apper_graph([], "Sinal ASK", "Sinal ASK", "Tempo", "Amplitude", step=false)"""
@@ -113,6 +113,7 @@ class Apper_graph:
         self.xlabel = xlabel
         self.ylabel = ylabel
         self.step = step
+        self.resolucao = resolucao
         self.apper_graph()
 
     def apper_graph(self) -> FigureCanvas:
@@ -120,10 +121,10 @@ class Apper_graph:
 
         fig = Figure(figsize=(5, 4), dpi=100)
         ax = fig.add_subplot(111)
-        t = np.arange(len(self.dados))
+        t = np.arange(0,len(self.dados)/self.resolucao,1/self.resolucao)
 
         # Plotando o sinal
-        if self.step == True:
+        if self.step == False:
             ax.plot(t, self.dados, label=self.caption_label, linewidth=2)
         else:
             ax.step(t, self.dados, where='post', label=self.caption_label, linewidth=2)  # 'post' garante que o valor seja mantido após a transição
