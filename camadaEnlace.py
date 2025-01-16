@@ -1,3 +1,30 @@
+
+class BitDeParidade:
+    def __init__(self,lista = None):
+        self.aux = 0
+        if lista is None:
+            self.lista = []
+        else:
+            self.lista = lista
+            self.nova_lista = []
+            self.novo_item = None
+
+    def bit_de_paridade(self):              # Par ["01010101"] ->["010101010"]
+        for item in self.lista:             # Por cada caractere
+            self.aux = 0                    # Sempre reinicia o contador
+            for i in item:                  # Em cada bit do caractera
+                i = int(i)
+                if i == 0:
+                    self.aux += 0
+                else:
+                    self.aux += 1
+            if (self.aux % 2) == 0:              # verifica se é par ou impar
+                self.novo_item = item + "0"                  # se é par apenas 0
+            else:
+                self.novo_item = item + "1"                  # Se nao é 1 no final
+            self.nova_lista.append(self.novo_item)
+        return self.nova_lista
+
 def criar_quadro_binario(dados_binarios):
     """
     Cria um quadro com contagem de caracteres para dados binários.
