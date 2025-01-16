@@ -276,7 +276,7 @@ class MainWindow(Gtk.Window):
                    ask.append(math.cos(2*math.pi*frequencia*tempo)) 
                    tempo += 1/resolucao
 
-        canvas = Apper_graph(ask, "Sinal ASK", "Sinal ASK", "Tempo", "Amplitude", resolucao=resolucao).apper_graph()
+        canvas = Apper_graph(ask, "Sinal ASK", step=False, resolucao=resolucao).apper_graph()
         canvas.set_hexpand(True)
         canvas.set_vexpand(True)
 
@@ -306,7 +306,7 @@ class MainWindow(Gtk.Window):
                    fsk.append(math.cos(4*math.pi*frequencia*tempo)) 
                    tempo += 1/resolucao
 
-        canvas = Apper_graph(fsk, "Sinal FSK", "Sinal FSK", "Tempo", "Amplitude", resolucao=resolucao).apper_graph()
+        canvas = Apper_graph(fsk, "Sinal FSK", step=False, resolucao=resolucao).apper_graph()
         canvas.set_hexpand(True)
         canvas.set_vexpand(True)
 
@@ -331,6 +331,9 @@ class MainWindow(Gtk.Window):
         for i in range(0,len(binarios),3):
             trio = binarios[i:i+3]
             aq = 0;ai = 0
+            # associando cada trio de bits a um simbolo eletrico
+            # a constelação aqui está baseada em https://weibeld.net/mobcom/psk-qam-modulation.html
+            # valores em raiz(2)/2 para manter a amplitude 
             match trio:
                 case ['0','0','0']: 
                     ai = -math.sqrt(2)/2
@@ -363,7 +366,7 @@ class MainWindow(Gtk.Window):
                 tempo += 1/resolucao
 
 
-        canvas = Apper_graph(qam, "Sinal QAM", "Sinal QAM", "Tempo", "Amplitude", resolucao=resolucao).apper_graph()
+        canvas = Apper_graph(qam, "Sinal QAM", step=False, resolucao=resolucao).apper_graph()
         canvas.set_hexpand(True)
         canvas.set_vexpand(True)
 

@@ -102,7 +102,7 @@ class Apper_graph_bipolar:
 class Apper_graph:
     """### Classe para criar um gráfico genérico"""
 
-    def __init__(self, dados:list, titulo:str, caption_label:str, xlabel:str, ylabel:str, step:bool=False, resolucao:int=1):
+    def __init__(self, dados:list, titulo:str, caption_label:str="", xlabel:str="Tempo", ylabel:str="Amplitude", step:bool=True, resolucao:int=1):
         """### Classe para criar um gráfico genérico 
         ---
         Exemplo de uso: Apper_graph([], "Sinal ASK", "Sinal ASK", "Tempo", "Amplitude", step=false)"""
