@@ -3,7 +3,7 @@ import threading
 
 def start_server():
     bind_ip = 'localhost' #IP q o servidor tá rodando
-    bind_port = 8000        #Conexao está sendo estabelecida pela porta 80. 
+    bind_port = 8030        #Conexao está sendo estabelecida pela porta 80. 
     # se o apache server estiver rodanddo é só trocar a porta que está configurada aqui
 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -30,5 +30,5 @@ def start_server():
         print ('[*] conexão aceita de: %s%d' %(addr[0],addr[1]))
         client_handler = threading.Thread(target=handle_client,args=(client,))
         client_handler.start()
-
+start_server()
 

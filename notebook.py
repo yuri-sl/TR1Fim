@@ -139,7 +139,7 @@ class MyWindow(Gtk.Window):
         hboxCorrError.pack_start(rdHamming,False,False,0)
 
         ##TransmitMessage
-        lblWarning = Gtk.Label(label="Obs.: 0,011% de chance de ocorrência de erros")
+        lblWarning = Gtk.Label(label="Obs.: 0,01% de chance de ocorrência de erros")
         lblWarning.set_name("warning")
 
 
@@ -147,6 +147,7 @@ class MyWindow(Gtk.Window):
         lblTransmitMessage.get_style_context().add_class("btnLbl")
         btnTransmitMessage = Gtk.Button()
         btnTransmitMessage.add(lblTransmitMessage)
+
 
 
 
@@ -168,7 +169,6 @@ class MyWindow(Gtk.Window):
         page1.add(hboxCorrError)
         page1.add(lblWarning)
         page1.add(btnTransmitMessage)
-
 
 
 
