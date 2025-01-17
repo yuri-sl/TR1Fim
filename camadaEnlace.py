@@ -1,3 +1,51 @@
+class CRC_32:
+    def __init__(self, data):
+        self.aux = ""
+        for i in data:
+            self.aux += i
+        self.data = self.aux
+        self.crc = None
+        self.generator = "100000100110000010001110110110111"
+        self.calcula_crc()
+    def data_crc(self):                 #Os bits de dados + o CRC
+        self.crc = self.calcula_crc()
+        self.aux = self.data + self.crc
+        return self.aux
+    def get_crc_lib(self):              #CRC de uma lib. é diferente!
+        import zlib
+        crc32_valor = zlib.crc32(self.data)
+        return f"crc32_valor:#010x"
+
+    def calcula_crc(self):              #Apenas o CRC
+        """
+        Calcula o CRC usando divisão binária baseada em XOR.
+
+        Args:
+            data (str): String de bits representando a mensagem original.
+            generator (str): String de bits representando o polinômio gerador.
+
+        Returns:
+            str: O resto (CRC) como uma string de bits.
+        """
+        # Adicionar zeros (padding) ao final da mensagem
+        grau = len(self.generator) - 1  # Grau do polinômio gerador
+        data_padded = self.data + '0' * grau
+
+        # Converter os dados e o gerador em listas de bits para manipulação
+        data_bits = list(data_padded)
+        generator_bits = list(self.generator)
+
+        # Realizar a divisão binária
+        for i in range(len(self.data)):
+            # Se o bit atual for 1, faça XOR com o gerador
+            if data_bits[i] == '1':
+                for j in range(len(generator_bits)):
+                    data_bits[i + j] = str(int(data_bits[i + j]) ^ int(generator_bits[j]))
+
+        # O que sobra nos últimos bits é o CRC
+        crc = ''.join(data_bits[-grau:])
+        return crc
+
 
 class BitDeParidade:
     def __init__(self,lista = None):
