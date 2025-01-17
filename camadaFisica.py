@@ -11,10 +11,23 @@ from matplotlib.figure import Figure
 
 def converterBinario(palavra):
     binarios = []
+    ans = []
     for char in palavra:
         valor_binario = format(ord(char), '08b')
-        binarios.append(valor_binario)  # Adiciona o valor binário à lista
+        binarios.append([int(bit) for bit in valor_binario])  # Adiciona o valor binário à lista        
     return binarios
+
+def convertNRZ(byteMSG):
+    for i in range(0,len(byteMSG)):
+        byte = byteMSG[i]
+        for j in range(0,len(byte)):
+            bit = byte[j]
+            if bit== 0:
+                byte[j] = -1
+            else:
+                byte[j] = 1
+    return byteMSG
+
 
 
 #Modulação Digital

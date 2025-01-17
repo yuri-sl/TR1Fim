@@ -106,9 +106,24 @@ class MyWindow(Gtk.Window):
         graph_window = Gtk.Window(title=title)
         graph_window.set_default_size(800, 600)
 
+        unpack_x = []
+        unpack_y = []
+
+        for i in range(0,len(x_data)):
+            byte = x_data[i]
+            for j in range(0,len(byte)):
+                bit = byte[j]
+                unpack_x.append(bit)
+        
+        print(unpack_x)
+        print(unpack_y)
+
+
+
+
         # Criando a figura do Matplotlib
         fig, ax = plt.subplots()
-        ax.plot(x_data, y_data, label=label)
+        ax.step(y_data, unpack_x, label=label)
         ax.set_title(title)
         ax.legend()
 
@@ -125,6 +140,7 @@ class MyWindow(Gtk.Window):
         selected = widget.get_active_text()
 
         msgSize = self.entryMessage.get_text_length()
+        msg = self.entryMessage.get_text()
         if msgSize == 0:
             entryBoxPreenchida = False
             janelaVazio = textoVazio()
@@ -133,8 +149,22 @@ class MyWindow(Gtk.Window):
             entryBoxPreenchida = True
 
         if entryBoxPreenchida == True:
+            binWord = converterBinario(msg)
+            print(binWord)
+            binWordNRZ = convertNRZ(binWord)
+
+            x_axis = []
+
+            n = len(binWordNRZ)
+
+            for j in range(0,8*n):
+                x_axis.append(j)
+
+            print(binWordNRZ)
+            print(x_axis)
+
             if selected == "Grafico NRZ":
-                self.show_graph([0, 1, 2, 3], [0, 1, 4, 9], "Grafico NRZ", "Sinal NRZ")
+                self.show_graph(binWordNRZ, x_axis, "Grafico NRZ", "Sinal NRZ")
 
             elif selected == "Grafico Manchester":
                 self.show_graph([0, 1, 2, 3], [0, 1, 8, 27], "Gráfico Manchester", "Sinal Manchester")
