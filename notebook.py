@@ -1,25 +1,169 @@
+import matplotlib
+matplotlib.use('GTK3Agg')  # Usar 'GTK3Agg' para renderizar com GTK e Matplotlib
+
 import gi
-
-
 gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk,Gdk
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
+from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3
+from camadaFisica import *
+from camadaEnlace import *
+
 
 
 servidorAtivo = False
+entryBoxPreenchida = False
 
-class MyWindow(Gtk.Window):
-
-    def __init__(self):
-
-        super().__init__(title="Simulador SimulNet")
-
+def addCSS():
         #Load CSS from file
         css_provider = Gtk.CssProvider()
         css_provider.load_from_path("styles.css")
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),css_provider,Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
+
+class erroEnviarMensagem(Gtk.Window):
+    def okayBtn(self,widget):
+        self.hide()
+    def __init__(self):
+        super().__init__(title="Erro ao enviar a mensagem")
+        self.set_default_size(200,100)
+        lblErroMsg = Gtk.Label(label="Servidor não foi iniciado!")
+
+        addCSS()
+
+        btnOk = Gtk.Button()
+        lblOk = Gtk.Label(label="Ok")
+        btnOk.add(lblOk)
+        btnOk.connect("clicked",self.okayBtn)
+
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,spacing=10)
+        vbox.set_name("box-container")
+        vbox.pack_start(lblErroMsg,True,True,0)
+        vbox.pack_start(btnOk,True,True,0)
+        self.add(vbox)
+        self.connect("destroy",self.hide)
+
+class mensagemEnviada(Gtk.Window):
+    def okayBtn(self,widget):
+        self.hide()
+    def __init__(self):
+        super().__init__(title="Mensagem Enviada!")
+        self.set_default_size(200,100)
+        wndwLabel = Gtk.Label(label="Mensagem foi enviada com sucesso!")
+
+        addCSS()
+
+        btnOk = Gtk.Button()
+        lblOk = Gtk.Label(label="Ok")
+        btnOk.add(lblOk)
+        btnOk.connect("clicked",self.okayBtn)
+
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,spacing=10)
+        vbox.set_name("box-container")
+        vbox.pack_start(wndwLabel,True,True,0)
+        vbox.pack_start(btnOk,True,True,0)
+
+
+        self.add(vbox)
+
+
+        self.connect("destroy",self.hide)
+
+
+class textoVazio(Gtk.Window):
+    def okayBtn(self,widget):
+        self.hide()
+    def __init__(self):
+        super().__init__(title="Erro")
+        self.set_default_size(200,100)
+        wndwLabel = Gtk.Label(label="O campo de mensagem está vazio")
+
+        addCSS()
+
+        btnOk = Gtk.Button()
+        lblOk = Gtk.Label(label="Ok")
+        btnOk.add(lblOk)
+        btnOk.connect("clicked",self.okayBtn)
+
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,spacing=10)
+        vbox.set_name("box-container")
+        vbox.pack_start(wndwLabel,True,True,0)
+        vbox.pack_start(btnOk,True,True,0)
+
+
+        self.add(vbox)
+
+
+        self.connect("destroy",self.hide)
+
+
+class MyWindow(Gtk.Window):
+    def show_graph(self, x_data, y_data, title, label):
+        # Criação de uma nova janela GTK para o gráfico
+        graph_window = Gtk.Window(title=title)
+        graph_window.set_default_size(800, 600)
+
+        # Criando a figura do Matplotlib
+        fig, ax = plt.subplots()
+        ax.plot(x_data, y_data, label=label)
+        ax.set_title(title)
+        ax.legend()
+
+        # Incorporando a figura no GTK
+        canvas = FigureCanvas(fig)
+
+        graph_window.add(canvas)
+
+        # Exibindo a janela do gráfico
+        graph_window.show_all()
+
+    # Connect the Dropdown Signal
+    def on_combo_changed(self,widget):
+        selected = widget.get_active_text()
+
+        msgSize = self.entryMessage.get_text_length()
+        if msgSize == 0:
+            entryBoxPreenchida = False
+            janelaVazio = textoVazio()
+            janelaVazio.show_all()
+        else:
+            entryBoxPreenchida = True
+
+        if entryBoxPreenchida == True:
+            if selected == "Grafico NRZ":
+                self.show_graph([0, 1, 2, 3], [0, 1, 4, 9], "Grafico NRZ", "Sinal NRZ")
+
+            elif selected == "Grafico Manchester":
+                self.show_graph([0, 1, 2, 3], [0, 1, 8, 27], "Gráfico Manchester", "Sinal Manchester")
+            elif selected == "Grafico Bipolar":
+                self.show_graph([0, 1, 2, 3], [0, 1, 4, 9], "Gráfico Bipolar", "Sinal Bipolar")
+            elif selected == "Gráfico ASK":
+                self.show_graph([0, 1, 2, 3], [0, 1, 4, 9], "Gráfico ASK", "Sinal ASK")
+            elif selected == "Gráfico FSK":
+                self.show_graph([0, 1, 2, 3], [0, 1, 4, 9], "Gráfico FSK", "Sinal FSK")
+            elif selected == "Gráfico 8-QM":
+                self.show_graph([0, 1, 2, 3], [0, 1, 4, 9], "Gráfico 8-QM", "Sinal 8-QM")                
+    
+    def on_button_clicked(self, widget):
+        # Create the pop-up window
+        if servidorAtivo == False:
+            popup = erroEnviarMensagem()
+            popup.show_all()
+        else:
+            popup = mensagemEnviada()
+            popup.show_all()
+
+
+
+    def __init__(self):
+
+        super().__init__(title="Simulador SimulNet")
+
+        #Load CSS from file
+        addCSS()
 
 
         notebook = Gtk.Notebook()
@@ -44,11 +188,12 @@ class MyWindow(Gtk.Window):
 
         lblWelcome.set_margin_end(20)
         lblWelcome.get_style_context().add_class("lblTitle")
-        ##EntryBox
-        entryMessage = Gtk.Entry()
-        entryMessage.get_style_context().add_class("entry")
+
+        # Torne `entryMessage` um atributo da classe
+        self.entryMessage = Gtk.Entry()
+        self.entryMessage.get_style_context().add_class("entry")
         lblInputText = Gtk.Label(label="Insira a mensagem a ser transmitida")
-        entryMessage.set_placeholder_text(lblInputText.get_text())
+        self.entryMessage.set_placeholder_text(lblInputText.get_text())
 
         ##MODULAÇÃO DIGITAL
         lblModDig = Gtk.Label(label="Modulação Digital")
@@ -64,9 +209,11 @@ class MyWindow(Gtk.Window):
             "Grafico Manchester",
             "Grafico Bipolar"
         ]
+        
         for graph in graficosDig:
             comboMod.append_text(graph)
-
+        
+        comboMod.connect("changed", self.on_combo_changed)
 
 
 
@@ -98,7 +245,9 @@ class MyWindow(Gtk.Window):
         ]
         for graphs in graficosPort:
             comboPort.append_text(graphs)
-        
+
+        comboPort.connect("changed", self.on_combo_changed)
+
         
         ##Enquadramento
         lblEnq = Gtk.Label(label="Enquadramento")
@@ -139,7 +288,7 @@ class MyWindow(Gtk.Window):
         hboxCorrError.pack_start(rdHamming,False,False,0)
 
         ##TransmitMessage
-        lblWarning = Gtk.Label(label="Obs.: 0,01% de chance de ocorrência de erros")
+        lblWarning = Gtk.Label(label="Obs.: 0,011% de chance de ocorrência de erros")
         lblWarning.set_name("warning")
 
 
@@ -147,7 +296,7 @@ class MyWindow(Gtk.Window):
         lblTransmitMessage.get_style_context().add_class("btnLbl")
         btnTransmitMessage = Gtk.Button()
         btnTransmitMessage.add(lblTransmitMessage)
-
+        btnTransmitMessage.connect("clicked",self.on_button_clicked)
 
 
 
@@ -155,7 +304,7 @@ class MyWindow(Gtk.Window):
         #Adição dos widgets na tela
         page1.add(lblWelcome)
         page1.add(lblInsertText)
-        page1.add(entryMessage)
+        page1.add(self.entryMessage)
         page1.add(lblModDig)
         page1.pack_start(comboMod,False,False,0)
         page1.pack_start(hboxModDig,False,False,0)
@@ -169,6 +318,7 @@ class MyWindow(Gtk.Window):
         page1.add(hboxCorrError)
         page1.add(lblWarning)
         page1.add(btnTransmitMessage)
+
 
 
 
@@ -291,6 +441,16 @@ class MyWindow(Gtk.Window):
 
         btnStartServer.connect("clicked",activatingServer)
         btnEndServer.connect("clicked",activatingServer)
+
+        def gatherText():
+            msgSize = entryMessage.get_text_length()
+            if msgSize == 0:
+                entryBoxPreenchida = True
+                janelaVazio = textoVazio()
+                janelaVazio.show_all()
+            else:
+                entryBoxPreenchida = False
+
 
 
 
