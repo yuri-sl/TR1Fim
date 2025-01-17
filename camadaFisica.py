@@ -31,6 +31,21 @@ def convertNRZ(byteMSG):
 
 
 #Modulação Digital
+def buildNRZ(binWordNRZ):
+    x_axis = []
+
+    n = len(binWordNRZ)
+
+    for j in range(0,8*n):
+        x_axis.append(j)
+
+    print(binWordNRZ)
+    print(x_axis)
+    return binWordNRZ,x_axis
+    #show_graph(binWordNRZ, x_axis, "Grafico NRZ", "Sinal NRZ")
+
+
+
 #Gráfico NRZ
 class Apper_graph_nrz:
     def __init__(self, a = []):

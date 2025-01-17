@@ -151,19 +151,11 @@ class MyWindow(Gtk.Window):
         if entryBoxPreenchida == True:
             binWord = converterBinario(msg)
             print(binWord)
-            binWordNRZ = convertNRZ(binWord)
 
-            x_axis = []
-
-            n = len(binWordNRZ)
-
-            for j in range(0,8*n):
-                x_axis.append(j)
-
-            print(binWordNRZ)
-            print(x_axis)
-
+            
             if selected == "Grafico NRZ":
+                binWordNRZ = convertNRZ(binWord)
+                binWordNRZ,x_axis = buildNRZ(binWordNRZ)
                 self.show_graph(binWordNRZ, x_axis, "Grafico NRZ", "Sinal NRZ")
 
             elif selected == "Grafico Manchester":
