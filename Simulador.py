@@ -1,48 +1,48 @@
 import socket
 import threading
 
-server_running = True #Controle global de iniciar/fechar o servidor
+server_running = True  # Controle global de iniciar/fechar o servidor
 
 def start_server():
     global server_running
 
-    bind_ip = 'localhost' #IP q o servidor tá rodando
-    bind_port = 8030        #Conexao está sendo estabelecida pela porta 80. 
-    # se o apache server estiver rodanddo é só trocar a porta que está configurada aqui
+    bind_ip = 'localhost'  # IP que o servidor está escutando
+    bind_port = 8030       # Porta do servidor
 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    #socket.AF_INET -> Estamos trabalhando com o IPV6
-    #SOCK_STREAM -> Trabalhando com protocolo ICP, rodar com o SOCK_DEGRAM caso queira rodar com outro protocolo
+    server.bind((bind_ip, bind_port))
+    server.listen(5)  # Escutando até 5 conexões simultâneas
+    server.settimeout(1.0)  # Timeout para evitar bloqueios ao encerrar
 
-    server.bind((bind_ip,bind_port))
-    server.listen(5) #Escutar 5 conexões simultaneas
+    print(f'[*] Servidor escutando em {bind_ip}:{bind_port}')
 
-    print('[*] Escutando %s:%d' %(bind_ip,bind_port))
-
-    def handle_client(client_socket):
-        request = client_socket.recv(1024)
-        print('[*] Recebido: %s' %request)
-        print('\n-----------\n')
-        message_to_client = '\nMensagem destinada ao cliente: %s\n' %addr[0]
-        client_socket.send(message_to_client.encode('utf-8'))
-        ACKMessage = '\n ACK! \nRecebido pelo servidor!\n'
-        client_socket.send(ACKMessage.encode('utf-8'))
-        client_socket.close()
-
-    while(server_running):
+    def handle_client(client_socket, addr):
+        print("Entrou em handle client")
         try:
-            (client,addr) = server.accept() #Quando a conexão for aceita, ele vai passar essa tupla
-            print ('[*] conexão aceita de: %s%d' %(addr[0],addr[1]))
-            client_handler = threading.Thread(target=handle_client,args=(client,))
+            request = client_socket.recv(1024)
+            print(f'[*] Mensagem recebida de {addr[0]}: {request.decode("utf-8")}')
+            response = f'\nMensagem destinada ao cliente: {addr[0]}\n'
+            client_socket.send(response.encode('utf-8'))
+            ack_message = '\nACK!\nRecebido pelo servidor!\n'
+            client_socket.send(ack_message.encode('utf-8'))
+        except Exception as e:
+            print(f"Erro ao processar cliente {addr}: {e}")
+        finally:
+            client_socket.close()
+
+    while server_running:
+        try:
+            client, addr = server.accept()  # Aceitar conexão
+            print(f'[*] Conexão aceita de: {addr[0]}:{addr[1]}')
+            client_handler = threading.Thread(target=handle_client, args=(client, addr))
             client_handler.start()
-    #start_server()
-        except OSError:
-            print('[*] Servidor encerrado.')
-            break
+        except socket.timeout:
+            continue  # Timeout permite verificar o estado do servidor e continuar
+
     server.close()
+    print('[*] Servidor encerrado.')
 
 def stop_server():
     global server_running
     server_running = False
     print('[*] Encerrando o servidor...')
-

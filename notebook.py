@@ -13,6 +13,7 @@ from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3
 from camadaFisica import *
 from camadaEnlace import *
 from Simulador import *
+from clientTCP import *
 
 
 servidorAtivo = False
@@ -219,6 +220,12 @@ class MyWindow(Gtk.Window):
     
     def on_button_clicked(self, widget):
         # Create the pop-up window
+        global sentText
+        if self.entryMessage.get_text_length() > 0:
+            entryBoxPreenchida = True
+        if entryBoxPreenchida == True:
+            sentText = self.entryMessage.get_text()
+            print(sendMessage(sentText))
         if servidorAtivo == False:
             popup = erroEnviarMensagem()
             popup.show_all()
@@ -511,6 +518,7 @@ class MyWindow(Gtk.Window):
                 popUp = serverEndedWindow()
                 popUp.show_all()
                 stop_server()
+                #print(is_port_open('localhost',8030))
             else:
                 print("O servidor será iniciado")
                 servidorAtivo = True
@@ -518,6 +526,7 @@ class MyWindow(Gtk.Window):
                 thread.start()
                 popUp = serverStartedWindow()
                 popUp.show_all()
+                #print(is_port_open('localhost',8030))
             #servidorAtivo = not servidorAtivo
             #print(servidorAtivo)
 
