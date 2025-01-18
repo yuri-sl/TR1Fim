@@ -1,6 +1,7 @@
 import gi
 import numpy as np
 import random
+import math
 
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
@@ -192,9 +193,104 @@ def buildBipolar(binWordBipolar):
     print("O x_axis é ",x_axis)
     return binWordBipolar,x_axis
 
+#Modulação por portadora
+resolucao = 50
+def convertASK(byteMSG:list[list[float]]) -> list[float]:
+    ask = []
+    tempo = 0
+    frequencia = 1
+    for byte in byteMSG:
+        byte_ins = []
+        for i in byte:
+            if i == 0:
+                byte_ins.extend([0 for a in range(resolucao)])
+                tempo += resolucao
+            else:
+                for j in range(resolucao):
+                    byte_ins.append(math.cos(2*math.pi*frequencia*tempo)) 
+                    tempo += 1/resolucao
+        ask.append(byte_ins)
+    return ask
 
+def convertFSK(byteMSG:list[list[float]]) -> list[float]:
+    fsk = []
+    tempo = 0
+    frequencia = 1
+    for byte in byteMSG:
+        byte_ins = []
+        for i in byte:
+            if i == 0:
+                for j in range(resolucao):
+                    byte_ins.append(math.cos(2*math.pi*frequencia*tempo)) 
+                    tempo += 1/resolucao
+            else:
+                for j in range(resolucao):
+                    byte_ins.append(math.cos(4*math.pi*frequencia*tempo)) 
+                    tempo += 1/resolucao
+        fsk.append(byte_ins)
 
+    return fsk
 
+def convert8QAM(byteMSG:list[list[float]]) -> list[float]:
+    bitList = np.array(byteMSG).flatten().tolist()
+
+    # faz com que a lista de binarios tenha um numero de elementos divisiveis por 3, colocando zeros no final caso não tenha
+    bitList.extend([0 for a in range(3-len(bitList)%3) if len(bitList)%3 != 0]) 
+
+    qam = []
+    tempo = 0
+    frequencia = 1
+    for i in range(0,len(bitList),3):
+        trio = bitList[i:i+3]
+        aq = 0;ai = 0
+        # associando cada trio de bits a um simbolo eletrico
+        # a constelação aqui está baseada em https://weibeld.net/mobcom/psk-qam-modulation.html
+        # valores em raiz(2)/2 para manter a amplitude 
+        match trio:
+            case [0,0,0]: 
+                ai = -math.sqrt(2)/2
+                aq = -math.sqrt(2)/2
+            case [0,0,1]: 
+                ai = -1
+                aq = 0
+            case [0,1,0]: 
+                ai = 0
+                aq = 1
+            case [0,1,1]: 
+                ai = -math.sqrt(2)/2
+                aq = math.sqrt(2)/2
+            case [1,0,0]: 
+                ai = -1
+                aq = 0
+            case [1,0,1]: 
+                ai = math.sqrt(2)/2
+                aq = -math.sqrt(2)/2
+            case [1,1,0]: 
+                ai = math.sqrt(2)/2
+                aq = math.sqrt(2)/2
+            case [1,1,1]: 
+                ai = 1
+                aq = 0
+
+        for i in range(resolucao):
+            fase = math.atan2(aq,ai)
+            qam.append(math.sqrt(ai*ai+aq*aq)*math.cos(2*math.pi*frequencia*tempo + fase)) 
+            tempo += 1/resolucao
+
+    return [qam]
+
+def buildPortadora(binWordPortadora:list[list[float]]):
+    x_axis = []
+    n = len(binWordPortadora)
+
+    tamanho = 0
+    for word in binWordPortadora:
+        tamanho += len(word)
+
+    x_axis = np.arange(0,tamanho/resolucao,1/resolucao)
+
+    print("O x_axis é ",x_axis)
+    return binWordPortadora,x_axis
 
 #Gráfico NRZ
 class Apper_graph_nrz:
