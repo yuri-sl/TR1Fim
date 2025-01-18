@@ -34,6 +34,7 @@ class GridColumnWindow(Gtk.Window):
                     label.set_markup(f"<b>{item}</b>")
                 grid.attach(label, col_index, row_index, 1, 1)
 
+        
         # Show all widgets
         self.show_all()
 

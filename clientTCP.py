@@ -1,6 +1,6 @@
 import socket
 target_host = 'localhost' #Alvo é localHost pois queremos enviar o localHost
-target_port = 80	  #Porta que vamos passar
+target_port = 8030	  #Porta que vamos passar
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 client.connect((target_host,target_port))

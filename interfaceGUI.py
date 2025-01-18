@@ -1,7 +1,7 @@
 import gi
 import threading
 gi.require_version("Gtk", "3.0")
-from Simulador import start_server
+#from Simulador import start_server
 from gi.repository import Gtk, Gdk
 
 import numpy as np
@@ -134,11 +134,11 @@ class MainWindow(Gtk.Window):
         self.grid.attach(self.server_status_label,0,5,2,1)
 
         #Start Server  Btn
-        btn_start_server = Gtk.Button(label="Iniciar Servidor do Receptor")
-        btn_start_server.set_halign(Gtk.Align.CENTER)
-        btn_start_server.connect("clicked",start_server)
-        btn_start_server.get_style_context().add_class("grid-button")
-        self.grid.attach(btn_start_server,0,4,1,1)
+        #btn_start_server = Gtk.Button(label="Iniciar Servidor do Receptor")
+        #btn_start_server.set_halign(Gtk.Align.CENTER)
+        #btn_start_server.connect("clicked",start_server)
+        #btn_start_server.get_style_context().add_class("grid-button")
+        #self.grid.attach(btn_start_server,0,4,1,1)
         
         # TextView for Logs
         self.textview = Gtk.TextView()
