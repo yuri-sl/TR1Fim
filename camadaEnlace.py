@@ -1,3 +1,42 @@
+def calculate_parity(bits, positions):
+    """
+    Calcula o bit de paridade para os índices fornecidos.
+    """
+    parity = 0
+    for pos in positions:
+        if pos - 1 < len(bits):             #Em cada posiçao do encoded
+            parity ^= bits[pos - 1]         # XOR nos bits especificados
+    return parity
+
+
+def encode_hamming_12_8(data_bits):
+    """
+    Codifica os dados usando o código de Hamming (12,8).
+    """
+    if len(data_bits) != 8:
+        raise ValueError("São necessários exatamente 8 bits de dados.")
+
+    # Calcula as posições dos bits de paridade (1, 2, 4, 8)
+    encoded = [0] * 12  # Total de 12 bits (dados + paridade)
+
+    # Insere os bits de dados nas posições não-paridade
+    j = 0
+    for i in range(1, len(encoded) + 1):            #Pelos 12 bits de dados
+        if i & (i - 1) != 0:  # Verifica se i não é potência de 2 = ! math.log2(i).is_integer()
+            encoded[i - 1] = int(data_bits[j]) # Se não é, é por que é bit de dado e coloca no devido lugar
+            j += 1                             #Vai pro proximo
+
+    # Calcula os bits de paridade
+    for i in range(len(encoded)):
+        if (i + 1) & i == 0:  # É uma potência de 2
+            positions = [] 
+            for j in range(len(encoded)): 
+                position = j + 1            
+                if position & (i + 1) != 0:      #Verifica se esse bit faz parte da contagem de paridade
+                    positions.append(position)   #Apenas as posiçoes que conta para esse bit 
+            encoded[i] = calculate_parity(encoded, positions)   #coloca na posiçao original o bit de paridade
+    return encoded
+
 class CRC_32:
     def __init__(self, data):
         self.aux = ""
