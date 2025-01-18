@@ -37,6 +37,49 @@ def encode_hamming_12_8(data_bits):
             encoded[i] = calculate_parity(encoded, positions)   #coloca na posiçao original o bit de paridade
     return encoded
 
+def decode_hamming_12_8(encoded):
+    """
+    Decodifica a mensagem e corrige um único erro, se houver.
+    """
+    if len(encoded) != 12:
+        raise ValueError("São necessários exatamente 12 bits codificados.")
+
+    n = len(encoded)
+    encoded = [int(bit) for bit in encoded]
+
+    # Calcula a posição do erro (se houver)
+    error_position = 0
+    for i in range(n):
+        if (i + 1) & i == 0:  # Potência de 2
+            positions = [j + 1 for j in range(n) if (j + 1) & (i + 1) != 0]
+            parity = calculate_parity(encoded, positions)
+            if parity != 0:
+                error_position += i + 1
+
+    # Corrige o erro, se necessário
+    if error_position > 0:
+        encoded[error_position - 1] ^= 1  # Inverte o bit errado
+
+    # Retorna os dados decodificados (sem os bits de paridade)
+    data_bits = []
+    for i in range(n):
+        if (i + 1) & i != 0:  # Não é potência de 2
+            data_bits.append(encoded[i])
+
+    return data_bits, error_position
+
+def hamming(data): #["01010101"] -> "000110100101"
+    encoded = encode_hamming_12_8(data)
+    return ''.join(map(str, encoded))
+
+def dec_hamming_correct(data): #"000110100101" → "01010101"
+    decoded, error_position = decode_hamming_12_8(data)
+    return ''.join(map(str, decoded))
+
+def dec_hamming_position(data): #"000110100101" se tiver erro retorna a posiçao senao 0
+    decoded, error_position = decode_hamming_12_8(data)
+    return error_position
+
 class CRC_32:
     def __init__(self, data):
         self.aux = ""
