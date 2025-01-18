@@ -159,9 +159,13 @@ class MyWindow(Gtk.Window):
                 self.show_graph(binWordNRZ, x_axis, "Grafico NRZ", "Sinal NRZ")
 
             elif selected == "Grafico Manchester":
-                self.show_graph([0, 1, 2, 3], [0, 1, 8, 27], "Gráfico Manchester", "Sinal Manchester")
+                binWordManchester = convert_Manchester(binWord)
+                binWordManchester,x_axis = buildManchester(binWordManchester)
+                self.show_graph(binWordManchester, x_axis, "Gráfico Manchester", "Sinal Manchester")
             elif selected == "Grafico Bipolar":
-                self.show_graph([0, 1, 2, 3], [0, 1, 4, 9], "Gráfico Bipolar", "Sinal Bipolar")
+                binWordBipolar = convertBipolar(binWord)
+                binWordBipolar,x_axis = buildBipolar(binWordBipolar)
+                self.show_graph(binWordBipolar, x_axis, "Gráfico Bipolar", "Sinal Bipolar")
             elif selected == "Gráfico ASK":
                 self.show_graph([0, 1, 2, 3], [0, 1, 4, 9], "Gráfico ASK", "Sinal ASK")
             elif selected == "Gráfico FSK":

@@ -44,6 +44,61 @@ def buildNRZ(binWordNRZ):
     return binWordNRZ,x_axis
     #show_graph(binWordNRZ, x_axis, "Grafico NRZ", "Sinal NRZ")
 
+def convert_Manchester(byteMSG):
+    #print("A byteMSG é ",byteMSG)
+    manchester = []
+    for byte in byteMSG:
+        for bit in byte:
+            if bit == 0:
+                manchester.append([0,1])
+            else:
+                manchester.append([1,0])
+    return manchester
+
+def buildManchester(binWordManchester):
+    x_axis = []
+    print("A binwordManchester é ",binWordManchester)
+    print("")
+
+    n = len(binWordManchester)
+
+    for j in range(0,2*n):
+        x_axis.append(j)
+
+    #print(binWordManchester)
+    print("O x_axis é ",x_axis)
+    return binWordManchester,x_axis
+
+def convertBipolar(byteMSG):
+    bipolar = []
+    countOnes = 0
+    for byte in byteMSG:
+        byte_ins = []
+        for bit in byte:
+            if bit == 0:
+                byte_ins.append(0)
+            if bit == 1:
+                if countOnes %2 == 0:
+                    byte_ins.append(1)
+                    countOnes += 1
+                else:
+                    byte_ins.append(-1)
+                    countOnes += 1
+        bipolar.append(byte_ins)
+    return bipolar
+
+def buildBipolar(binWordBipolar):
+    x_axis = []
+    n = len(binWordBipolar)
+    
+    for j in range(0,8*n):
+        x_axis.append(j)
+    
+    print("O x_axis é ",x_axis)
+    return binWordBipolar,x_axis
+
+
+
 
 
 #Gráfico NRZ
