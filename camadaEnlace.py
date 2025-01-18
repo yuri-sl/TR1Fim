@@ -89,8 +89,6 @@ class InsercaoDeBytes:
 
 
 
-            self.nova_lista = []
-            self.novo_item = None
 
     def bit_de_paridade(self):              # Par ["01010101"] ->["010101010"]
         for item in self.lista:             # Por cada caractere
