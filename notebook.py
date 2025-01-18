@@ -6,11 +6,13 @@ gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk,Gdk
 import matplotlib.pyplot as plt
+import threading
+
 from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
 from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3
 from camadaFisica import *
 from camadaEnlace import *
-
+from Simulador import *
 
 
 servidorAtivo = False
@@ -23,6 +25,49 @@ def addCSS():
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),css_provider,Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
+
+class serverStartedWindow(Gtk.Window):
+    def okayBtn(self,widget):
+        self.hide()
+    def __init__(self):
+        super().__init__(title="Servidor iniciado com sucesso!")
+        self.set_default_size(200,100)
+        lblSuccMsg = Gtk.Label(label="Servidor Iniciado com sucesso")
+        lblDoorMsg = Gtk.Label(label="Endereço: Localhost. Porta: 8030")
+        btnOk = Gtk.Button()
+        lblOk = Gtk.Label(label="Ok")
+        btnOk.add(lblOk)
+        btnOk.connect("clicked",self.okayBtn)
+
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,spacing=10)
+        vbox.set_name("box-container")
+        vbox.pack_start(lblSuccMsg,True,True,0)
+        vbox.pack_start(lblDoorMsg,True,True,0)
+        vbox.pack_start(btnOk,True,True,0)
+        self.add(vbox)
+        self.connect("destroy",self.hide)
+
+        addCSS()
+class serverEndedWindow(Gtk.Window):
+    def okayBtn(self,widget):
+        self.hide()
+    def __init__(self):
+        super().__init__(title="Encerrar o servidor")
+        self.set_default_size(200,100)
+        lblSuccMsg = Gtk.Label(label="Você acabou de fechar o servidor")
+        btnOk = Gtk.Button()
+        lblOk = Gtk.Label(label="Ok")
+        btnOk.add(lblOk)
+        btnOk.connect("clicked",self.okayBtn)
+
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,spacing=10)
+        vbox.set_name("box-container")
+        vbox.pack_start(lblSuccMsg,True,True,0)
+        vbox.pack_start(btnOk,True,True,0)
+        self.add(vbox)
+        self.connect("destroy",self.hide)
+
+        addCSS()
 
 class erroEnviarMensagem(Gtk.Window):
     def okayBtn(self,widget):
@@ -153,16 +198,15 @@ class MyWindow(Gtk.Window):
             print(binWord)
 
             
-            if selected == "Grafico NRZ":
+            if selected == "Gráfico NRZ":
                 binWordNRZ = convertNRZ(binWord)
                 binWordNRZ,x_axis = buildNRZ(binWordNRZ)
-                self.show_graph(binWordNRZ, x_axis, "Grafico NRZ", "Sinal NRZ")
-
-            elif selected == "Grafico Manchester":
+                self.show_graph(binWordNRZ, x_axis, "Gráfico NRZ", "Sinal NRZ")
+            elif selected == "Gráfico Manchester":
                 binWordManchester = convert_Manchester(binWord)
                 binWordManchester,x_axis = buildManchester(binWordManchester)
                 self.show_graph(binWordManchester, x_axis, "Gráfico Manchester", "Sinal Manchester")
-            elif selected == "Grafico Bipolar":
+            elif selected == "Gráfico Bipolar":
                 binWordBipolar = convertBipolar(binWord)
                 binWordBipolar,x_axis = buildBipolar(binWordBipolar)
                 self.show_graph(binWordBipolar, x_axis, "Gráfico Bipolar", "Sinal Bipolar")
@@ -231,9 +275,9 @@ class MyWindow(Gtk.Window):
         comboMod.set_active(0)
 
         graficosDig = [
-            "Grafico NRZ",
-            "Grafico Manchester",
-            "Grafico Bipolar"
+            "Gráfico NRZ",
+            "Gráfico Manchester",
+            "Gráfico Bipolar"
         ]
         
         for graph in graficosDig:
@@ -461,9 +505,24 @@ class MyWindow(Gtk.Window):
 
         def activatingServer(button):
             global servidorAtivo
-            servidorAtivo = not servidorAtivo
+            if servidorAtivo:
+                print("O servidor será fechado")
+                servidorAtivo = False
+                popUp = serverEndedWindow()
+                popUp.show_all()
+                stop_server()
+            else:
+                print("O servidor será iniciado")
+                servidorAtivo = True
+                thread = threading.Thread(target=start_server, daemon = True)
+                thread.start()
+                popUp = serverStartedWindow()
+                popUp.show_all()
+            #servidorAtivo = not servidorAtivo
             #print(servidorAtivo)
-            insertWidgets(servidorAtivo)        
+
+            insertWidgets(servidorAtivo)
+            #start_server()        
 
         btnStartServer.connect("clicked",activatingServer)
         btnEndServer.connect("clicked",activatingServer)
