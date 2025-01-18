@@ -146,7 +146,7 @@ class textoVazio(Gtk.Window):
 
 
 class MyWindow(Gtk.Window):
-    def show_graph(self, x_data, y_data, title, label):
+    def show_graph(self, x_data, y_data, title, label, step=True):
         # Criação de uma nova janela GTK para o gráfico
         graph_window = Gtk.Window(title=title)
         graph_window.set_default_size(800, 600)
@@ -168,7 +168,10 @@ class MyWindow(Gtk.Window):
 
         # Criando a figura do Matplotlib
         fig, ax = plt.subplots()
-        ax.step(y_data, unpack_x, label=label)
+        if step == True:
+            ax.step(y_data, unpack_x, label=label)
+        else:
+            ax.plot(y_data, unpack_x, label=label)
         ax.set_title(title)
         ax.legend()
 
@@ -211,11 +214,17 @@ class MyWindow(Gtk.Window):
                 binWordBipolar,x_axis = buildBipolar(binWordBipolar)
                 self.show_graph(binWordBipolar, x_axis, "Gráfico Bipolar", "Sinal Bipolar")
             elif selected == "Gráfico ASK":
-                self.show_graph([0, 1, 2, 3], [0, 1, 4, 9], "Gráfico ASK", "Sinal ASK")
+                binWordASK = convertASK(binWord)
+                binWordASK,x_axis = buildPortadora(binWordASK)
+                self.show_graph(binWordASK, x_axis, "Gráfico ASK", "Sinal ASK", step=False)
             elif selected == "Gráfico FSK":
-                self.show_graph([0, 1, 2, 3], [0, 1, 4, 9], "Gráfico FSK", "Sinal FSK")
-            elif selected == "Gráfico 8-QM":
-                self.show_graph([0, 1, 2, 3], [0, 1, 4, 9], "Gráfico 8-QM", "Sinal 8-QM")                
+                binWordFSK = convertFSK(binWord)
+                binWordFSK,x_axis = buildPortadora(binWordFSK)
+                self.show_graph(binWordFSK, x_axis, "Gráfico FSK", "Sinal FSK", step=False)
+            elif selected == "Gráfico 8-QAM":
+                binWord8QAM = convert8QAM(binWord)
+                binWord8QAM, x_axis = buildPortadora(binWord8QAM)
+                self.show_graph(binWord8QAM, x_axis, "Gráfico 8-QAM", "Sinal 8-QAM", step=False)                
     
     def on_button_clicked(self, widget):
         # Create the pop-up window
