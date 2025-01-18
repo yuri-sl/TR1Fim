@@ -170,6 +170,7 @@ class MyWindow(Gtk.Window):
         # Criando a figura do Matplotlib
         fig, ax = plt.subplots()
         ax.step(y_data, unpack_x, label=label)
+        ax.axhline(0, color='red', linewidth=1, linestyle='--')  # Linha de referência
         ax.set_title(title)
         ax.legend()
 
