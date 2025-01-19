@@ -18,6 +18,8 @@ from clientTCP import *
 
 servidorAtivo = False
 entryBoxPreenchida = False
+errorOcurred = False
+
 
 def addCSS():
         #Load CSS from file
@@ -224,7 +226,7 @@ class MyWindow(Gtk.Window):
         global sentText
         if self.entryMessage.get_text_length() > 0:
             entryBoxPreenchida = True
-        if entryBoxPreenchida == True:
+        if entryBoxPreenchida == True and servidorAtivo == True:
             sentText = self.entryMessage.get_text()
             print(sendMessage(sentText))
         if servidorAtivo == False:
