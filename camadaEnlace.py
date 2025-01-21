@@ -136,6 +136,11 @@ class BitDeParidade:
         if lista is None:
             self.lista = []
         else:
+            for item in lista:
+                if len(item) == 8:
+                    continue
+                else:
+                    print("Existe algum caractere que não é de 8 bits")
             self.lista = lista
             self.encoded_lista = []
     
@@ -143,18 +148,17 @@ class BitDeParidade:
         self.encoded_lista= []
         for item in self.lista:             # Por cada caractere
             self.aux = 0                    # Sempre reinicia o contador
-            for i in item:                  # Em cada bit do caractera
-                i = int(i)
-                if i == 0:
+            for i in item:                  # Em cada bit do caractere
+                if i == "0":                # Se é 0 ou 1
                     self.aux += 0
                 else:
                     self.aux += 1
-            if (self.aux % 2) == 0:              # verifica se é par ou impar
-                self.novo_item = item + "0"                  # se é par apenas 0
+            if (self.aux % 2) == 0:         # verifica se é par ou impar
+                self.novo_item = item + "0" # se é par apenas 0
             else:
-                self.novo_item = item + "1"                  # Se nao é 1 no final
+                self.novo_item = item + "1" # Se nao é 1 no final
             self.encoded_lista.append(self.novo_item)
-        return self.encoded_lista
+        return self.encoded_lista           # Retorna a lista toda codificada
 
     def decode_bit_de_paridade(self, lista = None):
         """
@@ -164,9 +168,7 @@ class BitDeParidade:
             self.encoded_lista = lista
         elif not self.encoded_lista:
             print("Não há nenhuma informaçao previa!")  #Não é pra cair aqui, se caiu é pq tem coisa errada
-            while True:     
-                continue
-
+            return []                                   # Retorna nada
         self.decoded_lista = []
         for item in self.encoded_lista:
             aux = 0                                      # Contador de bits '1'
@@ -177,7 +179,7 @@ class BitDeParidade:
             if (aux % 2) == bit_paridade:                # Verifica se o calculado é igual o esperado
                 self.decoded_lista.append(item[:-1])
             else:
-                print("\nAlgum bit está incorreto! \n")  # Paridade inválida encontrada
+                print(f"\nAlgum bit está incorreto! no item : {item}\n")  # Paridade inválida encontrada
         return self.decoded_lista
 
 class ContagemDeCaracteres:
