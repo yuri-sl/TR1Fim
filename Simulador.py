@@ -1,9 +1,13 @@
 import socket
 import threading
 
+server_running = True #Controle global de iniciar/fechar o servidor
+
 def start_server():
+    global server_running
+
     bind_ip = 'localhost' #IP q o servidor tá rodando
-    bind_port = 8000        #Conexao está sendo estabelecida pela porta 80. 
+    bind_port = 8030        #Conexao está sendo estabelecida pela porta 80. 
     # se o apache server estiver rodanddo é só trocar a porta que está configurada aqui
 
     server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -25,10 +29,20 @@ def start_server():
         client_socket.send(ACKMessage.encode('utf-8'))
         client_socket.close()
 
-    while(True):
-        (client,addr) = server.accept() #Quando a conexão for aceita, ele vai passar essa tupla
-        print ('[*] conexão aceita de: %s%d' %(addr[0],addr[1]))
-        client_handler = threading.Thread(target=handle_client,args=(client,))
-        client_handler.start()
+    while(server_running):
+        try:
+            (client,addr) = server.accept() #Quando a conexão for aceita, ele vai passar essa tupla
+            print ('[*] conexão aceita de: %s%d' %(addr[0],addr[1]))
+            client_handler = threading.Thread(target=handle_client,args=(client,))
+            client_handler.start()
+    #start_server()
+        except OSError:
+            print('[*] Servidor encerrado.')
+            break
+    server.close()
 
+def stop_server():
+    global server_running
+    server_running = False
+    print('[*] Encerrando o servidor...')
 

@@ -18,14 +18,14 @@ toolbar = manager.toolbar
 vbox = manager.vbox
 
 # now let's add a button to the toolbar
-button = Gtk.Button(label='Click me')
-button.show()
-button.connect('clicked', lambda button: print('hi mom'))
+#button = Gtk.Button(label='Click me')
+#button.show()
+#button.connect('clicked', lambda button: print('hi mom'))
 
 toolitem = Gtk.ToolItem()
 toolitem.show()
 toolitem.set_tooltip_text('Click me for fun and profit')
-toolitem.add(button)
+#toolitem.add(button)
 
 pos = 8  # where to insert this in the toolbar
 toolbar.insert(toolitem, pos)
