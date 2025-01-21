@@ -162,10 +162,10 @@ def buildBipolar(binWordBipolar):
 
 #Modulação por portadora
 resolucao = 50
-def convertASK(byteMSG:list[list[float]]) -> list[float]:
+frequencia = 1
+def convertASK(byteMSG:list[list[float]]) -> list[list[float]]:
     ask = []
     tempo = 0
-    frequencia = 1
     for byte in byteMSG:
         byte_ins = []
         for i in byte:
@@ -177,12 +177,12 @@ def convertASK(byteMSG:list[list[float]]) -> list[float]:
                     byte_ins.append(math.cos(2*math.pi*frequencia*tempo)) 
                     tempo += 1/resolucao
         ask.append(byte_ins)
+        
     return ask
 
-def convertFSK(byteMSG:list[list[float]]) -> list[float]:
+def convertFSK(byteMSG:list[list[float]]) -> list[list[float]]:
     fsk = []
     tempo = 0
-    frequencia = 1
     for byte in byteMSG:
         byte_ins = []
         for i in byte:
@@ -198,7 +198,8 @@ def convertFSK(byteMSG:list[list[float]]) -> list[float]:
 
     return fsk
 
-def convert8QAM(byteMSG:list[list[float]]) -> list[float]:
+def convert8QAM(byteMSG:list[list[float]]) -> list[list[float]]:
+    ''' Um side effect de modular para 8qam é que, é adicionado digitos 0 suficientes para que a entrada seja divisível por 3, dessa forma não tem sentido dividir a saída em bytes, pois há váiros casos em que a saída não é divisivel por 3 e por 8 ao mesmo tempo'''
     bitList = np.array(byteMSG).flatten().tolist()
 
     # faz com que a lista de binarios tenha um numero de elementos divisiveis por 3, colocando zeros no final caso não tenha
@@ -206,7 +207,6 @@ def convert8QAM(byteMSG:list[list[float]]) -> list[float]:
 
     qam = []
     tempo = 0
-    frequencia = 1
     for i in range(0,len(bitList),3):
         trio = bitList[i:i+3]
         aq = 0;ai = 0
@@ -227,8 +227,8 @@ def convert8QAM(byteMSG:list[list[float]]) -> list[float]:
                 ai = -math.sqrt(2)/2
                 aq = math.sqrt(2)/2
             case [1,0,0]: 
-                ai = -1
-                aq = 0
+                ai = 0
+                aq = -1
             case [1,0,1]: 
                 ai = math.sqrt(2)/2
                 aq = -math.sqrt(2)/2
@@ -241,7 +241,7 @@ def convert8QAM(byteMSG:list[list[float]]) -> list[float]:
 
         for i in range(resolucao):
             fase = math.atan2(aq,ai)
-            qam.append(math.sqrt(ai*ai+aq*aq)*math.cos(2*math.pi*frequencia*tempo + fase)) 
+            qam.append(ai*math.sin(2*math.pi*frequencia*tempo) + aq*math.cos(2*math.pi*frequencia*tempo)) 
             tempo += 1/resolucao
 
     return [qam]
