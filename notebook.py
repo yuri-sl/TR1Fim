@@ -21,6 +21,12 @@ entryBoxPreenchida = False
 errorOcurred = False
 
 
+config = {
+    "texto": None,          # Texto que o usuário quer transmitir
+    "modulacao": None,      # Tipo de modulação (NRZ, Manchester, Bipolar, etc.)
+    "deteccao_erro": None,  # Tipo de detecção de erro (paridade, CRC, etc.)
+    "enquadramento": None   # Tipo de enquadramento (se aplicável)
+}
 def addCSS():
         #Load CSS from file
         css_provider = Gtk.CssProvider()
@@ -201,6 +207,7 @@ class MyWindow(Gtk.Window):
         else:
             ax.plot(y_data, unpack_x, label=label)
         ax.set_title(title)
+        ax.axhline(0, color='red', linestyle='--', linewidth=2, label='y = 0')
         ax.legend()
 
         # Incorporando a figura no GTK
@@ -213,6 +220,7 @@ class MyWindow(Gtk.Window):
 
     # Connect the Dropdown Signal
     def on_combo_changed(self,widget):
+        global entryBoxPreenchida
         selected = widget.get_active_text()
 
         msgSize = self.entryMessage.get_text_length()
@@ -257,6 +265,9 @@ class MyWindow(Gtk.Window):
     def on_button_clicked(self, widget):
         # Create the pop-up window
         global sentText
+        print("A configuração escolhida para a modulação foi de: ",config["modulacao"])
+        print("A config. escolhida para enq foi de: ",config["enquadramento"])
+        print("A config escolhida de detec. Erro foi de: ",config["deteccao_erro"])
         if self.entryMessage.get_text_length() > 0:
             entryBoxPreenchida = True
         if entryBoxPreenchida == True and servidorAtivo == True:
@@ -300,6 +311,17 @@ class MyWindow(Gtk.Window):
         else:
             popUp = noSignal()
             popUp.show_all()
+
+    def on_radio_toggled_dig(self,button,modulation):
+        if button.get_active():
+            config["modulacao"] = modulation
+    def on_radio_enq(self,button,enq):
+        if button.get_active():
+            config["enquadramento"] = enq
+    def on_radio_error(self,button,error):
+        if button.get_active():
+            config["deteccao_erro"] = error
+
 
 
 
@@ -374,8 +396,11 @@ class MyWindow(Gtk.Window):
         hboxModDig.set_halign(Gtk.Align.CENTER)
 
         rdNRZ_modDig = Gtk.RadioButton.new_with_label_from_widget(None,"NRZ")
+        rdNRZ_modDig.connect("toggled",self.on_radio_toggled_dig,"NRZ")
         rdMCH_modDig = Gtk.RadioButton.new_with_label_from_widget(rdNRZ_modDig,"Manchester")
+        rdMCH_modDig.connect("toggled",self.on_radio_toggled_dig,"Manchester")
         rdBIP_modDig = Gtk.RadioButton.new_with_label_from_widget(rdNRZ_modDig,"Bipolar")
+        rdBIP_modDig.connect("toggled",self.on_radio_toggled_dig,"Bipolar")
 
         hboxModDig.pack_start(rdNRZ_modDig, False,False, 0)
         hboxModDig.pack_start(rdMCH_modDig, False,False, 0)
@@ -416,7 +441,11 @@ class MyWindow(Gtk.Window):
         hboxEnq = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,spacing=10)
         hboxEnq.set_halign(Gtk.Align.CENTER)
         rdCharCount = Gtk.RadioButton.new_with_label_from_widget(None,"Contagem de Caracteres")
+        rdCharCount.connect("toggled",self.on_radio_enq,"charCount")
+
         rdInsByte = Gtk.RadioButton.new_with_label_from_widget(rdCharCount,"Inserção de Bytes")
+        rdInsByte.connect("toggled",self.on_radio_enq,"insByte")
+
 
         hboxEnq.pack_start(rdCharCount, False, False, 0)
         hboxEnq.pack_start(rdInsByte, False, False, 0)
@@ -429,7 +458,10 @@ class MyWindow(Gtk.Window):
         hboxDtError = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,spacing=10)
         hboxDtError.set_halign(Gtk.Align.CENTER)
         rdParity = Gtk.RadioButton.new_with_label_from_widget(None,"Paridade par")
+        rdParity.connect("toggled",self.on_radio_error,"paridade")
+
         rdCRC = Gtk.RadioButton.new_with_label_from_widget(rdParity,"CRC")
+        rdCRC.connect("toggled",self.on_radio_error,"CRC")
 
         hboxDtError.pack_start(rdParity,False,False,0)
         hboxDtError.pack_start(rdCRC,False,False,0)
