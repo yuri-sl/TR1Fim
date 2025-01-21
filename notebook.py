@@ -13,10 +13,13 @@ from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3
 from camadaFisica import *
 from camadaEnlace import *
 from Simulador import *
+from clientTCP import *
 
 
 servidorAtivo = False
 entryBoxPreenchida = False
+errorOcurred = False
+
 
 def addCSS():
         #Load CSS from file
@@ -144,6 +147,31 @@ class textoVazio(Gtk.Window):
 
         self.connect("destroy",self.hide)
 
+class noSignal(Gtk.Window):
+    def okayBtn(self,widget):
+        self.hide()
+    def __init__(self):
+        super().__init__(title="Erro")
+        self.set_default_size(200,100)
+        wndwLabel = Gtk.Label(label="Nenhum sinal foi recebido ainda")
+
+        addCSS()
+
+        btnOk = Gtk.Button()
+        lblOk = Gtk.Label(label="Ok")
+        btnOk.add(lblOk)
+        btnOk.connect("clicked",self.okayBtn)
+
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,spacing=10)
+        vbox.set_name("box-container")
+        vbox.pack_start(wndwLabel,True,True,0)
+        vbox.pack_start(btnOk,True,True,0)
+
+
+        self.add(vbox)
+
+
+        self.connect("destroy",self.hide)
 
 class MyWindow(Gtk.Window):
     def show_graph(self, x_data, y_data, title, label, step=True):
@@ -228,12 +256,50 @@ class MyWindow(Gtk.Window):
     
     def on_button_clicked(self, widget):
         # Create the pop-up window
+        global sentText
+        if self.entryMessage.get_text_length() > 0:
+            entryBoxPreenchida = True
+        if entryBoxPreenchida == True and servidorAtivo == True:
+            sentText = self.entryMessage.get_text()
+            print(sendMessage(sentText))
+            print("o received atualizado é ",received)
+            item = alist[0]
+            self.entryMsgRecv.set_text(item)
+            
         if servidorAtivo == False:
             popup = erroEnviarMensagem()
             popup.show_all()
         else:
             popup = mensagemEnviada()
             popup.show_all()
+
+    def graphBfr(self,widget):
+        global alist
+        if len(alist) >0:
+            word = alist[0]
+            binWord = converterBinario(word)
+            print(binWord)
+            #Isso é apenas um teste prelimianr para ver se o gráfico aparece direito na tela ao clicar no botão
+            binWordNRZ = convertNRZ(binWord)
+            binWordNRZ,x_axis = buildNRZ(binWordNRZ)
+            self.show_graph(binWordNRZ,x_axis,"Sinal recebido antes de demodular","Sinal rececbido")
+        else:
+            popUp = noSignal()
+            popUp.show_all()
+    
+    def graphAftr(self,widget):
+        global alist
+        if len(alist) >0:
+            word = alist[0]    
+            binWord = converterBinario(word)
+            print(binWord)
+            #BinWordNRZ é apenas um teste preliminar para ver se o gráfico aparece direito na tela de após demodular
+            binWordNRZ = convertNRZ(binWord)
+            binWordNRZ,x_axis = buildNRZ(binWordNRZ)
+            self.show_graph(binWordNRZ,x_axis,"Sinal recebido e que sogreu demodulação","Sinal após demodular")
+        else:
+            popUp = noSignal()
+            popUp.show_all()
 
 
 
@@ -278,10 +344,16 @@ class MyWindow(Gtk.Window):
         lblModDig = Gtk.Label(label="Modulação Digital")
         lblModDig.get_style_context().add_class("lblSection")
 
+        #Criação de hbox para deixar o dropDown Menu junto com uma label
+        hboxModDigIntro = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing= 10)
+        hboxModDigIntro.set_halign(Gtk.Align.CENTER)
         #Criação do dropdown Menu
         comboMod = Gtk.ComboBoxText()
         comboMod.append_text("Selecione um gráfico")
         comboMod.set_active(0)
+        lblPreview = Gtk.Label(label="Pré-Visualização")
+        #hboxModDigIntro.pack_start(lblPreview,False,False,0)
+        hboxModDigIntro.pack_start(comboMod,False,False,0)
 
         graficosDig = [
             "Gráfico NRZ",
@@ -313,9 +385,17 @@ class MyWindow(Gtk.Window):
         lblModPort = Gtk.Label(label="Modulação por Portadora")
         lblModPort.get_style_context().add_class("lblSection")
 
+        #Criação de hbox para deixar o dropDown Menu junto com uma label
+        hboxModPort = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing= 10)
+        hboxModPort.set_halign(Gtk.Align.CENTER)
+
         comboPort = Gtk.ComboBoxText()
         comboPort.append_text("Selecione um gráfico de portadora")
         comboPort.set_active(0)
+
+        lblPreviewMod = Gtk.Label(label="Pré-Visualização")
+        #hboxModPort.pack_start(lblPreviewMod,False,False,0)
+        hboxModPort.pack_start(comboPort,False,False,0)
 
         graficosPort = [
             "Gráfico ASK",
@@ -385,10 +465,11 @@ class MyWindow(Gtk.Window):
         page1.add(lblInsertText)
         page1.add(self.entryMessage)
         page1.add(lblModDig)
-        page1.pack_start(comboMod,False,False,0)
+        page1.pack_start(hboxModDigIntro,False,False,0)
         page1.pack_start(hboxModDig,False,False,0)
         page1.add(lblModPort)
-        page1.pack_start(comboPort,False,False,0)
+        page1.pack_start(hboxModPort,False,False,0)
+        #page1.pack_start(comboPort,False,False,0)
         page1.add(lblEnq)
         page1.pack_start(hboxEnq,False,False,0)
         page1.add(lblDtError)
@@ -417,27 +498,42 @@ class MyWindow(Gtk.Window):
         tab_label_Receptor.set_name("receptor-tab")
         notebook.append_page(page2,tab_label_Receptor)
 
-
-        btnStartServer = Gtk.Button(label="Iniciar servidor")
+        lblStartServer = Gtk.Label(label="Iniciar servidor")
+        lblStartServer.get_style_context().add_class("lblSection")
+        btnStartServer = Gtk.Button()
+        btnStartServer.add(lblStartServer)
         page2.add(btnStartServer)
         
         ##Receber Sinal - Sem Demodular
         lblSgnBfr = Gtk.Label(label="Sinal Recebido(Antes de Demodular)")
         lblSgnBfr.get_style_context().add_class("lblSection")
+        lblViewGraph = Gtk.Label(label="Visualizar Sinal")
+        lblViewGraph.get_style_context().add_class("lblSection")
+        btnSgnBfr = Gtk.Button()
+        btnSgnBfr.get_style_context().add_class("btnLbl")
+        btnSgnBfr.add(lblViewGraph)
+        btnSgnBfr.connect("clicked",self.graphBfr)
 
 
         ##Receber Sinal - Depois Demodular
         lblSgnAf = Gtk.Label(label="Sinal Recebido(Depois de demodular)")
         lblSgnAf.get_style_context().add_class("lblSection")
+        lblViewGraph2 = Gtk.Label(label="Visualizar Sinal")
+        lblViewGraph2.get_style_context().add_class("lblSection")
+        btnSgnAft = Gtk.Button()
+        btnSgnAft.add(lblViewGraph2)
+        btnSgnAft.get_style_context().add_class("btnLbl")
+        btnSgnAft.connect("clicked",self.graphAftr)
+
 
         ##Mensagem Recebida
         lblMsgRec = Gtk.Label(label="Mensagem Recebida")
         lblMsgRec.get_style_context().add_class("lblSection")
-        entryMsgRecv = Gtk.Entry()
-        entryMsgRecv.get_style_context().add_class("entry")
+        self.entryMsgRecv = Gtk.Entry()
+        self.entryMsgRecv.get_style_context().add_class("entry")
         lblMsgRcv = Gtk.Label(label="A mensagem recebida irá aparecer aqui")
-        entryMsgRecv.set_placeholder_text(lblMsgRcv.get_text())
-        entryMsgRecv.set_sensitive(False)
+        self.entryMsgRecv.set_placeholder_text(lblMsgRcv.get_text())
+        self.entryMsgRecv.set_sensitive(False)
 
 
         ##Ocorreu Erro?
@@ -483,9 +579,11 @@ class MyWindow(Gtk.Window):
                 #Adição de itens na página 2
                 page2.remove(btnStartServer)
                 page2.add(lblSgnBfr)
+                page2.add(btnSgnBfr)
                 page2.add(lblSgnAf)
+                page2.add(btnSgnAft)
                 page2.add(lblMsgRec)
-                page2.pack_start(entryMsgRecv,False,False,0)
+                page2.pack_start(self.entryMsgRecv,False,False,0)
                 page2.add(lblErrorOccur)
                 page2.pack_start(hboxCheckError,False,False,0)
                 page2.add(lblWhereError)
@@ -498,9 +596,11 @@ class MyWindow(Gtk.Window):
                 #Remoção de itens na página 2
                 page2.add(btnStartServer)
                 page2.remove(lblSgnBfr)
+                page2.remove(btnSgnBfr)
                 page2.remove(lblSgnAf)
+                page2.remove(btnSgnAft)
                 page2.remove(lblMsgRec)
-                page2.remove(entryMsgRecv)
+                page2.remove(self.entryMsgRecv)
                 page2.remove(lblErrorOccur)
                 page2.remove(hboxCheckError)
                 page2.remove(lblWhereError)
@@ -520,6 +620,7 @@ class MyWindow(Gtk.Window):
                 popUp = serverEndedWindow()
                 popUp.show_all()
                 stop_server()
+                #print(is_port_open('localhost',8030))
             else:
                 print("O servidor será iniciado")
                 servidorAtivo = True
@@ -527,6 +628,7 @@ class MyWindow(Gtk.Window):
                 thread.start()
                 popUp = serverStartedWindow()
                 popUp.show_all()
+                #print(is_port_open('localhost',8030))
             #servidorAtivo = not servidorAtivo
             #print(servidorAtivo)
 
@@ -536,14 +638,6 @@ class MyWindow(Gtk.Window):
         btnStartServer.connect("clicked",activatingServer)
         btnEndServer.connect("clicked",activatingServer)
 
-        def gatherText():
-            msgSize = entryMessage.get_text_length()
-            if msgSize == 0:
-                entryBoxPreenchida = True
-                janelaVazio = textoVazio()
-                janelaVazio.show_all()
-            else:
-                entryBoxPreenchida = False
 
 
 
