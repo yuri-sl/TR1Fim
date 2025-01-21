@@ -3,6 +3,9 @@ import threading
 import time
 
 server_running = True  # Controle global de iniciar/fechar o servidor
+received = 'ola'
+lock = threading.Lock()
+alist = []
 
 def start_server():
     global server_running
@@ -19,6 +22,7 @@ def start_server():
     print(f'[*] Servidor escutando em {bind_ip}:{bind_port}')
 
     def handle_client(client_socket, addr):
+        global received
         print("Entrou em handle client")
         try:
             request = client_socket.recv(1024)
@@ -27,7 +31,12 @@ def start_server():
             client_socket.send(response.encode('utf-8'))
             ack_message = '\nACK!\nRecebido pelo servidor!\n'
             client_socket.send(ack_message.encode('utf-8'))
-            return request
+            with lock:
+                received = request.decode("utf-8")
+            print("O received original é: ",received)
+            print("A mensagem received é: ",received)
+            alist.append(received)
+            print(alist)
         except Exception as e:
             print(f"Erro ao processar cliente {addr}: {e}")
         finally:
