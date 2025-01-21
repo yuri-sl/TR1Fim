@@ -10,6 +10,21 @@ from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCan
 from matplotlib.figure import Figure
 
 
+def text_from_bits(bits, encoding = 'ascii'):
+    if len(bits) % 8 != 0:
+        raise ValueError("QUADRO COM ERRO: Os bits não têm comprimento múltiplo de 8.")
+    # Converte a string de bits para decimal e depois para caractere ASCII
+    decimal = int(bits, 2)  # Converte os bits (base 2) para decimal
+    char = chr(decimal)  # Converte o decimal para o caractere correspondente
+    return char
+
+def converterTexto(binarios):#print(converterTexto(["01100100", "01101100", "01110010", "00110001", "01110001"]))→"dlr1q"
+    palavra = ""
+    for i in binarios:
+        letra = text_from_bits(i)
+        palavra += letra
+    return palavra
+
 def converterBinario(palavra):
     binarios = []
     ans = []
