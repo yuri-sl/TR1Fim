@@ -137,8 +137,10 @@ class BitDeParidade:
             self.lista = []
         else:
             self.lista = lista
+            self.encoded_lista = []
     
     def bit_de_paridade(self):              # Par ["01010101"] ->["010101010"]
+        self.encoded_lista= []
         for item in self.lista:             # Por cada caractere
             self.aux = 0                    # Sempre reinicia o contador
             for i in item:                  # Em cada bit do caractera
@@ -151,8 +153,32 @@ class BitDeParidade:
                 self.novo_item = item + "0"                  # se é par apenas 0
             else:
                 self.novo_item = item + "1"                  # Se nao é 1 no final
-            self.nova_lista.append(self.novo_item)
-        return self.nova_lista
+            self.encoded_lista.append(self.novo_item)
+        return self.encoded_lista
+
+    def decode_bit_de_paridade(self, lista = None):
+        """
+        Decodifica uma lista de bits com paridade, removendo o bit de paridade se for válido.
+        """
+        if lista != None:                               # Se não passar argumento vai considerar a lista ja existente
+            self.encoded_lista = lista
+        elif not self.encoded_lista:
+            print("Não há nenhuma informaçao previa!")  #Não é pra cair aqui, se caiu é pq tem coisa errada
+            while True:     
+                continue
+
+        self.decoded_lista = []
+        for item in self.encoded_lista:
+            aux = 0                                      # Contador de bits '1'
+            for j in range(len(item) - 1):               # Conta quantos bits
+                bit = int(item[j])
+                aux += bit
+            bit_paridade = int(item[-1])                 # O último bit é o de paridade
+            if (aux % 2) == bit_paridade:                # Verifica se o calculado é igual o esperado
+                self.decoded_lista.append(item[:-1])
+            else:
+                print("\nAlgum bit está incorreto! \n")  # Paridade inválida encontrada
+        return self.decoded_lista
 
 class ContagemDeCaracteres:
     def __init__(self, lista = None):
