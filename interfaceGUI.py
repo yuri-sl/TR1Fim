@@ -1,3 +1,4 @@
+import math
 import gi
 import threading
 gi.require_version("Gtk", "3.0")
@@ -255,19 +256,123 @@ class MainWindow(Gtk.Window):
         self.grid.attach(canvas, 0,4,8,8)
         self.show_all()
 
-
     def graph_ASK(self):
-        a = [1, 2, 3, 4]
-        b = [0, 4, 9, 16]
-        Apper_graph_ask(a,b)
+        palavra = self.entry_window.get_text()
+        binarios = []
+        for char in palavra:
+            valor_binario = format(ord(char), '08b')
+            binarios.extend(list(valor_binario))
+    
+        ask = []
+        tempo = 0
+        resolucao = 50
+        frequencia = 1
+        for i in binarios:
+            if i == '0':
+                ask.extend([0 for a in range(resolucao)])
+                tempo += resolucao
+            else:
+                for j in range(resolucao):
+                   ask.append(math.cos(2*math.pi*frequencia*tempo)) 
+                   tempo += 1/resolucao
+
+        canvas = Apper_graph(ask, "Sinal ASK", step=False, resolucao=resolucao).apper_graph()
+        canvas.set_hexpand(True)
+        canvas.set_vexpand(True)
+
+        self.grid.attach(canvas, 0,4,8,8)
+        self.show_all()
+
+        return None
+
     def graph_FSK(self):
-        a = [1, 2, 3, 4]
-        b = [0, 4, 9, 16]
-        Apper_graph_fsk(a,b)
+        palavra = self.entry_window.get_text()
+        binarios = []
+        for char in palavra:
+            valor_binario = format(ord(char), '08b')
+            binarios.extend(list(valor_binario))
+    
+        fsk = []
+        tempo = 0
+        resolucao = 50
+        frequencia = 1
+        for i in binarios:
+            if i == '0':
+                for j in range(resolucao):
+                   fsk.append(math.cos(2*math.pi*frequencia*tempo)) 
+                   tempo += 1/resolucao
+            else:
+                for j in range(resolucao):
+                   fsk.append(math.cos(4*math.pi*frequencia*tempo)) 
+                   tempo += 1/resolucao
+
+        canvas = Apper_graph(fsk, "Sinal FSK", step=False, resolucao=resolucao).apper_graph()
+        canvas.set_hexpand(True)
+        canvas.set_vexpand(True)
+
+        self.grid.attach(canvas, 0,4,8,8)
+        self.show_all()
+        return None
+    
     def graph_8QAM(self):
-        a = [1, 2, 3, 4]
-        b = [0, 4, 9, 16]
-        Apper_graph_8qam(a,b)
+        palavra = self.entry_window.get_text()
+        binarios = []
+        for char in palavra:
+            valor_binario = format(ord(char), '08b')
+            binarios.extend(list(valor_binario))
+
+        # faz com que a lista de binarios tenha um numero de elementos divisiveis por 3, colocando zeros no final caso não tenha
+        binarios.extend(['0' for a in range(3-len(binarios)%3) if len(binarios)%3 != 0]) 
+
+        qam = []
+        tempo = 0
+        resolucao = 50
+        frequencia = 1
+        for i in range(0,len(binarios),3):
+            trio = binarios[i:i+3]
+            aq = 0;ai = 0
+            # associando cada trio de bits a um simbolo eletrico
+            # a constelação aqui está baseada em https://weibeld.net/mobcom/psk-qam-modulation.html
+            # valores em raiz(2)/2 para manter a amplitude 
+            match trio:
+                case ['0','0','0']: 
+                    ai = -math.sqrt(2)/2
+                    aq = -math.sqrt(2)/2
+                case ['0','0','1']: 
+                    ai = -1
+                    aq = 0
+                case ['0','1','0']: 
+                    ai = 0
+                    aq = 1
+                case ['0','1','1']: 
+                    ai = -math.sqrt(2)/2
+                    aq = math.sqrt(2)/2
+                case ['1','0','0']: 
+                    ai = -1
+                    aq = 0
+                case ['1','0','1']: 
+                    ai = math.sqrt(2)/2
+                    aq = -math.sqrt(2)/2
+                case ['1','1','0']: 
+                    ai = math.sqrt(2)/2
+                    aq = math.sqrt(2)/2
+                case ['1','1','1']: 
+                    ai = 1
+                    aq = 0
+
+            for i in range(resolucao):
+                fase = math.atan2(aq,ai)
+                qam.append(math.sqrt(ai*ai+aq*aq)*math.cos(2*math.pi*frequencia*tempo + fase)) 
+                tempo += 1/resolucao
+
+
+        canvas = Apper_graph(qam, "Sinal QAM", step=False, resolucao=resolucao).apper_graph()
+        canvas.set_hexpand(True)
+        canvas.set_vexpand(True)
+
+        self.grid.attach(canvas, 0,4,8,8)
+        self.show_all()
+        return None
         
     def setup_css(self):
         css_provider = Gtk.CssProvider()
