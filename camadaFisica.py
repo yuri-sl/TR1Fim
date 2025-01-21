@@ -11,6 +11,21 @@ from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCan
 from matplotlib.figure import Figure
 
 
+def text_from_bits(bits, encoding = 'ascii'):
+    if len(bits) % 8 != 0:
+        raise ValueError("QUADRO COM ERRO: Os bits não têm comprimento múltiplo de 8.")
+    # Converte a string de bits para decimal e depois para caractere ASCII
+    decimal = int(bits, 2)  # Converte os bits (base 2) para decimal
+    char = chr(decimal)  # Converte o decimal para o caractere correspondente
+    return char
+
+def converterTexto(binarios):#print(converterTexto(["01100100", "01101100", "01110010", "00110001", "01110001"]))→"dlr1q"
+    palavra = ""
+    for i in binarios:
+        letra = text_from_bits(i)
+        palavra += letra
+    return palavra
+
 def converterBinario(palavra):
     binarios = []
     ans = []
@@ -77,54 +92,6 @@ def teste_erro_meio_fisico():
 # Executa o teste
 teste_erro_meio_fisico()
 """
-
-
-#Simulação de erro no meio fisico
-class ErroMeioFisico:
-    def __init__(self, lista = [], chance = 0.01):
-        self.lista = lista
-        self.chance = chance
-
-    def erro(self):
-        nova_lista = []
-        for item in self.lista:
-            novo_item = ""
-            for bit in item:  # Itera por cada bit no item (representação binária)
-                if random.random() < self.chance:
-                    novo_item += "1" if bit == "0" else "0"  # Inverte o bit
-                else:
-                    novo_item += bit  # Mantém o bit
-            nova_lista.append(novo_item)
-        return nova_lista
-"""
-def teste_erro_meio_fisico():
-    palavra = "Test"
-    print("Palavra original:", palavra)
-
-    # Converte a palavra para binário
-    binarios = converterBinario(palavra)
-    print("Binário original:", binarios)
-
-    # Aplica o erro no meio físico
-    simulacao_erro = ErroMeioFisico(lista=binarios, chance=0.1)
-    binarios_com_erro = simulacao_erro.erro()
-    print("Binário com erro:", binarios_com_erro)
-
-    # Verifica se há diferenças
-    alteracoes = [
-        (original, modificado)
-        for original, modificado in zip(binarios, binarios_com_erro)
-        if original != modificado
-    ]
-    print(f"Número de alterações detectadas: {len(alteracoes)}")
-    for original, modificado in alteracoes:
-        print(f"Original: {original}, Modificado: {modificado}")
-
-
-# Executa o teste
-teste_erro_meio_fisico()
-"""
-
 
 #Modulação Digital
 def buildNRZ(binWordNRZ):
