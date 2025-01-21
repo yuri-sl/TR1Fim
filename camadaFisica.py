@@ -259,6 +259,99 @@ def buildPortadora(binWordPortadora:list[list[float]]):
     print("O x_axis é ",x_axis)
     return binWordPortadora,x_axis
 
+def deConvertASK(binWordASK:list[list[float]]) -> list[list[int]]:
+    dBinWord = []
+    for byte in binWordASK:
+        dByte = []
+        for i in range(0, len(byte), resolucao):
+            bit = byte[i:i+resolucao]
+            if any(bit):
+                dByte.append(1)
+            else:
+                dByte.append(0)
+        dBinWord.append(dByte)
+        
+    return dBinWord
+
+
+def deConvertFSK(binWordFSK:list[list[float]]) -> list[list[int]]:
+    dBinWord = []
+    for byte in binWordFSK:
+        dByte = []
+        for i in range(0, len(byte), resolucao):
+            bit = byte[i:i+resolucao]
+            teste = math.acos(bit[1])
+            comp = 3*math.pi*frequencia*(1/resolucao)
+            if teste > comp:
+                dByte.append(1)
+            else:
+                dByte.append(0)
+        dBinWord.append(dByte)
+        
+    return dBinWord
+
+def deConvert8QAM(binWord8QAM:list[list[float]], reenquadrar=True) -> list[list[int]]:
+    '''Caso reenquadrar = True, a funcao ira remover os bits adicionais que foram adicinados por causa de padding, considerando que a mensagem original é divisivel por 8 (bytes)'''
+
+    def reenquadrarEmBytes(bits):
+        bytes = []
+        for i in range(0, len(bits)-7,8):
+            bytes.append(bits[i:i+8])
+        return bytes
+
+    pontos = [-1,-math.sqrt(2)/2,0,math.sqrt(2)/2,1]
+
+    dBinWord = []
+    tempo = 0
+
+    #só haverá um byte
+    byte = binWord8QAM[0]
+    dbits = []
+    dbit = []
+    for i in range(0, len(byte), resolucao):
+        bitq = byte[i:i+resolucao]
+        biti = byte[i:i+resolucao]
+        for point in range(len(bitq)):
+            bitq[point] *= math.cos(2*math.pi*frequencia*tempo)
+            biti[point] *= math.sin(2*math.pi*frequencia*tempo)
+            tempo += 1/resolucao
+
+        ai = max(biti) + min(biti)
+        ai = min(pontos, key=lambda x: abs(x-ai))
+
+        aq = max(bitq) + min(bitq)
+        aq = min(pontos, key=lambda x: abs(x-aq))
+
+        raiz = math.sqrt(2)/2
+        menosRaiz = -math.sqrt(2)/2
+        match ai,aq:
+            case (x,y) if x == menosRaiz and y == menosRaiz:
+                dbit = [0,0,0]
+            case -1,0:
+                dbit = [0,0,1] 
+            case 0,1: 
+                dbit = [0,1,0]
+            case (x,y) if x == menosRaiz and y == raiz: 
+                dbit = [0,1,1]
+            case 0,-1: 
+                dbit = [1,0,0]
+            case (x,y) if x == raiz and y == menosRaiz: 
+                dbit = [1,0,1]
+            case (x,y) if x == raiz and y == raiz: 
+                dbit = [1,1,0]
+            case 1,0: 
+                dbit = [1,1,1]
+
+        dbits.extend(dbit)
+
+    if reenquadrar == True:
+        dBinWord = reenquadrarEmBytes(dbits)
+    else:
+        dBinWord = dbits
+
+
+    return dBinWord
+
 #Gráfico NRZ
 class Apper_graph_nrz:
     def __init__(self, a = []):
