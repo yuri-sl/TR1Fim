@@ -28,11 +28,19 @@ def converterTexto(binarios):#print(converterTexto(["01100100", "01101100", "011
 
 def converterBinario(palavra):
     binarios = []
-    ans = []
     for char in palavra:
         valor_binario = format(ord(char), '08b')
         binarios.append([int(bit) for bit in valor_binario])  # Adiciona o valor binário à lista        
     return binarios
+
+def convertUTF(word):
+    ans = bytearray()  # Use a bytearray to store multiple bytes
+    for byte in word:
+        binary_string = ''.join(map(str, byte))  # Convert the binary list to a string
+        byte_value = int(binary_string, 2)  # Convert the binary string to an integer
+        ans.append(byte_value)  # Append the byte to the bytearray
+    return ans
+
 
 def convertNRZ(byteMSG):
     for i in range(0,len(byteMSG)):
@@ -49,19 +57,19 @@ def convertNRZ(byteMSG):
 
 #Simulação de erro no meio fisico
 class ErroMeioFisico:
-    def __init__(self, lista = [], chance = 0.01):
+    def __init__(self, lista = [], chance = 0.011):
         self.lista = lista
         self.chance = chance
 
     def erro(self):
         nova_lista = []
         for item in self.lista:
-            novo_item = ""
+            novo_item = []
             for bit in item:  # Itera por cada bit no item (representação binária)
                 if random.random() < self.chance:
-                    novo_item += "1" if bit == "0" else "0"  # Inverte o bit
+                    novo_item.append( 1 if bit == 0 else 0)  # Inverte o bit
                 else:
-                    novo_item += bit  # Mantém o bit
+                    novo_item.append(bit)  # Mantém o bit
             nova_lista.append(novo_item)
         return nova_lista
 """

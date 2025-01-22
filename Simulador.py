@@ -8,7 +8,8 @@ lock = threading.Lock()
 alist = []
 
 def start_server():
-    global server_running
+    global server_running 
+    server_running = True
 
     bind_ip = 'localhost'  # IP que o servidor está escutando
     bind_port = 8030       # Porta do servidor
@@ -51,8 +52,8 @@ def start_server():
         except socket.timeout:
             continue  # Timeout permite verificar o estado do servidor e continuar
 
-    server.close()
-    print('[*] Servidor encerrado.')
+    #server.close()
+    #print('[*] Servidor encerrado.')
 
 def stop_server():
     global server_running

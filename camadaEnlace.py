@@ -1,4 +1,5 @@
 from camadaFisica import converterBinario
+from camadaFisica import ErroMeioFisico
 def calculate_parity(bits, positions):
     """
     Calcula o bit de paridade para os índices fornecidos.

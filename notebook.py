@@ -35,6 +35,21 @@ def addCSS():
             Gdk.Screen.get_default(),css_provider,Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
 
+def config_modulacao(binWord):
+    if config["modulacao"] == "Manchester":
+        return convert_Manchester(binWord)
+    else:
+        return binWord
+
+def config_enquadramento(binWord):
+    if config["enquadramento"] == 'charCount':
+        charCount = ContagemDeCaracteres(binWord)
+        charCount =  charCount.contar_caracteres()
+        return charCount
+    if config["enquadramento"] == 'insByte':
+        return InsercaoDeBytes.inserir_bytes(binWord)
+
+
 class serverStartedWindow(Gtk.Window):
     def okayBtn(self,widget):
         self.hide()
@@ -272,10 +287,24 @@ class MyWindow(Gtk.Window):
             entryBoxPreenchida = True
         if entryBoxPreenchida == True and servidorAtivo == True:
             sentText = self.entryMessage.get_text()
-            print(sendMessage(sentText))
-            print("o received atualizado é ",received)
-            item = alist[0]
-            self.entryMsgRecv.set_text(item)
+            ##Rodar algoritmos de configuracao
+            binWord = converterBinario(sentText)
+            binWord = config_modulacao(binWord)
+            print("A binword digital é",binWord)
+            binWord = config_enquadramento(binWord)
+            print("A binword enquadrada é:",binWord)
+            print("A binword antes do erro é: ",binWord)
+            #erro = ErroMeioFisico(binWord)
+            #binWord = erro.erro()
+            #print("A binword com o erro ficou",binWord)                
+            utfWord = convertUTF(binWord)
+            print("A binword está como: ",utfWord)
+            #print(binWord)
+            #print(sendMessage(sentText))
+            #print("o received atualizado é ",received)
+            print(sendMessage(utfWord))
+            #item = alist[0]
+            #self.entryMsgRecv.set_text(item)
             
         if servidorAtivo == False:
             popup = erroEnviarMensagem()
