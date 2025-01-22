@@ -400,7 +400,7 @@ class MyWindow(Gtk.Window):
         graficosPort = [
             "Gráfico ASK",
             "Gráfico FSK",
-            "Gráfico 8-QM"
+            "Gráfico 8-QAM"
         ]
         for graphs in graficosPort:
             comboPort.append_text(graphs)
