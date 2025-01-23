@@ -8,6 +8,10 @@ e recepção de dados.
 - Este programa funciona com o uso de sockets e threads.
 
 ## Como rodar o programa:
+##Importante! Para que a aplicação rode, é necessário que você esteja com o matplotlib instalado! Para rodá-lo, baixe:
+```bash
+pip install matplotlib
+```
 - Para que a simulação funcione, é necessário ter dois terminais abertos.
 (um para o cliente e outro para o servidor)
 - Para que o programa funcione, primeiro inicialize o Simulador.py (servidor)
