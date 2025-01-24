@@ -34,20 +34,28 @@ def converterBinario(palavra):
     return binarios
 
 def convertUTF(word):
-    ans = bytearray()  # Use a bytearray to store multiple bytes
-    binary_char_string = ''
-    print("A word recebida está como: ",word)
+    ans = bytearray()  # Use a bytearray para armazenar múltiplos bytes
+    binary_char_string = ''  # Para armazenar a string binária concatenada
+    print("A palavra recebida está como: ", word)
 
     for byte in word:
-        binary_string = ''.join(map(str, byte))  # Convert the binary list to a string
-        print("The binary string is ",binary_string)
-        #Concatena a string binaria para exibir final
-        binary_char_string+=(binary_string)
+        binary_string = ''.join(map(str, byte))  # Converte a lista de binários para string
+        print("A string binária é: ", binary_string)
 
-        #Converte string bin p/ valor inteiro e add ao byte
-        byte_value = int(binary_string, 2)  # Convert the binary string to an integer
-        ans.append(byte_value)  # Append the byte to the bytearray
-    print("A palavra em string de binario é ",binary_char_string)
+        # Concatena a string binária para exibir no final
+        binary_char_string += binary_string
+
+        # Divide a string binária em blocos de 8 bits
+        for i in range(0, len(binary_string), 8):
+            block = binary_string[i:i + 8]  # Obtém um bloco de 8 bits
+            if len(block) < 8:  # Preenche com zeros à esquerda, se necessário
+                block = block.zfill(8)
+
+            # Converte o bloco de 8 bits para um valor inteiro e adiciona ao bytearray
+            byte_value = int(block, 2)
+            ans.append(byte_value)  # Adiciona o byte ao array final
+    
+    print("A palavra em string de binário é: ", binary_char_string)
     return ans
 
 

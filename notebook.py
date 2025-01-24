@@ -14,19 +14,9 @@ from camadaFisica import *
 from camadaEnlace import *
 from Simulador import *
 from clientTCP import *
+from configs import *
 
 
-servidorAtivo = False
-entryBoxPreenchida = False
-errorOcurred = False
-
-
-config = {
-    "texto": None,          # Texto que o usuário quer transmitir
-    "modulacao": None,      # Tipo de modulação (NRZ, Manchester, Bipolar, etc.)
-    "deteccao_erro": None,  # Tipo de detecção de erro (paridade, CRC, etc.)
-    "enquadramento": None   # Tipo de enquadramento (se aplicável)
-}
 def addCSS():
         #Load CSS from file
         css_provider = Gtk.CssProvider()
@@ -53,7 +43,7 @@ def config_enquadramento(binWord):
 def config_deteccao(binWord):
     if config["deteccao_erro"] =='paridade':
         parity = BitDeParidade(binWord)
-        parity = BitDeParidade.bit_de_paridade()
+        parity = parity.bit_de_paridade()
         return parity
     #if config["deteccao_erro"] =='CRC':
 
@@ -289,6 +279,9 @@ class MyWindow(Gtk.Window):
     def on_button_clicked(self, widget):
         # Create the pop-up window
         global sentText
+        global ocorreuErro
+        global erroEnquad
+        global erroTransmit
         print("A configuração escolhida para a modulação foi de: ",config["modulacao"])
         print("A config. escolhida para enq foi de: ",config["enquadramento"])
         print("A config escolhida de detec. Erro foi de: ",config["deteccao_erro"])
@@ -314,28 +307,43 @@ class MyWindow(Gtk.Window):
 
             binWord = config_enquadramento(binWord)
             print("A binword enquadrada é:",binWord)
+            ##Falta aplicarmos a Detecção de erros!!
+            binWord = config_deteccao(binWord)
+            print("A binword com a detecção ficou: ",binWord)
+            #Aplica a construção do Hamming
+            binWord = encode_hamming(binWord)
+            print("A binword após a construção do  hamming é: ",binWord)
+
+
             print("A binword antes do erro é: ",binWord)
-            #Erro no enquadramento
+            #Aplica a % do Erro no enquadramento
             print("Erro no enquadramento---")
             erro = ErroMeioFisico(binWord)
             binWord = erro.erro()
             print("Binword após erro em enq: ",binWord)
-            ##Falta aplicarmos a Detecção de erros!!
+            #Hamming para corrigir o erro
+            verify_hamming(binWord)
+            if errorOcurred == True:
+                erroEnquad = True
+            
 
-            #Falta aplicarmos a correção de erros!!
+
+            utfWord = convertUTF(binWord)
+            print("A binword está como: ",utfWord)
+            #Transmite
+            print(sendMessage(utfWord))
+            print(saved_message)
+
+
+
             #Erro na propagação
             print("Erro na propagação---")
             erro = ErroMeioFisico(binWord)
             binWord = erro.erro()
             print("Binword com erro na propagação: ",binWord)          
-            utfWord = convertUTF(binWord)
-            print("A binword está como: ",utfWord)
             #print(binWord)
             #print(sendMessage(sentText))
             #print("o received atualizado é ",received)
-            print(sendMessage(utfWord))
-            #item = saved_message[0]
-            print(saved_message)
             #print(item)
             #item = saved_message[0]
             #self.entryMsgRecv.set_text(item)

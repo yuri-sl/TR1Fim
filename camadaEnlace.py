@@ -1,5 +1,8 @@
 from camadaFisica import converterBinario
 from camadaFisica import ErroMeioFisico
+from convertions import convertToByte
+#from notebook import ocorreuErro,erroEnquad,erroTransmit
+from configs import *
 def calculate_parity(bits, positions):
     """
     Calcula o bit de paridade para os índices fornecidos.
@@ -15,11 +18,10 @@ def encode_hamming_12_8(data_bits):
     """
     Codifica os dados usando o código de Hamming (12,8).
     """
-    if len(data_bits) != 8:
-        raise ValueError("São necessários exatamente 8 bits de dados.")
+    data_size = len(data_bits)
 
     # Calcula as posições dos bits de paridade (1, 2, 4, 8)
-    encoded = [0] * 12  # Total de 12 bits (dados + paridade)
+    encoded = [0] * data_size  # Total de 13 bits (dados + paridade)
 
     # Insere os bits de dados nas posições não-paridade
     j = 0
@@ -71,8 +73,9 @@ def decode_hamming_12_8(encoded):
     return data_bits, error_position
 
 def hamming(data): #["01010101"] -> "000110100101"
+    data = convertToByte(data)
     encoded = encode_hamming_12_8(data)
-    return ''.join(map(str, encoded))
+    return encoded
 
 def dec_hamming_correct(data): #"000110100101" → "01010101"
     decoded, error_position = decode_hamming_12_8(data)
@@ -81,7 +84,89 @@ def dec_hamming_correct(data): #"000110100101" → "01010101"
 def dec_hamming_position(data): #"000110100101" se tiver erro retorna a posiçao senao 0
     decoded, error_position = decode_hamming_12_8(data)
     return error_position
+def encode_hamming(data_bits_list):
+    """
+    Codifica uma lista de listas de inteiros no formato de um código de Hamming.
 
+    :param data_bits_list: Lista de listas contendo bits de carga útil
+    :return: Lista de listas codificadas com os bits de Hamming
+    """
+    hamming_encoded = []
+
+    for data_bits in data_bits_list:
+        n = len(data_bits)
+        r = 0
+
+        # Calcular o número de bits redundantes (r)
+        while (2 ** r) < (n + r + 1):
+            r += 1
+
+        # Criar o array de Hamming com posições para os bits redundantes
+        hamming_code = [-1] * (n + r)  # -1 indica posições a serem preenchidas
+
+        # Colocar os bits de carga útil
+        j = 0
+        for i in range(1, len(hamming_code) + 1):
+            # Verificar se a posição é uma potência de 2 (reservada para bits redundantes)
+            if (i & (i - 1)) == 0:  # Posições de potência de 2
+                continue
+            hamming_code[i - 1] = data_bits[j]
+            j += 1
+
+        # Calcular os valores dos bits redundantes
+        for i in range(r):
+            parity_pos = 2 ** i
+            parity_value = 0
+
+            # Checar os bits que influenciam no bit de paridade atual
+            for j in range(1, len(hamming_code) + 1):
+                if j & parity_pos and hamming_code[j - 1] != -1:
+                    parity_value ^= hamming_code[j - 1]
+
+            # Atribuir o valor calculado ao bit redundante
+            hamming_code[parity_pos - 1] = parity_value
+
+        hamming_encoded.append(hamming_code)
+
+    return hamming_encoded
+def verify_hamming(hamming_codes):
+    """
+    Verifica a correção de uma lista de códigos de Hamming.
+    
+    :param hamming_codes: Lista de listas representando os códigos de Hamming
+    :return: Lista com o status de cada código de Hamming:
+             - "OK" se o código estiver correto
+             - Posição do bit incorreto caso haja erro
+    """
+    verification_results = []
+
+    for hamming_code in hamming_codes:
+        n = len(hamming_code)
+        error_position = 0
+
+        # Verificar cada bit de paridade
+        r = 0
+        while (2 ** r) <= n:
+            parity_pos = 2 ** r
+            parity_value = 0
+
+            # Calcular o valor do bit de paridade atual
+            for i in range(1, n + 1):
+                if i & parity_pos:  # Verifica se a posição influencia este bit de paridade
+                    parity_value ^= hamming_code[i - 1]
+
+            # Se houver discrepância, marcar a posição do erro
+            if parity_value != 0:
+                error_position += parity_pos
+
+            r += 1
+        print(error_position)
+        if error_position == 0:
+            verification_results.append("OK")  # Sem erro
+        else:
+            verification_results.append(f"Erro no bit {error_position}")  # Indicar posição do erro
+
+    return verification_results
 class CRC_32:
     def __init__(self, data):
         self.aux = ""
@@ -187,9 +272,9 @@ class BitDeParidade:
                 else:
                     self.aux += 1
             if (self.aux % 2) == 0:         # verifica se é par ou impar
-                self.novo_item = item + "0" # se é par apenas 0
+                self.novo_item = item + [0] # se é par apenas 0
             else:
-                self.novo_item = item + "1" # Se nao é 1 no final
+                self.novo_item = item + [1] # Se nao é 1 no final
             self.encoded_lista.append(self.novo_item)
         return self.encoded_lista           # Retorna a lista toda codificada
 
