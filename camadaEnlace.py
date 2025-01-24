@@ -248,11 +248,7 @@ class InsercaoDeBytes:
         return self.lista
     def tirar_bytes_flags(self,data):
         return data[1:len(data)-1]
-a=InsercaoDeBytes(["01011010","01011010","01011010"])
-b = a.inserir_bytes()
-print(b)
-c= a.tirar_bytes_flags(b)
-print(c)
+
 
 def criar_quadro_binario(dados_binarios):
     """
