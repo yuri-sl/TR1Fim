@@ -211,33 +211,34 @@ def convert8QAM(byteMSG:list[list[float]]) -> list[list[float]]:
         trio = bitList[i:i+3]
         aq = 0;ai = 0
         # associando cada trio de bits a um simbolo eletrico
-        # a constelação aqui está baseada em https://weibeld.net/mobcom/psk-qam-modulation.html
-        # valores em raiz(2)/2 para manter a amplitude 
+        # a constelação aqui está baseada em https://commons.wikimedia.org/wiki/File:Circular_8QAM.svg e https://www.researchgate.net/figure/The-best-constellation-diagram-for-8-QAM-signal_fig1_325088797
+        # valores em 1/(math.sqrt(3)+1) para manter a amplitude 
+        raiz3 = 1/(math.sqrt(3)+1)
         match trio:
             case [0,0,0]: 
-                ai = -math.sqrt(2)/2
-                aq = -math.sqrt(2)/2
-            case [0,0,1]: 
-                ai = -1
-                aq = 0
-            case [0,1,0]: 
-                ai = 0
-                aq = 1
-            case [0,1,1]: 
-                ai = -math.sqrt(2)/2
-                aq = math.sqrt(2)/2
-            case [1,0,0]: 
-                ai = 0
-                aq = -1
-            case [1,0,1]: 
-                ai = math.sqrt(2)/2
-                aq = -math.sqrt(2)/2
-            case [1,1,0]: 
-                ai = math.sqrt(2)/2
-                aq = math.sqrt(2)/2
-            case [1,1,1]: 
                 ai = 1
                 aq = 0
+            case [0,0,1]: 
+                ai = raiz3
+                aq = raiz3
+            case [0,1,0]: 
+                ai = -raiz3
+                aq = raiz3
+            case [0,1,1]: 
+                ai = 0
+                aq = 1
+            case [1,0,0]: 
+                ai = raiz3
+                aq = -raiz3
+            case [1,0,1]: 
+                ai = 0
+                aq = -1
+            case [1,1,0]: 
+                ai = -1
+                aq = 0
+            case [1,1,1]: 
+                ai = -raiz3
+                aq = -raiz3
 
         for i in range(resolucao):
             fase = math.atan2(aq,ai)
@@ -299,7 +300,10 @@ def deConvert8QAM(binWord8QAM:list[list[float]], reenquadrar=True) -> list[list[
             bytes.append(bits[i:i+8])
         return bytes
 
-    pontos = [-1,-math.sqrt(2)/2,0,math.sqrt(2)/2,1]
+    raiz = 1/(math.sqrt(3)+1)
+    menosRaiz = -raiz
+
+    pontos = [-1,menosRaiz,0,raiz,1]
 
     dBinWord = []
     tempo = 0
@@ -322,24 +326,22 @@ def deConvert8QAM(binWord8QAM:list[list[float]], reenquadrar=True) -> list[list[
         aq = max(bitq) + min(bitq)
         aq = min(pontos, key=lambda x: abs(x-aq))
 
-        raiz = math.sqrt(2)/2
-        menosRaiz = -math.sqrt(2)/2
         match ai,aq:
-            case (x,y) if x == menosRaiz and y == menosRaiz:
+            case 1,0:
                 dbit = [0,0,0]
-            case -1,0:
-                dbit = [0,0,1] 
-            case 0,1: 
-                dbit = [0,1,0]
-            case (x,y) if x == menosRaiz and y == raiz: 
-                dbit = [0,1,1]
-            case 0,-1: 
-                dbit = [1,0,0]
-            case (x,y) if x == raiz and y == menosRaiz: 
-                dbit = [1,0,1]
             case (x,y) if x == raiz and y == raiz: 
+                dbit = [0,0,1] 
+            case (x,y) if x == menosRaiz and y == raiz: 
+                dbit = [0,1,0]
+            case 0,1:
+                dbit = [0,1,1]
+            case (x,y) if x == raiz and y == menosRaiz: 
+                dbit = [1,0,0]
+            case 0,-1:
+                dbit = [1,0,1]
+            case -1,0:
                 dbit = [1,1,0]
-            case 1,0: 
+            case (x,y) if x == menosRaiz and y == menosRaiz: 
                 dbit = [1,1,1]
 
         dbits.extend(dbit)
