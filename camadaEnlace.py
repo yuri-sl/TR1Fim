@@ -227,6 +227,9 @@ class ContagemDeCaracteres:
         self.lista.insert(0,bin_tamanho[0])
         return self.lista
 
+    def desenquadrar_caracteres(self,data): #["00110011","01011010","01011010","01011010"] -> ["01011010","01011010","01011010"]
+        return data[1:]
+
 class InsercaoDeBytes:
     def __init__(self, lista = None):
         self.comeco = 0x01                  #byte 01 para iniciar a transmissao
@@ -243,6 +246,13 @@ class InsercaoDeBytes:
         self.lista.insert(0, format(self.comeco, '08b'))
         self.lista.append(format(self.fim, '08b')) 
         return self.lista
+    def tirar_bytes_flags(self,data):
+        return data[1:len(data)-1]
+a=InsercaoDeBytes(["01011010","01011010","01011010"])
+b = a.inserir_bytes()
+print(b)
+c= a.tirar_bytes_flags(b)
+print(c)
 
 def criar_quadro_binario(dados_binarios):
     """
