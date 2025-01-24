@@ -88,17 +88,11 @@ class CRC_32:
             self.aux += i
         self.data = self.aux
         self.crc = None
-        self.generator = "100000100110000010001110110110111"
-        self.calcula_crc()
-    def data_crc(self):                 #Os bits de dados + o CRC
+        self.generator = "100110000010001110110110111" # exemplo "1011"    
+    def data_crc(self):    # Obter os bits de dados + o CRC
         self.crc = self.calcula_crc()
-        self.aux = self.data + self.crc
-        return self.aux
-    def get_crc_lib(self):              #CRC de uma lib. é diferente!
-        import zlib
-        crc32_valor = zlib.crc32(self.data)
-        return f"crc32_valor:#010x"
-
+        return self.data + self.crc
+    
     def calcula_crc(self):              #Apenas o CRC
         """
         Calcula o CRC usando divisão binária baseada em XOR.
@@ -129,6 +123,44 @@ class CRC_32:
         crc = ''.join(data_bits[-grau:])
         return crc
 
+    def verifica_crc(self):
+        """Verifica o CRC, retornando True se for válido."""
+        data_crc_bits = list(self.data)  # Converte os dados com CRC para lista de bits
+        generator_bits = list(self.generator)  # Polinômio gerador como lista de bits
+
+        # Realiza a divisão binária para verificar o CRC
+        for i in range(len(data_crc_bits)):
+            # Se o bit atual for 1, faça XOR com o gerador
+            if data_crc_bits[i] == '1':
+                for j in range(len(generator_bits)):
+                    try:
+                        data_crc_bits[i + j] = str(int(data_crc_bits[i + j]) ^ int(generator_bits[j]))
+                    except:
+                        return False
+        # O que sobra nos últimos bits é o CRC
+        crc = ''.join(data_crc_bits[-1:])
+        if ( crc == "0" ):
+            return True
+        else:
+            return False
+"""
+Como usar crc32
+junte todas as strings e retorne uma str só e passe dessa maneira ↓
+
+if __name__ == "__main__":
+    data = "110110111"
+    crc32 = CRC_32(data)
+    data = crc32.data_crc()
+    print(data)
+
+    data = "11011011100010011110011000100100011"
+    crc32 = CRC_32(data)
+    resultado = crc32.verifica_crc()
+    if resultado:
+        print("ta certo") #Se rodar esse teste vai dar certo
+    else:
+        print ( "Ta errado" ) # se colocar qq outro numero vai dar errado
+"""
 
 class BitDeParidade:
     def __init__(self,lista = None):
