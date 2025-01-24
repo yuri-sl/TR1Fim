@@ -1,6 +1,6 @@
 from camadaFisica import converterBinario
 from camadaFisica import ErroMeioFisico
-from convertions import convertToByte
+from convertions import *
 #from notebook import ocorreuErro,erroEnquad,erroTransmit
 from configs import *
 def calculate_parity(bits, positions):
@@ -45,10 +45,11 @@ def decode_hamming_12_8(encoded):
     """
     Decodifica a mensagem e corrige um único erro, se houver.
     """
-    if len(encoded) != 12:
-        raise ValueError("São necessários exatamente 12 bits codificados.")
+
+    encoded = [int(bit) for sublist in encoded for bit in sublist]
 
     n = len(encoded)
+    print("Received encoded is: ",encoded)
     encoded = [int(bit) for bit in encoded]
 
     # Calcula a posição do erro (se houver)
@@ -229,6 +230,8 @@ class CRC_32:
             return True
         else:
             return False
+    def remove_crc(self):
+        return self.data[:-32]
 """
 Como usar crc32
 junte todas as strings e retorne uma str só e passe dessa maneira ↓
@@ -299,6 +302,12 @@ class BitDeParidade:
             else:
                 print(f"\nAlgum bit está incorreto! no item : {item}\n")  # Paridade inválida encontrada
         return self.decoded_lista
+    def remover_bit_de_paridade(self, lista):
+        lista = convertToByteDetect(lista)
+        lista = removeLSBit(lista)
+        return lista
+    
+
 
 class ContagemDeCaracteres:
     def __init__(self, lista = None):

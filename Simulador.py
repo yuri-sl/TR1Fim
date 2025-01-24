@@ -2,6 +2,8 @@ import socket
 import threading
 import time
 from camadaFisica import buildNRZ
+from camadaEnlace import *
+from convertions import *
 
 server_running = True  # Controle global de iniciar/fechar o servidor
 received = 'ola'
@@ -9,6 +11,20 @@ lock = threading.Lock()
 
 #Variavel global em lista que reserva as mensagens enviadas
 saved_message = []
+
+def config_u_dectError(word):
+    global config
+    if config["deteccao_erro"] == 'paridade':
+        parityBit = BitDeParidade(word)
+        parityBit = parityBit.remover_bit_de_paridade(word)
+        return parityBit
+    if config["deteccao_erro"] == 'CRC':
+        crc_class = CRC_32(word)
+        crc_class = crc_class.verifica_crc()
+        return crc_class
+
+
+
 
 def receberSinal():
     #Acessar a variavel global saved_message
@@ -20,6 +36,17 @@ def receberSinal():
     print(word)
     word,x_axis = buildNRZ(word)
     return word,x_axis
+
+def demodularSinal():
+    global saved_message
+    word = saved_message[0]
+    word = dec_hamming_correct(word)
+    print("A Hamming demodulada fica: ",word)
+    word = convertToByte(word)
+    word = config_u_dectError(word)
+    print("A word sem detect erro ficou como: ",word)
+
+
 
 
 def start_server():

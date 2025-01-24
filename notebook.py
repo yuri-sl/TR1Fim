@@ -376,6 +376,7 @@ class MyWindow(Gtk.Window):
     def graphAftr(self,widget):
         global saved_message
         if len(saved_message) >0:
+            demodularSinal()
             word = saved_message[0]    
             #BinWordNRZ é apenas um teste preliminar para ver se o gráfico aparece direito na tela de após demodular
             
