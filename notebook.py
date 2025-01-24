@@ -258,7 +258,7 @@ class MyWindow(Gtk.Window):
 
         if entryBoxPreenchida == True:
             binWord = converterBinario(msg)
-            print(binWord)
+            print("Antes de ser processada, a biWord é ",binWord)
 
             
             if selected == "Gráfico NRZ":
@@ -305,15 +305,12 @@ class MyWindow(Gtk.Window):
             binWord = config_modulacao(binWord)
             print("A binword digital é",binWord)
             if config["modulacao"] == "Manchester":
-                manchester = []
-                for bit in binWord:
-                    manchester.extend(bit)
-                    #print(manchester)
-                print("A manchester é ",manchester)
-                #print(binWord)
-                binWord.clear()
-                binWord = list(manchester)
-                print(binWord)
+                flattened = [bit for pair in binWord for bit in pair]
+
+                # Group bits into bytes (blocks of 8 bits)
+                binWord = [flattened[i:i + 8] for i in range(0, len(flattened), 8)]
+
+                print("A manchester reajustada ficou: ",binWord)
 
 
             binWord = config_enquadramento(binWord)

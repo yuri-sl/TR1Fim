@@ -106,6 +106,7 @@ def buildNRZ(binWordNRZ):
 
 def convert_Manchester(byteMSG):
     #print("A byteMSG é ",byteMSG)
+    print('The byte in ByteMSG is: ',byteMSG)
     manchester = []
     for byte in byteMSG:
         for bit in byte:
