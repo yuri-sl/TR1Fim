@@ -5,7 +5,7 @@ import time
 server_running = True  # Controle global de iniciar/fechar o servidor
 received = 'ola'
 lock = threading.Lock()
-alist = []
+saved_message = []
 
 def start_server():
     global server_running 
@@ -27,17 +27,24 @@ def start_server():
         print("Entrou em handle client")
         try:
             request = client_socket.recv(1024)
-            print(f'[*] Mensagem recebida de {addr[0]}: {request.decode("utf-8")}')
-            response = f'\nMensagem destinada ao cliente: {addr[0]}\n'
-            client_socket.send(response.encode('utf-8'))
-            ack_message = '\nACK!\nRecebido pelo servidor!\n'
-            client_socket.send(ack_message.encode('utf-8'))
+            print("request recebido (em bytes): ",request)
+            #print(f'[*] Mensagem recebida de {addr[0]}: {request.decode("utf-8")}')
+            #response = f'\nMensagem destinada ao cliente: {addr[0]}\n'
+            #client_socket.send(response.encode('utf-8'))
+            binary_list = [bin(byte)[2:].zfill(8)for byte in request]
+            print("A lista binária recebida é:",binary_list)
+
+            bit_list = [list(map(int,bin(byte)[2:].zfill(8)))for byte in request]
+            print("A lista de inteiros binários é:",bit_list)
+
+            #ack_message = '\nACK!\nRecebido pelo servidor!\n'
+            #client_socket.send(ack_message.encode('utf-8'))
             with lock:
-                received = request.decode("utf-8")
+                received = bit_list
             print("O received original é: ",received)
             print("A mensagem received é: ",received)
-            alist.append(received)
-            print(alist)
+            saved_message.append(received)
+            print("Mensagem salva em variável fica como: ",saved_message)
         except Exception as e:
             print(f"Erro ao processar cliente {addr}: {e}")
         finally:

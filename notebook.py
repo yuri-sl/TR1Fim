@@ -47,7 +47,16 @@ def config_enquadramento(binWord):
         charCount =  charCount.contar_caracteres()
         return charCount
     if config["enquadramento"] == 'insByte':
-        return InsercaoDeBytes.inserir_bytes(binWord)
+        insByte = InsercaoDeBytes(binWord)
+        insByte = insByte.inserir_bytes()
+        return insByte
+def config_deteccao(binWord):
+    if config["deteccao_erro"] =='paridade':
+        parity = BitDeParidade(binWord)
+        parity = BitDeParidade.bit_de_paridade()
+        return parity
+    #if config["deteccao_erro"] =='CRC':
+
 
 
 class serverStartedWindow(Gtk.Window):
@@ -291,19 +300,44 @@ class MyWindow(Gtk.Window):
             binWord = converterBinario(sentText)
             binWord = config_modulacao(binWord)
             print("A binword digital é",binWord)
+            if config["modulacao"] == "Manchester":
+                manchester = []
+                for bit in binWord:
+                    manchester.extend(bit)
+                    #print(manchester)
+                print("A manchester é ",manchester)
+                #print(binWord)
+                binWord.clear()
+                binWord = list(manchester)
+                print(binWord)
+
+
             binWord = config_enquadramento(binWord)
             print("A binword enquadrada é:",binWord)
             print("A binword antes do erro é: ",binWord)
-            #erro = ErroMeioFisico(binWord)
-            #binWord = erro.erro()
-            #print("A binword com o erro ficou",binWord)                
+            #Erro no enquadramento
+            print("Erro no enquadramento---")
+            erro = ErroMeioFisico(binWord)
+            binWord = erro.erro()
+            print("Binword após erro em enq: ",binWord)
+            ##Falta aplicarmos a Detecção de erros!!
+
+            #Falta aplicarmos a correção de erros!!
+            #Erro na propagação
+            print("Erro na propagação---")
+            erro = ErroMeioFisico(binWord)
+            binWord = erro.erro()
+            print("Binword com erro na propagação: ",binWord)          
             utfWord = convertUTF(binWord)
             print("A binword está como: ",utfWord)
             #print(binWord)
             #print(sendMessage(sentText))
             #print("o received atualizado é ",received)
             print(sendMessage(utfWord))
-            #item = alist[0]
+            #item = saved_message[0]
+            print(saved_message)
+            #print(item)
+            #item = saved_message[0]
             #self.entryMsgRecv.set_text(item)
             
         if servidorAtivo == False:
@@ -314,9 +348,9 @@ class MyWindow(Gtk.Window):
             popup.show_all()
 
     def graphBfr(self,widget):
-        global alist
-        if len(alist) >0:
-            word = alist[0]
+        global saved_message
+        if len(saved_message) >0:
+            word = saved_message[0]
             binWord = converterBinario(word)
             print(binWord)
             #Isso é apenas um teste prelimianr para ver se o gráfico aparece direito na tela ao clicar no botão
@@ -328,9 +362,9 @@ class MyWindow(Gtk.Window):
             popUp.show_all()
     
     def graphAftr(self,widget):
-        global alist
-        if len(alist) >0:
-            word = alist[0]    
+        global saved_message
+        if len(saved_message) >0:
+            word = saved_message[0]    
             binWord = converterBinario(word)
             print(binWord)
             #BinWordNRZ é apenas um teste preliminar para ver se o gráfico aparece direito na tela de após demodular

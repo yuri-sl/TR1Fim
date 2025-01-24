@@ -35,10 +35,19 @@ def converterBinario(palavra):
 
 def convertUTF(word):
     ans = bytearray()  # Use a bytearray to store multiple bytes
+    binary_char_string = ''
+    print("A word recebida está como: ",word)
+
     for byte in word:
         binary_string = ''.join(map(str, byte))  # Convert the binary list to a string
+        print("The binary string is ",binary_string)
+        #Concatena a string binaria para exibir final
+        binary_char_string+=(binary_string)
+
+        #Converte string bin p/ valor inteiro e add ao byte
         byte_value = int(binary_string, 2)  # Convert the binary string to an integer
         ans.append(byte_value)  # Append the byte to the bytearray
+    print("A palavra em string de binario é ",binary_char_string)
     return ans
 
 
@@ -72,34 +81,6 @@ class ErroMeioFisico:
                     novo_item.append(bit)  # Mantém o bit
             nova_lista.append(novo_item)
         return nova_lista
-"""
-def teste_erro_meio_fisico():
-    palavra = "Test"
-    print("Palavra original:", palavra)
-
-    # Converte a palavra para binário
-    binarios = converterBinario(palavra)
-    print("Binário original:", binarios)
-
-    # Aplica o erro no meio físico
-    simulacao_erro = ErroMeioFisico(lista=binarios, chance=0.1)
-    binarios_com_erro = simulacao_erro.erro()
-    print("Binário com erro:", binarios_com_erro)
-
-    # Verifica se há diferenças
-    alteracoes = [
-        (original, modificado)
-        for original, modificado in zip(binarios, binarios_com_erro)
-        if original != modificado
-    ]
-    print(f"Número de alterações detectadas: {len(alteracoes)}")
-    for original, modificado in alteracoes:
-        print(f"Original: {original}, Modificado: {modificado}")
-
-
-# Executa o teste
-teste_erro_meio_fisico()
-"""
 
 #Modulação Digital
 def buildNRZ(binWordNRZ):

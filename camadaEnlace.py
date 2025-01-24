@@ -242,10 +242,12 @@ class InsercaoDeBytes:
         else:
             self.lista = lista
 #["01011010","01011010","01011010"] ->["00000001","01011010","01011010","01011010","00000100"]
+    def byte_to_bits(self, byte):
+        # Converte o byte para uma lista de bits
+        return list(map(int,bin(byte)[2:].zfill(8)))
     def inserir_bytes(self):
-        tamanho = len(self.lista)
-        self.lista.insert(0, format(self.comeco, '08b'))
-        self.lista.append(format(self.fim, '08b')) 
+        self.lista.insert(0, self.byte_to_bits(self.comeco))
+        self.lista.append(self.byte_to_bits(self.fim)) 
         return self.lista
     def tirar_bytes_flags(self,data):
         return data[1:len(data)-1]

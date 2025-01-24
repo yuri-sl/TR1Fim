@@ -1,2 +1,6 @@
 __pycache__
 graficos/__pycache__
+popUps/__pycache__
+a.py
+*.pyc
+__pycache__/
