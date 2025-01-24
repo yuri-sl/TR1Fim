@@ -15,6 +15,7 @@ from camadaEnlace import *
 from Simulador import *
 from clientTCP import *
 from configs import *
+from convertions import *
 
 
 def addCSS():
@@ -46,8 +47,13 @@ def config_deteccao(binWord):
         parity = parity.bit_de_paridade()
         return parity
     if config["deteccao_erro"] =='CRC':
+        print("A binword está como: ",binWord)
+        binWord = convertToString(binWord)
+
         crc_class = CRC_32(binWord)
-        crc_class = CRC_32.calcula_crc()
+        crc_class = crc_class.calcula_crc()
+        crc_class = convertToByte(crc_class)
+        print("crc_class em bytes ficou como: ",crc_class)
         return crc_class
 
 
