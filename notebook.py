@@ -253,6 +253,7 @@ class MyWindow(Gtk.Window):
             
             if selected == "Gráfico NRZ":
                 binWordNRZ = convertNRZ(binWord)
+                print("A entrada do buildNRZ é: ",binWordNRZ)
                 binWordNRZ,x_axis = buildNRZ(binWordNRZ)
                 self.show_graph(binWordNRZ, x_axis, "Gráfico NRZ", "Sinal NRZ")
             elif selected == "Gráfico Manchester":
@@ -357,14 +358,14 @@ class MyWindow(Gtk.Window):
 
     def graphBfr(self,widget):
         global saved_message
+        print("A saved message é: ",saved_message)
+        print(len(saved_message))
         if len(saved_message) >0:
             word = saved_message[0]
-            binWord = converterBinario(word)
-            print(binWord)
+            print(word)
             #Isso é apenas um teste prelimianr para ver se o gráfico aparece direito na tela ao clicar no botão
-            binWordNRZ = convertNRZ(binWord)
-            binWordNRZ,x_axis = buildNRZ(binWordNRZ)
-            self.show_graph(binWordNRZ,x_axis,"Sinal recebido antes de demodular","Sinal rececbido")
+            word,x_axis = buildNRZ(word)
+            self.show_graph(word,x_axis,"Sinal recebido antes de demodular","Sinal rececbido")
         else:
             popUp = noSignal()
             popUp.show_all()
