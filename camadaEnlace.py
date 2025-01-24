@@ -204,7 +204,7 @@ class BitDeParidade:
         self.decoded_lista = []
         for item in self.encoded_lista:
             aux = 0                                      # Contador de bits '1'
-            for j in range(len(item) - 1):               # Conta quantos bits
+            for j in range(len(item)):                   # Conta quantos bits
                 bit = int(item[j])
                 aux += bit
             bit_paridade = int(item[-1])                 # O último bit é o de paridade
