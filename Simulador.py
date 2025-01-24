@@ -1,11 +1,26 @@
 import socket
 import threading
 import time
+from camadaFisica import buildNRZ
 
 server_running = True  # Controle global de iniciar/fechar o servidor
 received = 'ola'
 lock = threading.Lock()
+
+#Variavel global em lista que reserva as mensagens enviadas
 saved_message = []
+
+def receberSinal():
+    #Acessar a variavel global saved_message
+    global saved_message
+    print("A saved message é: ",saved_message)
+    print("Atual o tamanho de mensage é: ",len(saved_message))
+    #Pegar a primeira mensagem enviada
+    word = saved_message[0]
+    print(word)
+    word,x_axis = buildNRZ(word)
+    return word,x_axis
+
 
 def start_server():
     global server_running 
@@ -43,6 +58,7 @@ def start_server():
                 received = bit_list
             print("O received original é: ",received)
             print("A mensagem received é: ",received)
+            saved_message.clear()
             saved_message.append(received)
             print("Mensagem salva em variável fica como: ",saved_message)
         except Exception as e:

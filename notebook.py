@@ -45,7 +45,11 @@ def config_deteccao(binWord):
         parity = BitDeParidade(binWord)
         parity = parity.bit_de_paridade()
         return parity
-    #if config["deteccao_erro"] =='CRC':
+    if config["deteccao_erro"] =='CRC':
+        crc_class = CRC_32(binWord)
+        crc_class = CRC_32.calcula_crc()
+        return crc_class
+
 
 
 
@@ -327,6 +331,11 @@ class MyWindow(Gtk.Window):
             if errorOcurred == True:
                 erroEnquad = True
             
+            #Erro na propagação
+            print("Erro na propagação---")
+            erro = ErroMeioFisico(binWord)
+            binWord = erro.erro()
+            print("Binword com erro na propagação: ",binWord)          
 
 
             utfWord = convertUTF(binWord)
@@ -337,11 +346,6 @@ class MyWindow(Gtk.Window):
 
 
 
-            #Erro na propagação
-            print("Erro na propagação---")
-            erro = ErroMeioFisico(binWord)
-            binWord = erro.erro()
-            print("Binword com erro na propagação: ",binWord)          
             #print(binWord)
             #print(sendMessage(sentText))
             #print("o received atualizado é ",received)
@@ -357,29 +361,23 @@ class MyWindow(Gtk.Window):
             popup.show_all()
 
     def graphBfr(self,widget):
-        global saved_message
-        print("A saved message é: ",saved_message)
-        print(len(saved_message))
-        if len(saved_message) >0:
-            word = saved_message[0]
-            print(word)
-            #Isso é apenas um teste prelimianr para ver se o gráfico aparece direito na tela ao clicar no botão
-            word,x_axis = buildNRZ(word)
-            self.show_graph(word,x_axis,"Sinal recebido antes de demodular","Sinal rececbido")
+        if len(saved_message) > 0:
+            binWord,x_axis = receberSinal()
+            self.show_graph(binWord,x_axis,"Sinal recebido antes de demodular","Sinal rececbido")
         else:
             popUp = noSignal()
             popUp.show_all()
+
+
     
     def graphAftr(self,widget):
         global saved_message
         if len(saved_message) >0:
             word = saved_message[0]    
-            binWord = converterBinario(word)
-            print(binWord)
             #BinWordNRZ é apenas um teste preliminar para ver se o gráfico aparece direito na tela de após demodular
-            binWordNRZ = convertNRZ(binWord)
-            binWordNRZ,x_axis = buildNRZ(binWordNRZ)
-            self.show_graph(binWordNRZ,x_axis,"Sinal recebido e que sogreu demodulação","Sinal após demodular")
+            
+            word,x_axis = buildNRZ(word)
+            self.show_graph(word,x_axis,"Sinal recebido e que sogreu demodulação","Sinal após demodular")
         else:
             popUp = noSignal()
             popUp.show_all()
