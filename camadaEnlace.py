@@ -204,7 +204,7 @@ class BitDeParidade:
         self.decoded_lista = []
         for item in self.encoded_lista:
             aux = 0                                      # Contador de bits '1'
-            for j in range(len(item) - 1):               # Conta quantos bits
+            for j in range(len(item)):                   # Conta quantos bits
                 bit = int(item[j])
                 aux += bit
             bit_paridade = int(item[-1])                 # O último bit é o de paridade
@@ -227,6 +227,9 @@ class ContagemDeCaracteres:
         self.lista.insert(0,bin_tamanho[0])
         return self.lista
 
+    def desenquadrar_caracteres(self,data): #["00110011","01011010","01011010","01011010"] -> ["01011010","01011010","01011010"]
+        return data[1:]
+
 class InsercaoDeBytes:
     def __init__(self, lista = None):
         self.comeco = 0x01                  #byte 01 para iniciar a transmissao
@@ -243,6 +246,9 @@ class InsercaoDeBytes:
         self.lista.insert(0, format(self.comeco, '08b'))
         self.lista.append(format(self.fim, '08b')) 
         return self.lista
+    def tirar_bytes_flags(self,data):
+        return data[1:len(data)-1]
+
 
 def criar_quadro_binario(dados_binarios):
     """
