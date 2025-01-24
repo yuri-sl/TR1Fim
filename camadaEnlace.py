@@ -88,16 +88,11 @@ class CRC_32:
             self.aux += i
         self.data = self.aux
         self.crc = None
-        self.generator = "100000100110000010001110110110111"    
-        self.calcula_crc()
-    def data_crc(self):                 #Os bits de dados + o CRC
+        self.generator = "100110000010001110110110111" # exemplo "1011"    
+    def data_crc(self):    # Obter os bits de dados + o CRC
         self.crc = self.calcula_crc()
         return self.data + self.crc
-    def get_crc_lib(self):              #CRC de uma lib. é diferente!
-        import zlib
-        crc32_valor = zlib.crc32(self.data.encode())
-        return f"{crc32_valor:#010x}"
-
+    
     def calcula_crc(self):              #Apenas o CRC
         """
         Calcula o CRC usando divisão binária baseada em XOR.
@@ -128,83 +123,44 @@ class CRC_32:
         crc = ''.join(data_bits[-grau:])
         return crc
 
-    def decode_lib(self, data_crc):
-        """
-        Decodifica os dados recebidos verificando o CRC usando a biblioteca `zlib`.
+    def verifica_crc(self):
+        """Verifica o CRC, retornando True se for válido."""
+        data_crc_bits = list(self.data)  # Converte os dados com CRC para lista de bits
+        generator_bits = list(self.generator)  # Polinômio gerador como lista de bits
 
-        Args:
-            data_crc (str): String de bits contendo os dados + CRC.
-
-        Returns:
-            str: Dados originais se o CRC for válido, ou mensagem de erro.
-        """
-        import zlib
-
-        # Separar dados e CRC
-        grau = len(self.generator) - 1
-        data = data_crc[:-grau]
-        crc_recebido = int(data_crc[-grau:], 2)  # Converte o CRC para inteiro
-
-        # Recalcular o CRC com base nos dados recebidos
-        crc_calculado = zlib.crc32(data.encode()) & 0xFFFFFFFF  # Garantir 32 bits
-
-        # Verificar se o CRC calculado é igual ao recebido
-        if crc_calculado == crc_recebido:
-            return data
+        # Realiza a divisão binária para verificar o CRC
+        for i in range(len(data_crc_bits)):
+            # Se o bit atual for 1, faça XOR com o gerador
+            if data_crc_bits[i] == '1':
+                for j in range(len(generator_bits)):
+                    try:
+                        data_crc_bits[i + j] = str(int(data_crc_bits[i + j]) ^ int(generator_bits[j]))
+                    except:
+                        return False
+        # O que sobra nos últimos bits é o CRC
+        crc = ''.join(data_crc_bits[-1:])
+        if ( crc == "0" ):
+            return True
         else:
-            return "Erro: CRC inválido."
-    def decode_manual(self, data_crc):
-        """
-        Decodifica os dados recebidos verificando o CRC manualmente.
-
-        Args:
-            data_crc (str): String de bits contendo os dados + CRC.
-
-        Returns:
-            str: Dados originais se o CRC for válido, ou mensagem de erro.
-        """
-        # Separar dados e CRC
-        grau = len(self.generator) - 1
-        data = data_crc[:-grau]
-        crc_recebido = data_crc[-grau:]
-
-        # Recalcular o CRC com base nos dados recebidos
-        self.data = data
-        crc_calculado = self.calcula_crc()
-
-        # Verificar se o CRC calculado é igual ao recebido
-        if crc_calculado == crc_recebido:
-            return data
-        else:
-            return "Erro: CRC inválido."
+            return False
+"""
+Como usar crc32
+junte todas as strings e retorne uma str só e passe dessa maneira ↓
 
 if __name__ == "__main__":
-    # Dados de entrada
-    data = ["1101011011"]
-
-    # Instância da classe
+    data = "110110111"
     crc32 = CRC_32(data)
     data = crc32.data_crc()
     print(data)
 
-    print(crc32.data_crc())
-    # Gera os dados com CRC
-    data_com_crc = crc32.data_crc()
-    print("Dados + CRC gerados:")
-    print(data_com_crc)
-
-    # Decodificação manual
-    print("\nDecodificação manual:")
-    resultado_manual = crc32.decode_manual(data_com_crc)
-    print(resultado_manual)
-
-    # Decodificação usando biblioteca
-    print("\nDecodificação com biblioteca (zlib):")
-    resultado_lib = crc32.decode_lib(data_com_crc)
-    print(resultado_lib)
-
-
-
+    data = "11011011100010011110011000100100011"
+    crc32 = CRC_32(data)
+    resultado = crc32.verifica_crc()
+    if resultado:
+        print("ta certo") #Se rodar esse teste vai dar certo
+    else:
+        print ( "Ta errado" ) # se colocar qq outro numero vai dar errado
+"""
 
 class BitDeParidade:
     def __init__(self,lista = None):
