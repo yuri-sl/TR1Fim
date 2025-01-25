@@ -8,7 +8,7 @@ from convertions import *
 from processSignal import length
 from tuple import *
 from configs import *
-from insertTextToScreen import *
+#from insertTextToScreen import *
 
 n=0
 server_running = True  # Controle global de iniciar/fechar o servidor
