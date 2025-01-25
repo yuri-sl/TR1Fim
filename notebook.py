@@ -1,4 +1,6 @@
 import matplotlib
+
+from processSignal import processSignal
 matplotlib.use('GTK3Agg')  # Usar 'GTK3Agg' para renderizar com GTK e Matplotlib
 
 import gi
@@ -18,6 +20,7 @@ from configs import *
 from convertions import *
 
 
+
 def addCSS():
         #Load CSS from file
         css_provider = Gtk.CssProvider()
@@ -26,35 +29,6 @@ def addCSS():
             Gdk.Screen.get_default(),css_provider,Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         )
 
-def config_modulacao(binWord):
-    if config["modulacao"] == "Manchester":
-        return convert_Manchester(binWord)
-    else:
-        return binWord
-
-def config_enquadramento(binWord):
-    if config["enquadramento"] == 'charCount':
-        charCount = ContagemDeCaracteres(binWord)
-        charCount =  charCount.contar_caracteres()
-        return charCount
-    if config["enquadramento"] == 'insByte':
-        insByte = InsercaoDeBytes(binWord)
-        insByte = insByte.inserir_bytes()
-        return insByte
-def config_deteccao(binWord):
-    if config["deteccao_erro"] =='paridade':
-        parity = BitDeParidade(binWord)
-        parity = parity.bit_de_paridade()
-        return parity
-    if config["deteccao_erro"] =='CRC':
-        print("A binword está como: ",binWord)
-        binWord = convertToString(binWord)
-
-        crc_class = CRC_32(binWord)
-        crc_class = crc_class.calcula_crc()
-        crc_class = convertToByte(crc_class)
-        print("crc_class em bytes ficou como: ",crc_class)
-        return crc_class
 
 
 
@@ -293,57 +267,16 @@ class MyWindow(Gtk.Window):
         global ocorreuErro
         global erroEnquad
         global erroTransmit
+        global size
+        global length
         print("A configuração escolhida para a modulação foi de: ",config["modulacao"])
         print("A config. escolhida para enq foi de: ",config["enquadramento"])
         print("A config escolhida de detec. Erro foi de: ",config["deteccao_erro"])
         if self.entryMessage.get_text_length() > 0:
             entryBoxPreenchida = True
         if entryBoxPreenchida == True and servidorAtivo == True:
-            sentText = self.entryMessage.get_text()
-            ##Rodar algoritmos de configuracao
-            binWord = converterBinario(sentText)
-            binWord = config_modulacao(binWord)
-            print("A binword digital é",binWord)
-            if config["modulacao"] == "Manchester":
-                flattened = [bit for pair in binWord for bit in pair]
-
-                # Group bits into bytes (blocks of 8 bits)
-                binWord = [flattened[i:i + 8] for i in range(0, len(flattened), 8)]
-
-                print("A manchester reajustada ficou: ",binWord)
-
-
-            binWord = config_enquadramento(binWord)
-            print("A binword enquadrada é:",binWord)
-            ##Falta aplicarmos a Detecção de erros!!
-            binWord = config_deteccao(binWord)
-            print("A binword com a detecção ficou: ",binWord)
-            #Aplica a construção do Hamming
-            binWord = encode_hamming(binWord)
-            print("A binword após a construção do  hamming é: ",binWord)
-
-
-            print("A binword antes do erro é: ",binWord)
-            #Aplica a % do Erro no enquadramento
-            print("Erro no enquadramento---")
-            erro = ErroMeioFisico(binWord)
-            binWord = erro.erro()
-            print("Binword após erro em enq: ",binWord)
-            #Hamming para corrigir o erro
-            verify_hamming(binWord)
-            if errorOcurred == True:
-                erroEnquad = True
-            
-            #Erro na propagação
-            print("Erro na propagação---")
-            erro = ErroMeioFisico(binWord)
-            binWord = erro.erro()
-            print("Binword com erro na propagação: ",binWord)          
-
-
-            utfWord = convertUTF(binWord)
-            print("A binword está como: ",utfWord)
-            #Transmite
+            sentText = self.entryMessage.get_text()            #Transmite
+            utfWord = processSignal(sentText)
             print(sendMessage(utfWord))
             print(saved_message)
 
@@ -375,8 +308,10 @@ class MyWindow(Gtk.Window):
     
     def graphAftr(self,widget):
         global saved_message
+        global size
+        word_Size = size[0]
         if len(saved_message) >0:
-            demodularSinal()
+            demodularSinal(word_Size)
             word = saved_message[0]    
             #BinWordNRZ é apenas um teste preliminar para ver se o gráfico aparece direito na tela de após demodular
             

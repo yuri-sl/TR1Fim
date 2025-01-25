@@ -1,9 +1,11 @@
+import math
 import socket
 import threading
 import time
 from camadaFisica import buildNRZ
 from camadaEnlace import *
 from convertions import *
+from processSignal import length
 
 server_running = True  # Controle global de iniciar/fechar o servidor
 received = 'ola'
@@ -15,9 +17,8 @@ saved_message = []
 def config_u_dectError(word):
     global config
     if config["deteccao_erro"] == 'paridade':
-        parityBit = BitDeParidade(word)
-        parityBit = parityBit.remover_bit_de_paridade(word)
-        return parityBit
+        word = removeLSBit(word)
+        return word
     if config["deteccao_erro"] == 'CRC':
         crc_class = CRC_32(word)
         crc_class = crc_class.verifica_crc()
@@ -37,12 +38,21 @@ def receberSinal():
     word,x_axis = buildNRZ(word)
     return word,x_axis
 
-def demodularSinal():
+def demodularSinal(size):
     global saved_message
+    print("DEMODULANDO O SINAL!!!!!!")
     word = saved_message[0]
+    print("THIS IS THE WORD WE ARE DEMODULATING!!",word)
+    word = convertToString(word)
+    print("THIS IS THE SIZE: ",size)
+    word = convertToByteDetect(word,size)
+    added = math.log2(size)
+    size - size - added
     word = dec_hamming_correct(word)
     print("A Hamming demodulada fica: ",word)
-    word = convertToByte(word)
+    word = convertToByteDetect(word,size)
+    #word = removeLSBit(word)
+    print("Tornando em int list: ",word)
     word = config_u_dectError(word)
     print("A word sem detect erro ficou como: ",word)
 
@@ -66,18 +76,24 @@ def start_server():
 
     def handle_client(client_socket, addr):
         global received
+        global length
         print("Entrou em handle client")
+        print("O global length é: ",length)
         try:
             request = client_socket.recv(1024)
             print("request recebido (em bytes): ",request)
             #print(f'[*] Mensagem recebida de {addr[0]}: {request.decode("utf-8")}')
             #response = f'\nMensagem destinada ao cliente: {addr[0]}\n'
             #client_socket.send(response.encode('utf-8'))
-            binary_list = [bin(byte)[2:].zfill(8)for byte in request]
-            print("A lista binária recebida é:",binary_list)
+            #binary_list = [bin(byte)[2:].zfill(8)for byte in request]
+            #print("A lista binária recebida é:",binary_list)
+            #length = size[0]
 
-            bit_list = [list(map(int,bin(byte)[2:].zfill(8)))for byte in request]
-            print("A lista de inteiros binários é:",bit_list)
+            bit_list = bytes_to_bits(request,13)
+            print("A bit_list ficou: ",bit_list)
+
+            #bit_list = [list(map(int,bin(byte)[2:].zfill(8)))for byte in request]
+            #print("A lista de inteiros binários é:",bit_list)
 
             #ack_message = '\nACK!\nRecebido pelo servidor!\n'
             #client_socket.send(ack_message.encode('utf-8'))

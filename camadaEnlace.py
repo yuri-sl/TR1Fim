@@ -2,7 +2,7 @@ from camadaFisica import converterBinario
 from camadaFisica import ErroMeioFisico
 from convertions import *
 #from notebook import ocorreuErro,erroEnquad,erroTransmit
-from configs import *
+#from configs import *
 def calculate_parity(bits, positions):
     """
     Calcula o bit de paridade para os índices fornecidos.
@@ -45,7 +45,7 @@ def decode_hamming_12_8(encoded):
     """
     Decodifica a mensagem e corrige um único erro, se houver.
     """
-
+    print("this is a encoded:",encoded)
     encoded = [int(bit) for sublist in encoded for bit in sublist]
 
     n = len(encoded)
@@ -306,7 +306,7 @@ class BitDeParidade:
         lista = convertToByteDetect(lista)
         lista = removeLSBit(lista)
         return lista
-    
+        
 
 
 class ContagemDeCaracteres:
