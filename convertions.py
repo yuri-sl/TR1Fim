@@ -208,3 +208,14 @@ def removeIntegersToChar(data):
         return data
     else:
         print('Its a number',char)
+
+def generateChar(binary_list):
+        # Step 1: Convert the binary list to a binary string
+    binary_string = ''.join(map(str, binary_list))
+    
+    # Step 2: Convert the binary string to an integer
+    decimal_value = int(binary_string, 2)
+    
+    # Step 3: Convert the decimal value to a character
+    character = chr(decimal_value)
+    return character

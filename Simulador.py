@@ -8,6 +8,7 @@ from convertions import *
 from processSignal import length
 from tuple import *
 from configs import *
+from insertTextToScreen import *
 
 n=0
 server_running = True  # Controle global de iniciar/fechar o servidor
@@ -16,6 +17,7 @@ lock = threading.Lock()
 
 #Variavel global em lista que reserva as mensagens enviadas
 saved_message = []
+palavra_salva = ''
 
 def config_u_dectError(word):
     global config
@@ -52,7 +54,6 @@ def receberSinal():
 
     word,x_axis = buildNRZ(word)
     return data_y,data_x
-
 def demodularSinal():
     global saved_message
     print("DEMODULANDO O SINAL!!!!!!")
@@ -68,6 +69,33 @@ def demodularSinal():
         print("Enquadramento desfeito!",demoduled_word)
         if demoduled_word == None:
             continue
+        #print(demoduled)
+        #demoduled.append(demoduled_word)
+        #print("Bit de paridade/CRC removido: ",demoduled)
+    print(demoduled)
+    filtered_list = [item for item in demoduled if item is not None]
+    print(filtered_list)
+    
+    # Atualiza `saved_message` com os dados demodulados
+    saved_message = demoduled
+    return demoduled
+
+def demodularSinalToChar():
+    global saved_message
+    print("DEMODULANDO O SINAL!!!!!!")
+    
+    demoduled = []
+    
+    for word in saved_message:
+        print("Palavra sendo demodulada:", word)
+        demoduled_word = demodularHamming(word[:])  # Usar uma cópia de `word`
+        print("Hamming Removido:", demoduled_word)
+        demoduled_word = demod_detect(demoduled_word[:])
+        demoduled_word = demod_enq(demoduled_word[:])
+        print("Enquadramento desfeito!",demoduled_word)
+        if demoduled_word == None:
+            continue
+        demoduled_word = createChar(demoduled_word[:])
         demoduled.append(demoduled_word)
         #print(demoduled)
         #demoduled.append(demoduled_word)
@@ -117,6 +145,7 @@ def start_server():
         global tuple
         global tamanho
         global n
+        global palavra_salva
 
         print("Entrou em handle client")
         print("O global tuple é: ",tuple)
@@ -151,6 +180,12 @@ def start_server():
             del saved_message[:]
             saved_message.extend(received)
             print("Mensagem salva em variável fica como: ",saved_message)
+            palavra_salva = demodularSinalToChar()
+            print("VOCÊ DIGITOU NO TRANSMISSOR: ",palavra_salva)
+            print("A MENSAGEM SALVA NO SERVIDOR É: ",palavra_salva)
+            nova_palavra = inserirTexto(palavra_salva)
+            client_socket.send(nova_palavra.encode('utf-8'))
+
         except Exception as e:
             print(f"Erro ao processar cliente {addr}: {e}")
         finally:

@@ -57,10 +57,14 @@ def demod_enq(binword):
     if config["enquadramento"]=='charCount':
         if not config["modulacao"]=="Manchester":
             binword = removeIntegersToChar(binword)
-            binword = binword[0]
+            print('Binword do enquadramento resultante foi: ',binword)
             if not binword == None:
                 return binword
             
     if config["enquadramento"]=='insByte':
         #binword =
+        return binword
+def createChar(binword):
+    if not config["modulacao"] == "Manchester":
+        binword = generateChar(binword)
         return binword

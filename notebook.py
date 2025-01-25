@@ -298,6 +298,7 @@ class MyWindow(Gtk.Window):
         global size
         global length
         global tamanho
+        global palavra_salva
         print("A configuração escolhida para a modulação foi de: ",config["modulacao"])
         print("A config. escolhida para enq foi de: ",config["enquadramento"])
         print("A config escolhida de detec. Erro foi de: ",config["deteccao_erro"])
@@ -312,6 +313,7 @@ class MyWindow(Gtk.Window):
             print(tuple)
             print(sendMessage(utfWord))
             print(saved_message)
+            mensagem = ''
 
 
 
