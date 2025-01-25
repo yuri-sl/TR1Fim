@@ -1,3 +1,4 @@
+#from configs import *
 
 #Entrada: [[0,0,1,1,1,1]] Saída: '001111'
 def convertToString(byteList):
@@ -43,9 +44,8 @@ def convertToByteDetect(stringList,desiredSize):
     return byteWord
 
 def removeLSBit(byteWord):
-    for i in range(len(byteWord)):
-        byteWord[i] = byteWord[i][:-1]  # Remove the last bit from each byte
-    return byteWord
+    print('This is your byteWord: ',byteWord)
+    return byteWord[:-1]
 
 def bits_to_bytes(wordBit):
     byte_array = bytearray()
@@ -180,3 +180,31 @@ def removePadding(bit_list, padding_info):
         if padding > 0:
             bit_list = bit_list[:-(padding)]
     return bit_list
+
+def demodularHamming(word):
+    n = len(word)
+    two_data = []
+    i = 0
+    value = 2**i
+    
+    while value <= n:
+        two_data.append(value - 1)
+        i += 1
+        value = 2**i
+    
+    removed_word = [bit for idx, bit in enumerate(word) if idx not in two_data]
+    return removed_word
+
+def removeIntegersToChar(data):
+    result = []
+    # Convert the 8-bit list to a string (representing binary)
+    binary_string = ''.join(map(str, data))
+    
+    # Convert the binary string to a character
+    char = chr(int(binary_string, 2))
+    
+    # Check if the character is a digit
+    if not char.isdigit():
+        return data
+    else:
+        print('Its a number',char)

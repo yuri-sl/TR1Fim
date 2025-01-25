@@ -7,6 +7,7 @@ from camadaEnlace import *
 from convertions import *
 from processSignal import length
 from tuple import *
+from configs import *
 
 n=0
 server_running = True  # Controle global de iniciar/fechar o servidor
@@ -55,22 +56,42 @@ def receberSinal():
 def demodularSinal():
     global saved_message
     print("DEMODULANDO O SINAL!!!!!!")
-    for word in saved_message:    
-    #word = saved_message[0]
-        print("THIS IS THE WORD WE ARE DEMODULATING!!",word)
-        word = convertToString(word)
-        size = len(word)
-        print("THIS IS THE SIZE: ",size)
-        word = convertToByteDetect(word,size)
-        added = math.log2(size)
-        size - size - added
-        word = dec_hamming_correct(word)
-        print("A Hamming demodulada fica: ",word)
-        word = convertToByteDetect(word,size)
-        #word = removeLSBit(word)
-        print("Tornando em int list: ",word)
-        word = config_u_dectError(word)
-        print("A word sem detect erro ficou como: ",word)
+    
+    demoduled = []
+    
+    for word in saved_message:
+        print("Palavra sendo demodulada:", word)
+        demoduled_word = demodularHamming(word[:])  # Usar uma cópia de `word`
+        print("Hamming Removido:", demoduled_word)
+        demoduled_word = demod_detect(demoduled_word[:])
+        demoduled_word = demod_enq(demoduled_word[:])
+        print("Enquadramento desfeito!",demoduled_word)
+        if demoduled_word == None:
+            continue
+        demoduled.append(demoduled_word)
+        #print(demoduled)
+        #demoduled.append(demoduled_word)
+        #print("Bit de paridade/CRC removido: ",demoduled)
+    print(demoduled)
+    filtered_list = [item for item in demoduled if item is not None]
+    print(filtered_list)
+    
+    # Atualiza `saved_message` com os dados demodulados
+    saved_message = demoduled
+    return demoduled
+        #word = convertToString(word)
+        #size = len(word)
+        #print("THIS IS THE SIZE: ",size)
+        #word = convertToByteDetect(word,size)
+        #added = math.log2(size)
+        #size - size - added
+        #word = dec_hamming_correct(word)
+        #print("A Hamming demodulada fica: ",word)
+        #word = convertToByteDetect(word,size)
+        ##word = removeLSBit(word)
+        #print("Tornando em int list: ",word)
+        #word = config_u_dectError(word)
+        #print("A word sem detect erro ficou como: ",word)
 
 
 

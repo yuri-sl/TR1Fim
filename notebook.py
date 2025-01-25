@@ -333,7 +333,6 @@ class MyWindow(Gtk.Window):
         if len(saved_message) > 0:
             binWord,x_axis = receberSinal()
             self.showGraphBfr(binWord,x_axis,"Sinal recebido antes de demodular","Sinal recebido")
-            #self.show_graph(binWord,x_axis,"Sinal recebido antes de demodular","Sinal rececbido")
         else:
             popUp = noSignal()
             popUp.show_all()
@@ -349,8 +348,8 @@ class MyWindow(Gtk.Window):
             #word = saved_message[0]    
             #BinWordNRZ é apenas um teste preliminar para ver se o gráfico aparece direito na tela de após demodular
             
-            word,x_axis = buildNRZ(word)
-            self.show_graph(word,x_axis,"Sinal recebido e que sogreu demodulação","Sinal após demodular")
+            #word,x_axis = buildNRZ(word)
+            #self.show_graph(word,x_axis,"Sinal recebido e que sogreu demodulação","Sinal após demodular")
         else:
             popUp = noSignal()
             popUp.show_all()

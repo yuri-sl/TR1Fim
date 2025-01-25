@@ -46,3 +46,21 @@ def config_deteccao(binWord):
         crc_class = convertToByte(crc_class)
         print("crc_class em bytes ficou como: ",crc_class)
         return crc_class
+def demod_detect(binword):
+    if config["deteccao_erro"]=='paridade':
+        binword = removeLSBit(binword)
+        return binword
+    if config["deteccao_erro"]=='CRC':
+        print("This is CRC: ",binword)
+        return binword
+def demod_enq(binword):
+    if config["enquadramento"]=='charCount':
+        if not config["modulacao"]=="Manchester":
+            binword = removeIntegersToChar(binword)
+            binword = binword[0]
+            if not binword == None:
+                return binword
+            
+    if config["enquadramento"]=='insByte':
+        #binword =
+        return binword

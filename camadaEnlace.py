@@ -270,7 +270,7 @@ class BitDeParidade:
         for item in self.lista:             # Por cada caractere
             self.aux = 0                    # Sempre reinicia o contador
             for i in item:                  # Em cada bit do caractere
-                if i == "0":                # Se é 0 ou 1
+                if i == 0:                # Se é 0 ou 1
                     self.aux += 0
                 else:
                     self.aux += 1
