@@ -1,5 +1,5 @@
 from camadaEnlace import *
-from camadaFisica import convert_Manchester
+from camadaFisica import *
 
 
 servidorAtivo = False
@@ -20,6 +20,10 @@ config = {
 def config_modulacao(binWord):
     if config["modulacao"] == "Manchester":
         return convert_Manchester(binWord)
+    if config["modulacao"] == "NRZ":
+        return convertNRZ(binWord)
+    if config["modulacao"] == "Bipolar":
+        return convertBipolar(binWord)
     else:
         return binWord
 

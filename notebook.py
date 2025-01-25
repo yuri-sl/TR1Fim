@@ -438,12 +438,14 @@ class MyWindow(Gtk.Window):
         hboxModDig = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing= 10)
         hboxModDig.set_halign(Gtk.Align.CENTER)
 
-        rdNRZ_modDig = Gtk.RadioButton.new_with_label_from_widget(None,"NRZ")
+        rdNRZ_modDig = Gtk.RadioButton.new_with_label(None,"NRZ")
         rdNRZ_modDig.connect("toggled",self.on_radio_toggled_dig,"NRZ")
         rdMCH_modDig = Gtk.RadioButton.new_with_label_from_widget(rdNRZ_modDig,"Manchester")
         rdMCH_modDig.connect("toggled",self.on_radio_toggled_dig,"Manchester")
         rdBIP_modDig = Gtk.RadioButton.new_with_label_from_widget(rdNRZ_modDig,"Bipolar")
         rdBIP_modDig.connect("toggled",self.on_radio_toggled_dig,"Bipolar")
+        rdNRZ_modDig.set_active(True)
+        config["modulacao"] = "NRZ"
 
         hboxModDig.pack_start(rdNRZ_modDig, False,False, 0)
         hboxModDig.pack_start(rdMCH_modDig, False,False, 0)
@@ -483,7 +485,7 @@ class MyWindow(Gtk.Window):
 
         hboxEnq = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,spacing=10)
         hboxEnq.set_halign(Gtk.Align.CENTER)
-        rdCharCount = Gtk.RadioButton.new_with_label_from_widget(None,"Contagem de Caracteres")
+        rdCharCount = Gtk.RadioButton.new_with_label(None,"Contagem de Caracteres")
         rdCharCount.connect("toggled",self.on_radio_enq,"charCount")
 
         rdInsByte = Gtk.RadioButton.new_with_label_from_widget(rdCharCount,"Inserção de Bytes")
@@ -493,6 +495,8 @@ class MyWindow(Gtk.Window):
         hboxEnq.pack_start(rdCharCount, False, False, 0)
         hboxEnq.pack_start(rdInsByte, False, False, 0)
 
+        rdCharCount.set_active(True)
+        config["enquadramento"] = "charCount"
         ##Detecção de Erros
         lblDtError = Gtk.Label(label="Detecção de erros")
         lblDtError.get_style_context().add_class("lblSection")
@@ -509,7 +513,8 @@ class MyWindow(Gtk.Window):
         hboxDtError.pack_start(rdParity,False,False,0)
         hboxDtError.pack_start(rdCRC,False,False,0)
 
-
+        rdParity.set_active(True)
+        config["deteccao_erro"] = "paridade"
         ##Correção de Erros
         lblCorrError = Gtk.Label(label="Correção de erros")
         lblCorrError.get_style_context().add_class("lblSection")
