@@ -64,3 +64,7 @@ def demod_enq(binword):
     if config["enquadramento"]=='insByte':
         #binword =
         return binword
+def createChar(binword):
+    if not config["modulacao"] == "Manchester":
+        binword = generateChar(binword)
+        return binword
