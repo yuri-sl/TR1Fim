@@ -312,7 +312,7 @@ class MyWindow(Gtk.Window):
             saved_message.clear()
             print(tuple)
             print(sendMessage(utfWord))
-            print(saved_message)
+            print('O servidor já executou a sua função',demoduled)
             mensagem = ''
 
 

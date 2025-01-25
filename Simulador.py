@@ -8,7 +8,7 @@ from convertions import *
 from processSignal import length
 from tuple import *
 from configs import *
-from insertTextToScreen import *
+#from insertTextToScreen import *
 
 n=0
 server_running = True  # Controle global de iniciar/fechar o servidor
@@ -18,6 +18,8 @@ lock = threading.Lock()
 #Variavel global em lista que reserva as mensagens enviadas
 saved_message = []
 palavra_salva = ''
+demoduled = []
+
 
 def config_u_dectError(word):
     global config
@@ -82,9 +84,9 @@ def demodularSinal():
 
 def demodularSinalToChar():
     global saved_message
+    global demoduled
     print("DEMODULANDO O SINAL!!!!!!")
     
-    demoduled = []
     
     for word in saved_message:
         print("Palavra sendo demodulada:", word)
@@ -183,8 +185,8 @@ def start_server():
             palavra_salva = demodularSinalToChar()
             print("VOCÊ DIGITOU NO TRANSMISSOR: ",palavra_salva)
             print("A MENSAGEM SALVA NO SERVIDOR É: ",palavra_salva)
-            nova_palavra = inserirTexto(palavra_salva)
-            client_socket.send(nova_palavra.encode('utf-8'))
+            #nova_palavra = inserirTexto(palavra_salva)
+            #client_socket.send(nova_palavra.encode('utf-8'))
 
         except Exception as e:
             print(f"Erro ao processar cliente {addr}: {e}")
