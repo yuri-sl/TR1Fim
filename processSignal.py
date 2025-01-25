@@ -21,12 +21,9 @@ def processSignal(sentText):
     binWord = config_enquadramento(binWord)
     print("A binword enquadrada é:",binWord)
     ##Falta aplicarmos a Detecção de erros!!
+    # Adiciona a detecção ou correção de erros Paridade, CRC ou Hamming
     binWord = config_deteccao(binWord)
     print("A binword com a detecção ficou: ",binWord)
-    #Aplica a construção do Hamming
-    binWord = encode_hamming(binWord)
-    print("A binword após a construção do  hamming é: ",binWord)
-
 
     print("A binword antes do erro é: ",binWord)
     #Aplica a % do Erro no enquadramento
