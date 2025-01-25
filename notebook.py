@@ -495,7 +495,7 @@ class MyWindow(Gtk.Window):
         hboxEnq.pack_start(rdInsByte, False, False, 0)
 
         ##Detecção de Erros
-        lblDtError = Gtk.Label(label="Detecção de erros")
+        lblDtError = Gtk.Label(label="Detecção/Correção de erros")
         lblDtError.get_style_context().add_class("lblSection")
 
 
@@ -507,20 +507,12 @@ class MyWindow(Gtk.Window):
         rdCRC = Gtk.RadioButton.new_with_label_from_widget(rdParity,"CRC")
         rdCRC.connect("toggled",self.on_radio_error,"CRC")
 
+        rdHamming = Gtk.RadioButton.new_with_label_from_widget(rdCRC,"Hamming")
+        rdHamming.connect("toggled",self.on_radio_error,"Hamming")
+
         hboxDtError.pack_start(rdParity,False,False,0)
         hboxDtError.pack_start(rdCRC,False,False,0)
-
-
-        ##Correção de Erros
-        lblCorrError = Gtk.Label(label="Correção de erros")
-        lblCorrError.get_style_context().add_class("lblSection")
-
-
-        hboxCorrError = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,spacing=10)
-        hboxCorrError.set_halign(Gtk.Align.CENTER)
-        rdHamming = Gtk.RadioButton.new_with_label_from_widget(None,"Hamming")
-        
-        hboxCorrError.pack_start(rdHamming,False,False,0)
+        hboxDtError.pack_start(rdHamming,False,False,0)
 
         ##TransmitMessage
         lblWarning = Gtk.Label(label="Obs.: 0,011% de chance de ocorrência de erros")
@@ -550,8 +542,6 @@ class MyWindow(Gtk.Window):
         page1.pack_start(hboxEnq,False,False,0)
         page1.add(lblDtError)
         page1.pack_start(hboxDtError,False,False,0)
-        page1.add(lblCorrError)
-        page1.add(hboxCorrError)
         page1.add(lblWarning)
         page1.add(btnTransmitMessage)
 

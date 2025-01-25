@@ -14,7 +14,7 @@ size = []
 config = {
     "texto": None,          # Texto que o usuário quer transmitir
     "modulacao": None,      # Tipo de modulação (NRZ, Manchester, Bipolar, etc.)
-    "deteccao_erro": None,  # Tipo de detecção de erro (paridade, CRC, etc.)
+    "deteccao_erro": None,  # Tipo de detecção de erro (paridade, CRC, Hamming etc.)
     "enquadramento": None   # Tipo de enquadramento (se aplicável)
 }
 def config_modulacao(binWord):
@@ -46,6 +46,10 @@ def config_deteccao(binWord):
         crc_class = convertToByte(crc_class)
         print("crc_class em bytes ficou como: ",crc_class)
         return crc_class
+    if config["deteccao_erro"] =='Hamming':
+        binWord = encode_hamming(binWord)
+        return binWord
+    
 def demod_detect(binword):
     if config["deteccao_erro"]=='paridade':
         binword = removeLSBit(binword)
@@ -53,6 +57,9 @@ def demod_detect(binword):
     if config["deteccao_erro"]=='CRC':
         print("This is CRC: ",binword)
         return binword
+    if config["deteccao_erro"] == "Hamming":
+        return demodularHamming(binword)
+
 def demod_enq(binword):
     if config["enquadramento"]=='charCount':
         if not config["modulacao"]=="Manchester":
