@@ -1,6 +1,7 @@
 from camadaEnlace import *
 from camadaFisica import *
 from configs import *
+from tuple import tuple
 length = []
 
 def processSignal(sentText):
@@ -42,22 +43,15 @@ def processSignal(sentText):
     print("Erro na propagação---")
     erro = ErroMeioFisico(binWord)
     binWord = erro.erro()
-    print("Binword com erro na propagação: ",binWord)  
-    item = len(binWord[0])
-    if len(size)>0:
-        size.clear()
-    else:
-        size.append(item)
-    print("THE BINWORD'S SIZE IS: ",size)        
-
-
+    print("Binword com erro na propagação: ",binWord)        
     #utfWord = convertUTF(binWord)
-    utfWord,saved_size = bits_to_bytes(binWord)
-    copy_length(saved_size)
-    print("The length global is: ",length)
-    print("A binword está como: ",utfWord)
-    #Transmite
-    return utfWord
+    blist,tamanho,length = executeEverything(binWord)
+    print(blist)
+    return blist,tamanho,length
+    #ans = executeSecondHalf(blist,tamanho)
+    #print("THE EXECUTION WAS A SUCCEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSS")
+    #print(ans)
+    #return utfWord
 
 def copy_length(alist):
     global length

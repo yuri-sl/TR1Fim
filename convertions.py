@@ -72,15 +72,111 @@ def bytes_to_bits(byte_array, length):
     bit_list = []
     all_recovered_bits = []
 
-    # Converter cada byte do byte_array para representação binária de 8 bits
+    # Convert each byte in the bytearray to its 8-bit binary representation
     for byte in byte_array:
         bit_list.extend(int(bit) for bit in format(byte, "08b"))
 
-    # Extrair a lista original de bits do comprimento especificado
-    start = 0
-    while start < len(bit_list):
-        # Extrair o bloco ajustado ao comprimento especificado
-        all_recovered_bits.append(bit_list[start:start + length])
-        start += length  # Pular exatamente o comprimento necessário
+    # Extrair os blocos corretamente com base no comprimento desejado
+    total_bits = len(bit_list)
+    for i in range(0, total_bits, length):
+        # Certifique-se de que o último bloco não ultrapasse o comprimento 'length'
+        all_recovered_bits.append(bit_list[i:i + length])
 
     return all_recovered_bits
+def executeEverything(int_list):
+    """
+    Processes a list of nested bit lists into a single bytearray and collects padding info.
+    """
+    print("LET'S EXECUTE THIS BULLSHIT", int_list)
+    combined_bytearray = bytearray()
+    padding_info = []
+    lengths = []  # Store lengths of original sublists (before padding)
+
+    for i, sublist in enumerate(int_list):
+        if not sublist:  # Skip empty sublists
+            padding_info.append([])
+            lengths.append(0)
+            continue
+
+        bit_list, sub_padding_info = fitSize(sublist)
+        byte_array = toByteArray(bit_list)
+        combined_bytearray.extend(byte_array)
+        lengths.append(len(byte_array))  # Store the length of the current sublist's bytearray
+        padding_info.append(sub_padding_info)
+    
+    return combined_bytearray, padding_info, lengths
+
+
+def executeSecondHalf(combined_bytearray, padding_info, lengths):
+    """
+    Reverses the process: reconstructs the original bit list from the combined bytearray.
+    """
+    restored_bit_list = []
+    start = 0
+
+    for i, sub_padding_info in enumerate(padding_info):
+        if lengths[i] == 0:  # Handle empty sublist
+            restored_bit_list.append([])
+            continue
+
+        # Extract the relevant section of the bytearray for this sublist
+        sub_bytearray = combined_bytearray[start:start + lengths[i]]
+        start += lengths[i]
+        
+        # Convert byte array back to bit list
+        restored_bits = toBitList(sub_bytearray)
+        # Remove the padding for this sublist
+        restored_bits = removePadding(restored_bits, sub_padding_info)
+        restored_bit_list.append(restored_bits)
+
+    return restored_bit_list
+
+
+def fitSize(alist):
+    """
+    Converts a flat list of bits into 8-bit chunks and tracks padding information.
+    """
+    byte_list = []  # List to store 8-bit chunks
+    padding_info = []  # Info about how much padding was added
+    
+    for i in range(0, len(alist), 8):
+        byte = alist[i:i + 8]
+        if len(byte) < 8:
+            padding = 8 - len(byte)
+            byte = byte + [0] * padding  # Pad with zeros at the end
+            padding_info.append((len(byte_list), padding))
+        byte_list.append(byte)
+        
+    return byte_list, padding_info
+
+
+def toByteArray(bit_list):
+    """
+    Converts a list of 8-bit lists into a bytearray.
+    """
+    byte_array = bytearray()
+    for byte in bit_list:
+        byte_value = int("".join(map(str, byte)), 2)
+        byte_array.append(byte_value)
+    return byte_array
+
+
+def toBitList(byte_array):
+    """
+    Converts a bytearray back into a flat list of bits.
+    """
+    bit_list = []
+    for byte in byte_array:
+        bits = list(map(int, format(byte, "08b")))
+        bit_list.extend(bits)
+    return bit_list
+
+
+def removePadding(bit_list, padding_info):
+    """
+    Removes padding bits based on padding information.
+    """
+    for index, padding in reversed(padding_info):
+        if padding > 0:
+            bit_list = bit_list[:-(padding)]
+    return bit_list

@@ -18,7 +18,7 @@ from Simulador import *
 from clientTCP import *
 from configs import *
 from convertions import *
-
+from tuple import *
 
 
 def addCSS():
@@ -178,10 +178,14 @@ class noSignal(Gtk.Window):
         self.connect("destroy",self.hide)
 
 class MyWindow(Gtk.Window):
+    global tuple
     def show_graph(self, x_data, y_data, title, label, step=True):
         # Criação de uma nova janela GTK para o gráfico
         graph_window = Gtk.Window(title=title)
         graph_window.set_default_size(800, 600)
+
+        print("The x_data is: ",x_data)
+        print("The y_data is: ",y_data)
 
         unpack_x = []
         unpack_y = []
@@ -215,7 +219,31 @@ class MyWindow(Gtk.Window):
 
         # Exibindo a janela do gráfico
         graph_window.show_all()
+    def showGraphBfr(self, x_data, y_data, title, label, step=True):
+        # Criação de uma nova janela GTK para o gráfico
+        graph_window = Gtk.Window(title=title)
+        graph_window.set_default_size(800, 600)
 
+        print("The x_data is: ",x_data)
+        print("The y_data is: ",y_data)
+
+        # Criando a figura do Matplotlib
+        fig, ax = plt.subplots()
+        if step == True:
+            ax.step(y_data, x_data, label=label)
+        else:
+            ax.plot(y_data, x_data, label=label)
+        ax.set_title(title)
+        ax.axhline(0, color='red', linestyle='--', linewidth=2, label='y = 0')
+        ax.legend()
+
+        # Incorporando a figura no GTK
+        canvas = FigureCanvas(fig)
+
+        graph_window.add(canvas)
+
+        # Exibindo a janela do gráfico
+        graph_window.show_all()
     # Connect the Dropdown Signal
     def on_combo_changed(self,widget):
         global entryBoxPreenchida
@@ -269,6 +297,7 @@ class MyWindow(Gtk.Window):
         global erroTransmit
         global size
         global length
+        global tamanho
         print("A configuração escolhida para a modulação foi de: ",config["modulacao"])
         print("A config. escolhida para enq foi de: ",config["enquadramento"])
         print("A config escolhida de detec. Erro foi de: ",config["deteccao_erro"])
@@ -276,7 +305,11 @@ class MyWindow(Gtk.Window):
             entryBoxPreenchida = True
         if entryBoxPreenchida == True and servidorAtivo == True:
             sentText = self.entryMessage.get_text()            #Transmite
-            utfWord = processSignal(sentText)
+            utfWord,tupla,tamanhoa = processSignal(sentText)
+            tuple.extend(tupla)
+            tamanho.extend(tamanhoa)
+            saved_message.clear()
+            print(tuple)
             print(sendMessage(utfWord))
             print(saved_message)
 
@@ -299,7 +332,8 @@ class MyWindow(Gtk.Window):
     def graphBfr(self,widget):
         if len(saved_message) > 0:
             binWord,x_axis = receberSinal()
-            self.show_graph(binWord,x_axis,"Sinal recebido antes de demodular","Sinal rececbido")
+            self.showGraphBfr(binWord,x_axis,"Sinal recebido antes de demodular","Sinal recebido")
+            #self.show_graph(binWord,x_axis,"Sinal recebido antes de demodular","Sinal rececbido")
         else:
             popUp = noSignal()
             popUp.show_all()
@@ -309,10 +343,10 @@ class MyWindow(Gtk.Window):
     def graphAftr(self,widget):
         global saved_message
         global size
-        word_Size = size[0]
+        #word_Size = size[0]
         if len(saved_message) >0:
-            demodularSinal(word_Size)
-            word = saved_message[0]    
+            demodularSinal()
+            #word = saved_message[0]    
             #BinWordNRZ é apenas um teste preliminar para ver se o gráfico aparece direito na tela de após demodular
             
             word,x_axis = buildNRZ(word)
