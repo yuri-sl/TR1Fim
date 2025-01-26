@@ -16,6 +16,7 @@ lock = threading.Lock()
 
 #Variavel global em lista que reserva as mensagens enviadas
 saved_message = []
+saved_message_puro = []
 
 def config_u_dectError(word):
     global config
@@ -32,16 +33,16 @@ def config_u_dectError(word):
 
 def receberSinal():
     #Acessar a variavel global saved_message
-    global saved_message
+    global saved_message_puro
     data_y = []
     data_x = []
     
-    print("A saved message é: ",saved_message)
-    print("Atual o tamanho de mensage é: ",len(saved_message))
+    print("A saved message é: ",saved_message_puro)
+    print("Atual o tamanho de mensage é: ",len(saved_message_puro))
     #Pegar a primeira mensagem enviada
-    word = saved_message[0]
+    word = saved_message_puro[0]
     print(word)
-    for word in saved_message:
+    for word in saved_message_puro:
         for data in word:
             data_y.append(data)
     print(data_y)
@@ -72,9 +73,9 @@ def demodularSinal():
         #print(demoduled)
         #demoduled.append(demoduled_word)
         #print("Bit de paridade/CRC removido: ",demoduled)
-    print(demoduled)
+    print("O demoduled é",demoduled)
     filtered_list = [item for item in demoduled if item is not None]
-    print(filtered_list)
+    print("A filtered_list é ",filtered_list)
     
     # Atualiza `saved_message` com os dados demodulados
     saved_message = demoduled
@@ -117,6 +118,7 @@ def start_server():
         global tuple
         global tamanho
         global n
+        global saved_message_puro
 
         print("Entrou em handle client")
         print("O global tuple é: ",tuple)
@@ -129,7 +131,7 @@ def start_server():
             #binary_list = [bin(byte)[2:].zfill(8)for byte in request]
             #print("A lista binária recebida é:",binary_list)
             #length = size[0]
-            bit_list = executeSecondHalf(request,tuple,tamanho)
+            bit_list = bytearray_to_binary_integer_lists(request,tuple)
             #bit_list = bytes_to_bits(request,13)
             #print("A bit_list ficou: ",bit_list)
 
@@ -140,17 +142,21 @@ def start_server():
             #client_socket.send(ack_message.encode('utf-8'))
             with lock:
                 received = bit_list
-            if n>0:
-                received.pop()
-                received.pop()
+            #if n>0:
+                #received.pop()
+                #received.pop()
             received = [sublist for sublist in received if sublist]
-            print("O received original é: ",received)
-            print("A mensagem received é: ",received)
-            #saved_message.clear()
-            n+=1
-            del saved_message[:]
+            #print("O received original é: ",received)
+            #print("A mensagem received é: ",received)
+            saved_message.clear()
+            saved_message.clear()
+            print("This is saved_message",saved_message)
             saved_message.extend(received)
-            print("Mensagem salva em variável fica como: ",saved_message)
+            saved_message_puro = saved_message.copy()
+            print("This is saved_message_puro: ",saved_message_puro)
+            received.clear()
+            tuple.clear()
+            #print("Mensagem salva em variável fica como: ",saved_message)
         except Exception as e:
             print(f"Erro ao processar cliente {addr}: {e}")
         finally:

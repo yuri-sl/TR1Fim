@@ -57,7 +57,7 @@ def demod_enq(binword):
     if config["enquadramento"]=='charCount':
         if not config["modulacao"]=="Manchester":
             binword = removeIntegersToChar(binword)
-            binword = binword[0]
+            print("Esta é a binword da demod. enq",binword)
             if not binword == None:
                 return binword
             

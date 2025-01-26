@@ -45,9 +45,9 @@ def processSignal(sentText):
     binWord = erro.erro()
     print("Binword com erro na propagação: ",binWord)        
     #utfWord = convertUTF(binWord)
-    blist,tamanho,length = executeEverything(binWord)
-    print(blist)
-    return blist,tamanho,length
+    output_bytearray,original_lengths = convert_to_bytearray(binWord)
+    print(output_bytearray)
+    return output_bytearray,original_lengths
     #ans = executeSecondHalf(blist,tamanho)
     #print("THE EXECUTION WAS A SUCCEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSS")
     #print(ans)

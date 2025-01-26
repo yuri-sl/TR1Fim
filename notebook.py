@@ -298,16 +298,20 @@ class MyWindow(Gtk.Window):
         global size
         global length
         global tamanho
-        print("A configuração escolhida para a modulação foi de: ",config["modulacao"])
-        print("A config. escolhida para enq foi de: ",config["enquadramento"])
-        print("A config escolhida de detec. Erro foi de: ",config["deteccao_erro"])
+        #print("A configuração escolhida para a modulação foi de: ",config["modulacao"])
+        #print("A config. escolhida para enq foi de: ",config["enquadramento"])
+        #print("A config escolhida de detec. Erro foi de: ",config["deteccao_erro"])
         if self.entryMessage.get_text_length() > 0:
             entryBoxPreenchida = True
         if entryBoxPreenchida == True and servidorAtivo == True:
+            print("INICIO DA TRANSMISSÃO------")
+            sentText = ''
             sentText = self.entryMessage.get_text()            #Transmite
-            utfWord,tupla,tamanhoa = processSignal(sentText)
+            print("O SENTTEXT É: ",sentText)
+            utfWord,tupla = processSignal(sentText)
+            print("A UTFWORD É: ",utfWord)
+            tuple.clear()
             tuple.extend(tupla)
-            tamanho.extend(tamanhoa)
             saved_message.clear()
             print(tuple)
             print(sendMessage(utfWord))
@@ -330,7 +334,8 @@ class MyWindow(Gtk.Window):
             popup.show_all()
 
     def graphBfr(self,widget):
-        if len(saved_message) > 0:
+        print("Graph Bfr-> saved_message_puro",saved_message_puro)
+        if len(saved_message_puro) > 0:
             binWord,x_axis = receberSinal()
             self.showGraphBfr(binWord,x_axis,"Sinal recebido antes de demodular","Sinal recebido")
         else:
@@ -343,13 +348,15 @@ class MyWindow(Gtk.Window):
         global saved_message
         global size
         #word_Size = size[0]
-        if len(saved_message) >0:
-            demodularSinal()
+        print("A saved_message é ",saved_message)
+        sinalProcessado = demodularSinal()
+        if len(sinalProcessado) >0:
+            print("O sinal processado é",sinalProcessado)
             #word = saved_message[0]    
             #BinWordNRZ é apenas um teste preliminar para ver se o gráfico aparece direito na tela de após demodular
             
-            #word,x_axis = buildNRZ(word)
-            #self.show_graph(word,x_axis,"Sinal recebido e que sogreu demodulação","Sinal após demodular")
+            sinalProcessado,x_axis = buildNRZ(sinalProcessado)
+            self.show_graph(sinalProcessado,x_axis,"Sinal recebido e que soreu demodulação","Sinal após demodular")
         else:
             popUp = noSignal()
             popUp.show_all()
