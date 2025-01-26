@@ -3,11 +3,8 @@
 #Entrada: [[0,0,1,1,1,1]] Saída: '001111'
 def convertToString(byteList):
     ans = ''
-    for byte in byteList:
-        #print('The byte is',byte)
-        for bit in byte:
-            ans += str(bit)
-            #rint('the bit is',bit)
+    for bit in byteList:
+        ans += str(bit)
     print(ans)
     return ans
 
@@ -25,6 +22,19 @@ def convertToByte(stringList):
             byte.clear()
     print(byteWord)
     return byteWord
+def convertToByteCRCAdapt(stringList):
+    byteWord = []
+    byte = []
+    for bit in stringList:
+        if len(byte) < 11:
+            bit = int(bit)
+            byte.append(bit)
+        else:
+            print(byte)
+            byteWord.append(byte.copy())
+            byte.clear()
+    print(byte)
+    return byte
 
 def convertToByteDetect(stringList,desiredSize):
     byteWord = []

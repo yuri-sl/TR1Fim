@@ -374,14 +374,16 @@ class MyWindow(Gtk.Window):
         sinalProcessado = demodularSinal()
 
         # Verifica se o sinal foi demodulado corretamente
-        if len(sinalProcessado) > 0:
-            print("O sinal processado é", sinalProcessado)
-
+        if len(sinalProcessado) >0:
+            print("O sinal processado é",sinalProcessado)
+            #word = saved_message[0]    
+            #BinWordNRZ é apenas um teste preliminar para ver se o gráfico aparece direito na tela de após demodular
+            
             # Realiza o processamento preliminar para criar o gráfico NRZ
-            sinalProcessado, x_axis = buildNRZ(sinalProcessado)
-
+            sinalProcessado,x_axis = buildNRZ(sinalProcessado)
             # Exibe o gráfico do sinal após a demodulação
-            self.show_graph(sinalProcessado, x_axis, "Sinal recebido e que sofreu demodulação", "Sinal após demodular")
+            self.show_graph(sinalProcessado,x_axis,"Sinal recebido e que sofreu demodulação","Sinal após demodular")
+
             string_resposta = bin_to_string(sinalProcessado)
             print(string_resposta)
             self.entryMsgRecv.set_text(string_resposta)

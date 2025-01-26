@@ -175,7 +175,7 @@ class CRC_32:
             self.aux += i
         self.data = self.aux
         self.crc = None
-        self.generator = "100110000010001110110110111" # exemplo "1011"    
+        self.generator = "1011" # exemplo "1011"    
     def data_crc(self):    # Obter os bits de dados + o CRC
         self.crc = self.calcula_crc()
         return self.data + self.crc
@@ -231,7 +231,7 @@ class CRC_32:
         else:
             return False
     def remove_crc(self):
-        return self.data[:-32]
+        return self.data[:-3]
 """
 Como usar crc32
 junte todas as strings e retorne uma str só e passe dessa maneira ↓
