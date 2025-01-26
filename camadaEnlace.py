@@ -207,6 +207,7 @@ def verify_hamming(hamming_codes):
     """
     # Lista para armazenar os resultados da verificação
     verification_results = []
+    erro = False
 
     # Itera sobre cada código de Hamming na lista
     for hamming_code in hamming_codes:
@@ -258,7 +259,7 @@ class CRC_32:
         """
         self.aux = ""
         for i in data:
-            self.aux += i
+            self.aux += str(i)
         self.data = self.aux # Armazena os dados em formato string
         self.crc = None # Inicializa o valor do CRC como None
         self.generator = "1011" # exemplo "1011"    
@@ -397,6 +398,7 @@ class BitDeParidade:
         :param lista: Lista de bits a ser decodificada. Se não for fornecida, utiliza a lista codificada atual.
         :return: Lista de bits decodificados ou uma mensagem de erro se a paridade for inválida
         """
+        erro = False
         if lista is not None:  # Se a lista for fornecida, usa a lista fornecida
             self.encoded_lista = lista
         elif not self.encoded_lista:  # Se a lista codificada não existir, retorna erro
@@ -409,11 +411,13 @@ class BitDeParidade:
                 bit = int(item[j])
                 aux += bit
             bit_paridade = int(item[-1])  # O último bit é o bit de paridade
-            if (aux % 2) == bit_paridade:  # Verifica se a paridade calculada é válida
-                self.decoded_lista.append(item[:-1])  # Adiciona o item sem o bit de paridade
+            self.decoded_lista.append(item[:-1])  # Adiciona o item sem o bit de paridade
+            if (aux % 2) != bit_paridade:  # Verifica se a paridade calculada é válida
+                pass
             else:
                 print(f"\nAlgum bit está incorreto! no item: {item}\n")  # Informa se a paridade estiver incorreta
-        return self.decoded_lista  # Retorna a lista de bits decodificados
+                erro = True
+        return self.decoded_lista,erro  # Retorna a lista de bits decodificados
 
     def remover_bit_de_paridade(self, lista):
         """

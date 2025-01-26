@@ -14,7 +14,7 @@ size = []  # Lista para armazenar o tamanho de dados ou informações
 config = {
     "texto": None,          # Texto que o usuário quer transmitir
     "modulacao": None,      # Tipo de modulação (NRZ, Manchester, Bipolar, etc.)
-    "deteccao_erro": None,  # Tipo de detecção de erro (paridade, CRC, etc.)
+    "deteccao_erro": None,  # Tipo de detecção de erro (paridade, CRC, Hamming etc.)
     "enquadramento": None   # Tipo de enquadramento (se aplicável)
 }
 
@@ -56,21 +56,21 @@ def config_deteccao(binWord):
             crc_bit.append(a)
         print("No fim, o crc ficou: ",crc_bit)
         return crc_bit
+    if config["deteccao_erro"] == "Hamming":
+        return encode_hamming(binWord)
 def demod_detect(binword):
-    """
-    Aplica a demodulação e verificação de erro configurada na palavra binária.
-
-    :param binword: Palavra binária a ser demodulada e verificada
-    :return: Palavra binária após a demodulação e remoção de erro
-    """
     if config["deteccao_erro"] == 'paridade':
-        binword = removeLSBit(binword)  # Remove o bit menos significativo se for paridade
-        return binword  # Retorna a palavra binária após remoção do bit de paridade
+        # binword = removeLSBit(binword)  # Remove o bit menos significativo se for paridade
+        binword,erro = BitDeParidade().decode_bit_de_paridade([binword])
+        return binword[0],erro  # Retorna a palavra binária após remoção do bit de paridade
     if config["deteccao_erro"] == 'CRC':
-        print("This is CRC: ", binword)  # Exibe a palavra binária com CRC
-        return binword  # Retorna a palavra binária com CRC (sem alteração)
+        crc = CRC_32(binword)
+        error_ocurred = crc.verifica_crc()
+        return crc.remove_crc(), error_ocurred
+    if config["deteccao_erro"] == "Hamming":
+        error_ocurred = verify_hamming([binword])
+        return demodularHamming(binword),error_ocurred
 
-        return binword
 def demod_enq(binword):
     """
     Aplica a demodulação de enquadramento configurada na palavra binária.

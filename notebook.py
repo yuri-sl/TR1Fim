@@ -331,16 +331,23 @@ class MyWindow(Gtk.Window):
             print("A UTFWORD É: ", utfWord)
             tuple.clear()  # Limpa a tupla global
             tuple.extend(tupla)  # Adiciona os dados processados à tupla
-            saved_message.clear()  # Limpa a mensagem salva
+            #saved_message.clear()  # Limpa a mensagem salva
             print(tuple)
-            print(sendMessage(utfWord))  # Envia a mensagem
+            print(sendMessage(utfWord))
             print("Depois de sendMessage em notebbok",saved_message)
 
 
-            # Aqui, a comunicação é feita e o resultado pode ser exibido ou processado
 
-        # Se o servidor não está ativo, exibe uma janela de erro
+            #print(binWord)
+            #print(sendMessage(sentText))
+            #print("o received atualizado é ",received)
+            #print(item)
+            #item = saved_message[0]
+            #self.entryMsgRecv.set_text(item)
+            
         if servidorAtivo == False:
+            popup = erroEnviarMensagem()  # Cria a janela de erro
+            popup.show_all()  # Exibe a janela de erro
             popup = erroEnviarMensagem()  # Cria a janela de erro
             popup.show_all()  # Exibe a janela de erro
         else:
@@ -351,10 +358,6 @@ class MyWindow(Gtk.Window):
 
         print("Graph Bfr-> saved_message_puro", saved_message)  # Imprime o conteúdo da variável global saved_message
 
-
-    def graphBfr(self,widget):
-        print("Graph Bfr-> saved_message",saved_message)
-        print("Graph Bfr -> A mensagem pura é: ",saved_message_puro)
         # Verifica se há mensagens armazenadas na variável saved_message
         if len(saved_message) > 0:
             binWord, x_axis = receberSinal()  # Recebe o sinal processado e as coordenadas do gráfico
@@ -374,16 +377,14 @@ class MyWindow(Gtk.Window):
         sinalProcessado = demodularSinal()
 
         # Verifica se o sinal foi demodulado corretamente
-        if len(sinalProcessado) >0:
-            print("O sinal processado é",sinalProcessado)
-            #word = saved_message[0]    
-            #BinWordNRZ é apenas um teste preliminar para ver se o gráfico aparece direito na tela de após demodular
-            
-            # Realiza o processamento preliminar para criar o gráfico NRZ
-            sinalProcessado,x_axis = buildNRZ(sinalProcessado)
-            # Exibe o gráfico do sinal após a demodulação
-            self.show_graph(sinalProcessado,x_axis,"Sinal recebido e que sofreu demodulação","Sinal após demodular")
+        if len(sinalProcessado) > 0:
+            print("O sinal processado é", sinalProcessado)
 
+            # Realiza o processamento preliminar para criar o gráfico NRZ
+            sinalProcessado, x_axis = buildNRZ(sinalProcessado)
+
+            # Exibe o gráfico do sinal após a demodulação
+            self.show_graph(sinalProcessado, x_axis, "Sinal recebido e que sofreu demodulação", "Sinal após demodular")
             string_resposta = bin_to_string(sinalProcessado)
             print(string_resposta)
             self.entryMsgRecv.set_text(string_resposta)
@@ -557,8 +558,7 @@ class MyWindow(Gtk.Window):
         hboxEnq.pack_start(rdInsByte, False, False, 0)
         
         ##Detecção de Erros
-        # Criação de label para a seção de detecção de erros
-        lblDtError = Gtk.Label(label="Detecção de erros")
+        lblDtError = Gtk.Label(label="Detecção/Correção de erros")
         lblDtError.get_style_context().add_class("lblSection")
 
         # Criação de caixa horizontal para agrupar os radio buttons de detecção de erros
@@ -572,24 +572,16 @@ class MyWindow(Gtk.Window):
         rdCRC = Gtk.RadioButton.new_with_label_from_widget(rdParity, "CRC")
         rdCRC.connect("toggled", self.on_radio_error, "CRC")
 
+        rdHamming = Gtk.RadioButton.new_with_label_from_widget(rdCRC,"Hamming")
+        rdHamming.connect("toggled",self.on_radio_error,"Hamming")
+
         # Adiciona os radio buttons à caixa
+        hboxDtError.pack_start(rdParity,False,False,0)
+        hboxDtError.pack_start(rdCRC,False,False,0)
+        hboxDtError.pack_start(rdHamming,False,False,0)
+
         hboxDtError.pack_start(rdParity, False, False, 0)
         hboxDtError.pack_start(rdCRC, False, False, 0)
-
-        ##Correção de Erros
-        # Criação de label para a seção de correção de erros
-        lblCorrError = Gtk.Label(label="Correção de erros")
-        lblCorrError.get_style_context().add_class("lblSection")
-
-        # Criação de caixa horizontal para o radio button de correção de erros
-        hboxCorrError = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        hboxCorrError.set_halign(Gtk.Align.CENTER)
-
-        # Radio button para selecionar a correção de erro (Hamming)
-        rdHamming = Gtk.RadioButton.new_with_label_from_widget(None, "Hamming")
-
-        # Adiciona o radio button à caixa
-        hboxCorrError.pack_start(rdHamming, False, False, 0)
 
         ##Transmitir Mensagem
         # Criação de label com aviso sobre a chance de erro
@@ -615,9 +607,7 @@ class MyWindow(Gtk.Window):
         page1.add(lblEnq)
         page1.pack_start(hboxEnq, False, False, 0)
         page1.add(lblDtError)
-        page1.pack_start(hboxDtError, False, False, 0)
-        page1.add(lblCorrError)
-        page1.add(hboxCorrError)
+        page1.pack_start(hboxDtError,False,False,0)
         page1.add(lblWarning)
         page1.add(btnTransmitMessage)
 
