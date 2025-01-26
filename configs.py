@@ -30,31 +30,35 @@ def config_enquadramento(binWord):
         charCount = charCount.contar_caracteres()  # Conta os caracteres da palavra binária
         return charCount  # Retorna a palavra binária com contagem de caracteres
     if config["enquadramento"] == 'insByte':
-        insByte = InsercaoDeBytes(binWord)  # Cria instância de inserção de bytes
-        insByte = insByte.inserir_bytes()  # Insere bytes na palavra binária
-        return insByte  # Retorna a palavra binária com inserção de bytes
-
+        insByte = InsercaoDeBytes(binWord)
+        insByte = insByte.inserir_bytes()
+        return insByte
 def config_deteccao(binWord):
-    if config["deteccao_erro"] == 'paridade':
+    if config["deteccao_erro"] =='paridade':
         parity = BitDeParidade(binWord)  # Cria instância de verificação de paridade
         parity = parity.bit_de_paridade()  # Calcula o bit de paridade
         return parity  # Retorna a palavra binária com bit de paridade
-    if config["deteccao_erro"] == 'CRC':
-        print("A binword está como: ", binWord)  # Exibe a palavra binária antes da conversão
-        binWord = convertToString(binWord)  # Converte a palavra binária para string
-
-        crc_class = CRC_32(binWord)  # Cria instância de cálculo de CRC-32
-        crc_class = crc_class.calcula_crc()  # Calcula o CRC da palavra
-        crc_class = convertToByte(crc_class)  # Converte o CRC calculado para bytes
-        print("crc_class em bytes ficou como: ", crc_class)  # Exibe o CRC em bytes
-        return crc_class  # Retorna a palavra binária com CRC
+    if config["deteccao_erro"] =='CRC':
+        print("A binword está como: ",binWord)
+        crc_bit = []
+        for bit in binWord:    
+            print("O bit que vai sofrer o CRC é: ",bit)
+            bit = convertToString(bit)
+            crc_class = CRC_32(bit)
+            a = crc_class.data_crc()
+            b = CRC_32(a)
+            resultado = b.remove_crc()
+            print("O CRC INSERIDO NA STRING FICOU: ",a)
+            a = convertToByteCRCAdapt(a)
+            print("crc_class em bytes ficou como: ",a)
+            crc_bit.append(a)
+        print("No fim, o crc ficou: ",crc_bit)
+        return crc_bit
 
     if config["deteccao_erro"] =='Hamming':
         binWord = encode_hamming(binWord)
         return binWord
-    
-def demod_detect(binWord:list[int]) -> list[int]:
-    '''Detecta se ocorreu erro na transmissão da mensagem e remove os bits de detecção de erro'''
+def demod_detect(binword):
     if config["deteccao_erro"]=='paridade':
         # binWord = removeLSBit(binWord)
         binWord,erro = BitDeParidade().decode_bit_de_paridade([binWord])
@@ -62,9 +66,12 @@ def demod_detect(binWord:list[int]) -> list[int]:
 
     if config["deteccao_erro"]=='CRC':
         # print("This is CRC: ",binWord)
-        crc = CRC_32(binWord)
-        error_ocurred = crc.verifica_crc()
-        return crc.remove_crc(), error_ocurred
+        # crc = CRC_32(binWord)
+        # error_ocurred = crc.verifica_crc()
+        # return crc.remove_crc(), error_ocurred
+        print("This is CRC: ",binword)
+        binword = binword[:-3]
+        return binword
     if config["deteccao_erro"] == "Hamming":
         error_ocurred = verify_hamming([binWord])
         return demodularHamming(binWord),error_ocurred
