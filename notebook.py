@@ -357,7 +357,7 @@ class MyWindow(Gtk.Window):
             #BinWordNRZ é apenas um teste preliminar para ver se o gráfico aparece direito na tela de após demodular
             
             sinalProcessado,x_axis = buildNRZ(sinalProcessado)
-            self.show_graph(sinalProcessado,x_axis,"Sinal recebido e que soreu demodulação","Sinal após demodular")
+            self.show_graph(sinalProcessado,x_axis,"Sinal recebido e que sofreu demodulação","Sinal após demodular")
             string_resposta = bin_to_string(sinalProcessado)
             print(string_resposta)
             self.entryMsgRecv.set_text(string_resposta)

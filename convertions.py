@@ -25,6 +25,19 @@ def convertToByte(stringList):
             byte.clear()
     print(byteWord)
     return byteWord
+def convertToByteCRCAdapt(stringList):
+    byteWord = []
+    byte = []
+    for bit in stringList:
+        if len(byte) < 11:
+            bit = int(bit)
+            byte.append(bit)
+        else:
+            print(byte)
+            byteWord.append(byte.copy())
+            byte.clear()
+    print(byte)
+    return byte
 
 def convertToByteDetect(stringList,desiredSize):
     byteWord = []

@@ -24,6 +24,7 @@ def config_u_dectError(word):
         word = removeLSBit(word)
         return word
     if config["deteccao_erro"] == 'CRC':
+        print("Este é o CRC em word:",word)
         crc_class = CRC_32(word)
         crc_class = crc_class.verifica_crc()
         return crc_class

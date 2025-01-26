@@ -39,19 +39,28 @@ def config_deteccao(binWord):
         return parity
     if config["deteccao_erro"] =='CRC':
         print("A binword está como: ",binWord)
-        binWord = convertToString(binWord)
-
-        crc_class = CRC_32(binWord)
-        crc_class = crc_class.calcula_crc()
-        crc_class = convertToByte(crc_class)
-        print("crc_class em bytes ficou como: ",crc_class)
-        return crc_class
+        crc_bit = []
+        for bit in binWord:    
+            print("O bit que vai sofrer o CRC é: ",bit)
+            bit = convertToString(bit)
+            crc_class = CRC_32(bit)
+            a = crc_class.data_crc()
+            b = CRC_32(a)
+            resultado = b.remove_crc()
+            print("O CRC INSERIDO NA STRING FICOU: ",a)
+            a = convertToByteCRCAdapt(a)
+            print("crc_class em bytes ficou como: ",a)
+            crc_bit.append(a)
+        print("No fim, o crc ficou: ",crc_bit)
+        return crc_bit
 def demod_detect(binword):
     if config["deteccao_erro"]=='paridade':
         binword = removeLSBit(binword)
         return binword
     if config["deteccao_erro"]=='CRC':
         print("This is CRC: ",binword)
+        binword = binword[:-3]
+
         return binword
 def demod_enq(binword):
     if config["enquadramento"]=='charCount':
