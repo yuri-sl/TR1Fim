@@ -411,14 +411,12 @@ class BitDeParidade:
         self.decoded_lista = []  # Lista para armazenar os dados decodificados
         for item in self.encoded_lista:  # Para cada item na lista codificada
             aux = 0  # Contador de bits '1'
-            for j in range(len(item)):  # Conta os bits '1'
+            for j in range(len(item)-1):  # Conta os bits '1'
                 bit = int(item[j])
                 aux += bit
             bit_paridade = int(item[-1])  # O último bit é o bit de paridade
             self.decoded_lista.append(item[:-1])  # Adiciona o item sem o bit de paridade
             if (aux % 2) != bit_paridade:  # Verifica se a paridade calculada é válida
-                pass
-            else:
                 print(f"\nAlgum bit está incorreto! no item: {item}\n")  # Informa se a paridade estiver incorreta
                 erro = True
         return self.decoded_lista,erro  # Retorna a lista de bits decodificados
