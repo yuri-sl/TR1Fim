@@ -70,7 +70,11 @@ def demod_enq(binword):
             if not binword == None:
                 return binword
         else:
-            return binword
+            binword = removeIntegersToChar(binword)
+            print("Esta é a sua binword em manchester após demodular o enquadramento:",binword)
+            if not binword == None:
+                print("Você entrou no if que é para não adicionar o None")
+                return binword
             
     if config["enquadramento"]=='insByte':
         print("Em desenquadramento, a BinWord está como: ",binword)
@@ -82,3 +86,4 @@ def demod_mod(binword):
     if config["modulacao"]=="Manchester":
         print("Você está demodulando um sinal Manchester")
         print("Esta é a sua binword",binword)
+

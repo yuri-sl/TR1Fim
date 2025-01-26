@@ -78,6 +78,9 @@ def demodularSinal():
         #print("Hamming Removido:", demoduled_word)
         demoduled_word = demod_detect(demoduled_word[:])
         demoduled_word = demod_enq(demoduled_word[:])
+        if demoduled_word==None:
+            print("Amigo você fez coisa errada aí")
+        demoduled_word = demod_mod(demoduled_word[:])
         #print("Enquadramento desfeito!",demoduled_word)
         if demoduled_word == None:
             continue

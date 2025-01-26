@@ -218,6 +218,7 @@ def removeIntegersToChar(data):
         return data
     else:
         print('Its a number',char)
+        
 
 def convert_to_bytearray(list_of_lists):
     """
