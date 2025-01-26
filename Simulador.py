@@ -62,8 +62,12 @@ def receberSinal():
 
 def demodularSinal():
     global saved_message
+    global saved_message_puro
     #print("DEMODULANDO O SINAL!!!!!!")
-    
+    if len(saved_message_puro) == 0:
+        saved_message_puro = saved_message.copy()
+    else:
+        saved_message = saved_message_puro.copy()
     demoduled = []
     
     for word in saved_message:

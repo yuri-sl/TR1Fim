@@ -358,6 +358,9 @@ class MyWindow(Gtk.Window):
             
             sinalProcessado,x_axis = buildNRZ(sinalProcessado)
             self.show_graph(sinalProcessado,x_axis,"Sinal recebido e que soreu demodulação","Sinal após demodular")
+            string_resposta = bin_to_string(sinalProcessado)
+            print(string_resposta)
+            self.entryMsgRecv.set_text(string_resposta)
         else:
             popUp = noSignal()
             popUp.show_all()

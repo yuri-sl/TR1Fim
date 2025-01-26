@@ -279,3 +279,13 @@ def bytearray_to_binary_integer_lists(byte_array, original_lengths):
         bit_index += length
 
     return result
+def bin_to_string(binary_lists):
+    result = ""
+    for binary_list in binary_lists:
+        # Converte a lista de bits em uma string binária
+        binary_string = ''.join(map(str, binary_list))
+        # Converte a string binária em um número decimal
+        decimal_value = int(binary_string, 2)
+        # Converte o número decimal em um caractere ASCII
+        result += chr(decimal_value)
+    return result
