@@ -331,7 +331,7 @@ class MyWindow(Gtk.Window):
             print("A UTFWORD É: ", utfWord)
             tuple.clear()  # Limpa a tupla global
             tuple.extend(tupla)  # Adiciona os dados processados à tupla
-            saved_message.clear()  # Limpa a mensagem salva
+            #saved_message.clear()  # Limpa a mensagem salva
             print(tuple)
             print(sendMessage(utfWord))  # Envia a mensagem
             print(saved_message)
@@ -561,6 +561,9 @@ class MyWindow(Gtk.Window):
         rdParity = Gtk.RadioButton.new_with_label_from_widget(None, "Paridade par")
         rdParity.connect("toggled", self.on_radio_error, "paridade")
 
+        rdCRC = Gtk.RadioButton.new_with_label_from_widget(rdParity, "CRC")
+        rdCRC.connect("toggled", self.on_radio_error, "CRC")
+
         rdHamming = Gtk.RadioButton.new_with_label_from_widget(rdCRC,"Hamming")
         rdHamming.connect("toggled",self.on_radio_error,"Hamming")
 
@@ -568,8 +571,6 @@ class MyWindow(Gtk.Window):
         hboxDtError.pack_start(rdParity,False,False,0)
         hboxDtError.pack_start(rdCRC,False,False,0)
         hboxDtError.pack_start(rdHamming,False,False,0)
-        rdCRC = Gtk.RadioButton.new_with_label_from_widget(rdParity, "CRC")
-        rdCRC.connect("toggled", self.on_radio_error, "CRC")
 
         hboxDtError.pack_start(rdParity, False, False, 0)
         hboxDtError.pack_start(rdCRC, False, False, 0)
