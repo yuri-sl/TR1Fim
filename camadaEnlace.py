@@ -246,10 +246,11 @@ def verify_hamming(hamming_codes):
             verification_results.append("OK")
         else:
             # Caso contrário, adiciona a posição do erro
+            erro = True
             verification_results.append(f"Erro no bit {error_position}")
 
     # Retorna a lista de resultados de verificação
-    return verification_results
+    return erro #verification_results
 class CRC_32:
     def __init__(self, data):
         """
@@ -309,7 +310,7 @@ class CRC_32:
         generator_bits = list(self.generator)  # Polinômio gerador como lista de bits
 
         # Realiza a divisão binária para verificar o CRC
-        for i in range(len(data_crc_bits)):
+        for i in range(len(data_crc_bits)-len(generator_bits)+1):
             if data_crc_bits[i] == '1':  # Se o bit atual for 1, aplica o XOR com o gerador
                 for j in range(len(generator_bits)):
                     try:
@@ -317,8 +318,11 @@ class CRC_32:
                     except:
                         return False  # Se houver erro, o CRC não é válido
         # O que sobra nos últimos bits é o CRC
-        crc = ''.join(data_crc_bits[-1:])
-        return crc == "0"  # Verifica se o CRC é 0 (sem erro)
+        for i in range(len(data_crc_bits)):
+            data_crc_bits[i] = int(data_crc_bits[i])
+
+        crc = any(data_crc_bits)
+        return crc  # Verifica se o CRC é 0 (sem erro)
     
     def remove_crc(self):
         """
@@ -326,7 +330,7 @@ class CRC_32:
 
         :return: A string de dados sem o CRC
         """
-        return self.data[:-3]  # Retorna os dados sem os últimos 32 bits (CRC)
+        return [int(i) for i in self.data[:-(len(self.generator)-1)]] # Retorna os dados sem os últimos 32 bits (CRC)
 """
 Como usar crc32
 junte todas as strings e retorne uma str só e passe dessa maneira ↓
