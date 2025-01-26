@@ -181,7 +181,7 @@ def removePadding(bit_list, padding_info):
             bit_list = bit_list[:-(padding)]
     return bit_list
 
-def demodularHamming(word):
+def demodularHamming(word:list[int]) -> list[int]:
     n = len(word)
     two_data = []
     i = 0
@@ -195,7 +195,7 @@ def demodularHamming(word):
     removed_word = [bit for idx, bit in enumerate(word) if idx not in two_data]
     return removed_word
 
-def removeIntegersToChar(data):
+def removeIntegersToChar(data:list[int]):
     result = []
     # Convert the 8-bit list to a string (representing binary)
     binary_string = ''.join(map(str, data))

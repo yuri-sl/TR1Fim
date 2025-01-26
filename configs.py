@@ -50,28 +50,23 @@ def config_deteccao(binWord):
         binWord = encode_hamming(binWord)
         return binWord
     
-def check_and_remove_erros(binWord):
-    if config["deteccao_erro"] == "paridade":
-        binWord,erro = BitDeParidade().decode_bit_de_paridade(binWord)
-        return binWord,erro
-    if config["deteccao_erro"] == "CRC":
-        erro = CRC_32(binWord).verifica_crc()
-        binWord = CRC_32(binWord).remove_crc()
-        return binWord,erro
-
-        
-
-def demod_detect(binword):
+def demod_detect(binWord:list[int]) -> list[int]:
+    '''Detecta se ocorreu erro na transmissão da mensagem e remove os bits de detecção de erro'''
     if config["deteccao_erro"]=='paridade':
-        binword = removeLSBit(binword)
-        return binword
-    if config["deteccao_erro"]=='CRC':
-        print("This is CRC: ",binword)
-        return binword
-    if config["deteccao_erro"] == "Hamming":
-        return demodularHamming(binword)
+        # binWord = removeLSBit(binWord)
+        binWord,erro = BitDeParidade().decode_bit_de_paridade([binWord])
+        return binWord[0],erro
 
-def demod_enq(binword):
+    if config["deteccao_erro"]=='CRC':
+        # print("This is CRC: ",binWord)
+        crc = CRC_32(binWord)
+        error_ocurred = crc.verifica_crc()
+        return crc.remove_crc(), error_ocurred
+    if config["deteccao_erro"] == "Hamming":
+        error_ocurred = verify_hamming([binWord])
+        return demodularHamming(binWord),error_ocurred
+
+def demod_enq(binword:list[int]):
     if config["enquadramento"]=='charCount':
         if not config["modulacao"]=="Manchester":
             binword = removeIntegersToChar(binword)

@@ -130,7 +130,7 @@ def encode_hamming(data_bits_list):
         hamming_encoded.append(hamming_code)
 
     return hamming_encoded
-def verify_hamming(hamming_codes):
+def verify_hamming(hamming_codes:list[list[int]]) -> bool:
     """
     Verifica a correção de uma lista de códigos de Hamming.
     
@@ -140,6 +140,7 @@ def verify_hamming(hamming_codes):
              - Posição do bit incorreto caso haja erro
     """
     verification_results = []
+    erro = False
 
     for hamming_code in hamming_codes:
         n = len(hamming_code)
@@ -163,11 +164,13 @@ def verify_hamming(hamming_codes):
             r += 1
         print(error_position)
         if error_position == 0:
+            erro = False
             verification_results.append("OK")  # Sem erro
         else:
+            erro = True
             verification_results.append(f"Erro no bit {error_position}")  # Indicar posição do erro
 
-    return verification_results
+    return erro #verification_results
 class CRC_32:
     def __init__(self, data):
         self.aux = ""
@@ -290,12 +293,12 @@ class BitDeParidade:
             self.encoded_lista = lista
         elif not self.encoded_lista:
             print("Não há nenhuma informaçao previa!")  #Não é pra cair aqui, se caiu é pq tem coisa errada
-            return []                                   # Retorna nada
+            return [],False                                   # Retorna nada
         self.decoded_lista = []
         for item in self.encoded_lista:
             aux = 0                                      # Contador de bits '1'
             for j in range(len(item)):                   # Conta quantos bits
-                bit = int(item[j])
+                bit = int(item[j]-1)
                 aux += bit
             bit_paridade = int(item[-1])                 # O último bit é o de paridade
             if (aux % 2) == bit_paridade:                # Verifica se o calculado é igual o esperado
