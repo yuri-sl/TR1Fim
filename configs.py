@@ -101,4 +101,27 @@ def demod_mod(binword):
     if config["modulacao"]=="Manchester":
         print("Você está demodulando um sinal Manchester")
         print("Esta é a sua binword",binword)
+        i = 0
+        manchester_construct = []
+        while i < len(binword):
+            aux_list = []
+            bit_a = binword[i]
+            bit_b = binword[i+1]
+            aux_list.append(bit_a)
+            aux_list.append(bit_b)
+            if aux_list == [0,1]:
+                bit = 0
+                manchester_construct.append(bit)
+            if aux_list == [1,0]:
+                bit = 1
+                manchester_construct.append(bit)
+            i+=2
+            #manchester_construct.extend(aux_list)
+        return manchester_construct
+    else:
+        return binword
+    
+            
+
+
 

@@ -76,20 +76,31 @@ def demodularSinal():
         #print("Palavra sendo demodulada:", word)
         demoduled_word,erro = demod_detect(word[:]) #remove detecao de erro
         demoduled_word = demod_enq(demoduled_word[:])
-        if demoduled_word==None:
-            print("Amigo você fez coisa errada aí")
-        # demoduled_word = demod_mod(demoduled_word[:])
         #print("Enquadramento desfeito!",demoduled_word)
         if demoduled_word == None:
+            print("Skipped a number!")
             continue
-        demoduled.append(demoduled_word)
+        demoduled_word = demod_mod(demoduled_word[:])
+        if config["modulacao"] == "Manchester":
+            demoduled.append(demoduled_word)
+        else:
+            demoduled.append(demoduled_word)
         #print(demoduled)
         #demoduled.append(demoduled_word)
         #print("Bit de paridade/CRC removido: ",demoduled)
     #print("O demoduled é",demoduled)
     filtered_list = [item for item in demoduled if item is not None]
+    print("A lista filtrada é: ",filtered_list)
     #print("A filtered_list é ",filtered_list)
-    
+    if config["modulacao"] == "Manchester":
+        i = 0
+        while i < len(demoduled):
+            manchester_A = demoduled[i]
+            manchester_B = demoduled[i+1]
+            manchester_C = manchester_A + manchester_B
+            demoduled[i] = manchester_C
+            demoduled.pop(i+1)
+            i+=1
     # Atualiza `saved_message` com os dados demodulados
     print("O saved_message antes de ser atualizado com o demoduled é: ",saved_message)
     saved_message = demoduled

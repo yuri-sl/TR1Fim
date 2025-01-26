@@ -16,8 +16,6 @@ def processSignal(sentText):
         binWord = [flattened[i:i + 8] for i in range(0, len(flattened), 8)]
 
         print("A manchester reajustada ficou: ",binWord)
-
-
     binWord = config_enquadramento(binWord)
     print("A binword enquadrada é:",binWord)
     ##Falta aplicarmos a Detecção de erros!!
