@@ -312,10 +312,10 @@ class MyWindow(Gtk.Window):
             print("A UTFWORD É: ",utfWord)
             tuple.clear()
             tuple.extend(tupla)
-            saved_message.clear()
+            #saved_message.clear()
             print(tuple)
             print(sendMessage(utfWord))
-            print(saved_message)
+            print("Depois de sendMessage em notebbok",saved_message)
 
 
 
@@ -334,7 +334,8 @@ class MyWindow(Gtk.Window):
             popup.show_all()
 
     def graphBfr(self,widget):
-        print("Graph Bfr-> saved_message_puro",saved_message)
+        print("Graph Bfr-> saved_message",saved_message)
+        print("Graph Bfr -> A mensagem pura é: ",saved_message_puro)
         if len(saved_message) > 0:
             binWord,x_axis = receberSinal()
             self.showGraphBfr(binWord,x_axis,"Sinal recebido antes de demodular","Sinal recebido")

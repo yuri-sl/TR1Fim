@@ -84,7 +84,9 @@ def demodularSinal():
     #print("A filtered_list é ",filtered_list)
     
     # Atualiza `saved_message` com os dados demodulados
+    print("O saved_message antes de ser atualizado com o demoduled é: ",saved_message)
     saved_message = demoduled
+    print("O saved_message depois de ser atualizado com o demoduled é: ",saved_message)
     return demoduled
         #word = convertToString(word)
         #size = len(word)
@@ -156,15 +158,16 @@ def start_server():
             #print("A mensagem received é: ",received)
             saved_message.clear()
             saved_message.clear()
-            print("This is saved_message",saved_message)
+            saved_message_puro.clear()
             saved_message.extend(received)
-            received.clear()
-            tuple.clear()
+            print("This is saved_message",saved_message)
             #print("Mensagem salva em variável fica como: ",saved_message)
         except Exception as e:
             print(f"Erro ao processar cliente {addr}: {e}")
         finally:
             client_socket.close()
+            received.clear()
+            tuple.clear()
 
     while server_running:
         try:
