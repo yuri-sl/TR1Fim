@@ -56,6 +56,8 @@ def config_deteccao(binWord):
             crc_bit.append(a)
         print("No fim, o crc ficou: ",crc_bit)
         return crc_bit
+    if config["deteccao_erro"] == "Hamming":
+        return encode_hamming(binWord)
 def demod_detect(binword):
     if config["deteccao_erro"] == 'paridade':
         # binword = removeLSBit(binword)  # Remove o bit menos significativo se for paridade
