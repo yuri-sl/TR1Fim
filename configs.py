@@ -58,11 +58,12 @@ def config_deteccao(binWord):
         return crc_bit
     if config["deteccao_erro"] == "Hamming":
         return encode_hamming(binWord)
+
 def demod_detect(binword):
     if config["deteccao_erro"] == 'paridade':
         # binword = removeLSBit(binword)  # Remove o bit menos significativo se for paridade
-        binword,erro = BitDeParidade().decode_bit_de_paridade([binword])
-        return binword[0],erro  # Retorna a palavra binária após remoção do bit de paridade
+        binword,error_ocurred = BitDeParidade().decode_bit_de_paridade([binword])
+        return binword[0],error_ocurred  # Retorna a palavra binária após remoção do bit de paridade
     if config["deteccao_erro"] == 'CRC':
         crc = CRC_32(binword)
         error_ocurred = crc.verifica_crc()

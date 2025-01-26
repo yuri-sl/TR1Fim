@@ -72,9 +72,12 @@ def demodularSinal():
         saved_message = saved_message_puro.copy()
     demoduled = []
     
+    error_occured = False
     for word in saved_message:
         #print("Palavra sendo demodulada:", word)
         demoduled_word,erro = demod_detect(word[:]) #remove detecao de erro
+        if erro == True:
+            error_occured = True
         demoduled_word = demod_enq(demoduled_word[:])
         #print("Enquadramento desfeito!",demoduled_word)
         if demoduled_word == None:
@@ -105,7 +108,7 @@ def demodularSinal():
     print("O saved_message antes de ser atualizado com o demoduled é: ",saved_message)
     saved_message = demoduled
     print("O saved_message depois de ser atualizado com o demoduled é: ",saved_message)
-    return demoduled
+    return demoduled,error_occured
         #word = convertToString(word)
         #size = len(word)
         #print("THIS IS THE SIZE: ",size)

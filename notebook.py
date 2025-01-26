@@ -374,7 +374,7 @@ class MyWindow(Gtk.Window):
         print("A saved_message é ", saved_message)
 
         # Chama a função para demodular o sinal recebido
-        sinalProcessado = demodularSinal()
+        sinalProcessado,erro = demodularSinal()
 
         # Verifica se o sinal foi demodulado corretamente
         if len(sinalProcessado) > 0:
@@ -388,6 +388,10 @@ class MyWindow(Gtk.Window):
             string_resposta = bin_to_string(sinalProcessado)
             print(string_resposta)
             self.entryMsgRecv.set_text(string_resposta)
+            if erro == False:
+                self.rdNaoErro.set_active(True)
+            else:
+                self.rdSimErro.set_active(True)
         else:
             # Se não houver sinal processado, exibe uma janela informando a falta de sinal
             popUp = noSignal()
@@ -585,6 +589,8 @@ class MyWindow(Gtk.Window):
         hboxDtError.pack_start(rdParity, False, False, 0)
         hboxDtError.pack_start(rdCRC, False, False, 0)
 
+        config["deteccao_erro"] = "paridade" # valor default para deteccao de erro
+
         ##Transmitir Mensagem
         # Criação de label com aviso sobre a chance de erro
         lblWarning = Gtk.Label(label="Obs.: 0,011% de chance de ocorrência de erros")
@@ -625,7 +631,7 @@ class MyWindow(Gtk.Window):
 
         # Criação da aba do receptor
         tab_label_Receptor = Gtk.Label(label="Receptor")
-        tab_label_Receptor.set_name("receptor-tab")
+        tab_label_Receptor.set_name("receptor-tab") 
         notebook.append_page(page2, tab_label_Receptor)
 
         # Criação de botão para iniciar o servidor
@@ -673,14 +679,14 @@ class MyWindow(Gtk.Window):
         lblErrorOccur.get_style_context().add_class("lblSection")
         hboxCheckError = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
         hboxCheckError.set_halign(Gtk.Align.CENTER)
-        rdSimErro = Gtk.RadioButton.new_with_label_from_widget(None, "Sim")
-        rdNaoErro = Gtk.RadioButton.new_with_label_from_widget(rdSimErro, "Não")
-        rdSimErro.set_sensitive(False)
-        rdNaoErro.set_sensitive(False)
+        self.rdSimErro = Gtk.RadioButton.new_with_label_from_widget(None, "Sim")
+        self.rdNaoErro = Gtk.RadioButton.new_with_label_from_widget(self.rdSimErro, "Não")
+        self.rdSimErro.set_sensitive(False)
+        self.rdNaoErro.set_sensitive(False)
 
         # Adiciona os radio buttons à caixa
-        hboxCheckError.pack_start(rdSimErro, False, False, 0)
-        hboxCheckError.pack_start(rdNaoErro, False, False, 0)
+        hboxCheckError.pack_start(self.rdSimErro, False, False, 0)
+        hboxCheckError.pack_start(self.rdNaoErro, False, False, 0)
 
         # Onde ocorreu erro?
         lblWhereError = Gtk.Label(label="Em qual processo ocorreu o erro?")
