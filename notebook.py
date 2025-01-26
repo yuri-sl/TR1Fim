@@ -553,6 +553,8 @@ class MyWindow(Gtk.Window):
         rdInsByte = Gtk.RadioButton.new_with_label_from_widget(rdCharCount, "Inserção de Bytes")
         rdInsByte.connect("toggled", self.on_radio_enq, "insByte")
 
+        config["enquadramento"] = "charCount" # escolhe valor default para enquadramento
+
         # Adiciona os radio buttons à caixa horizontal
         hboxEnq.pack_start(rdCharCount, False, False, 0)
         hboxEnq.pack_start(rdInsByte, False, False, 0)
