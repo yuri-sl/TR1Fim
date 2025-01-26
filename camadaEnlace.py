@@ -285,6 +285,7 @@ class BitDeParidade:
         """
         Decodifica uma lista de bits com paridade, removendo o bit de paridade se for válido.
         """
+        ocorreu_erro = False
         if lista != None:                               # Se não passar argumento vai considerar a lista ja existente
             self.encoded_lista = lista
         elif not self.encoded_lista:
@@ -301,7 +302,10 @@ class BitDeParidade:
                 self.decoded_lista.append(item[:-1])
             else:
                 print(f"\nAlgum bit está incorreto! no item : {item}\n")  # Paridade inválida encontrada
-        return self.decoded_lista
+                ocorreu_erro = True
+                self.decoded_lista.append(item[:-1])
+        return self.decoded_lista,ocorreu_erro
+
     def remover_bit_de_paridade(self, lista):
         lista = convertToByteDetect(lista)
         lista = removeLSBit(lista)

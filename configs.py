@@ -50,6 +50,17 @@ def config_deteccao(binWord):
         binWord = encode_hamming(binWord)
         return binWord
     
+def check_and_remove_erros(binWord):
+    if config["deteccao_erro"] == "paridade":
+        binWord,erro = BitDeParidade().decode_bit_de_paridade(binWord)
+        return binWord,erro
+    if config["deteccao_erro"] == "CRC":
+        erro = CRC_32(binWord).verifica_crc()
+        binWord = CRC_32(binWord).remove_crc()
+        return binWord,erro
+
+        
+
 def demod_detect(binword):
     if config["deteccao_erro"]=='paridade':
         binword = removeLSBit(binword)
