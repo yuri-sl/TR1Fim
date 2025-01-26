@@ -218,7 +218,7 @@ class MyWindow(Gtk.Window):
         fig, ax = plt.subplots()  # Cria uma figura e um conjunto de eixos para o gráfico
 
         if step == True:  # Verifica se o parâmetro 'step' é True
-            ax.step(y_data, unpack_x, label=label)  # Cria um gráfico de passos (step plot) com os dados de y e unpack_x
+            ax.step(y_data, unpack_x, label=label,where="mid")  # Cria um gráfico de passos (step plot) com os dados de y e unpack_x
         else:  # Caso o parâmetro 'step' seja False
             ax.plot(y_data, unpack_x, label=label)  # Cria um gráfico contínuo (line plot) com os dados de y e unpack_x
 
@@ -689,18 +689,18 @@ class MyWindow(Gtk.Window):
         hboxCheckError.pack_start(self.rdNaoErro, False, False, 0)
 
         # Onde ocorreu erro?
-        lblWhereError = Gtk.Label(label="Em qual processo ocorreu o erro?")
-        lblWhereError.get_style_context().add_class("lblSection")
-        hboxWhereError = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        hboxWhereError.set_halign(Gtk.Align.CENTER)
-        rdEnquadramento = Gtk.RadioButton.new_with_label_from_widget(None, "Enquadramento")
-        rdEnquadramento.set_sensitive(False)
-        rdPropQuadro = Gtk.RadioButton.new_with_label_from_widget(rdEnquadramento, "Propagação do quadro")
-        rdPropQuadro.set_sensitive(False)
+        # lblWhereError = Gtk.Label(label="Em qual processo ocorreu o erro?")
+        # lblWhereError.get_style_context().add_class("lblSection")
+        # hboxWhereError = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
+        # hboxWhereError.set_halign(Gtk.Align.CENTER)
+        # rdEnquadramento = Gtk.RadioButton.new_with_label_from_widget(None, "Enquadramento")
+        # rdEnquadramento.set_sensitive(False)
+        # rdPropQuadro = Gtk.RadioButton.new_with_label_from_widget(rdEnquadramento, "Propagação do quadro")
+        # rdPropQuadro.set_sensitive(False)
 
         # Adiciona os radio buttons à caixa
-        hboxWhereError.pack_start(rdEnquadramento, False, False, 0)
-        hboxWhereError.pack_start(rdPropQuadro, False, False, 0)
+        # hboxWhereError.pack_start(rdEnquadramento, False, False, 0)
+        # hboxWhereError.pack_start(rdPropQuadro, False, False, 0)
 
         # Encerrar Servidor
         # Criação de botão para encerrar o servidor
@@ -722,9 +722,9 @@ class MyWindow(Gtk.Window):
                 page2.add(lblMsgRec)  # Adiciona o label para a mensagem recebida
                 page2.pack_start(self.entryMsgRecv, False, False, 0)  # Adiciona o campo de entrada para a mensagem recebida
                 page2.add(lblErrorOccur)  # Adiciona o label sobre a ocorrência de erro
-                page2.pack_start(hboxCheckError, False, False, 0)  # Adiciona o contêiner de seleção de erro (Sim/Não)
-                page2.add(lblWhereError)  # Adiciona o label de onde ocorreu o erro
-                page2.pack_start(hboxWhereError, False, False, 0)  # Adiciona o contêiner de seleção de erro no processo
+                page2.pack_start(hboxCheckError, False, False, 0)  # Adiciona o contêiner de de erro (Sim/Não)
+                # page2.add(lblWhereError)  # Adiciona o label de onde ocorreu o erro
+                # page2.pack_start(hboxWhereError, False, False, 0)  # Adiciona o contêiner de ção de erro no processo
                 page2.add(btnEndServer)  # Adiciona o botão para encerrar o servidor
 
                 # Exibe todos os widgets na página
@@ -741,8 +741,8 @@ class MyWindow(Gtk.Window):
                 page2.remove(self.entryMsgRecv)  # Remove o campo de entrada da mensagem recebida
                 page2.remove(lblErrorOccur)  # Remove o label de ocorrência de erro
                 page2.remove(hboxCheckError)  # Remove o contêiner de erro (Sim/Não)
-                page2.remove(lblWhereError)  # Remove o label de onde ocorreu o erro
-                page2.remove(hboxWhereError)  # Remove o contêiner de onde ocorreu o erro
+                # page2.remove(lblWhereError)  # Remove o label de onde ocorreu o erro
+                # page2.remove(hboxWhereError)  # Remove o contêiner de onde ocorreu o erro
                 page2.remove(btnEndServer)  # Remove o botão de encerrar servidor
 
             # Atualiza a interface gráfica, garantindo que as mudanças sejam refletidas
