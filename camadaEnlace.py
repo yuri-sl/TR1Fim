@@ -175,7 +175,7 @@ class CRC_32:
     def __init__(self, data):
         self.aux = ""
         for i in data:
-            self.aux += i
+            self.aux += str(i)
         self.data = self.aux
         self.crc = None
         self.generator = "1011" # exemplo "1011"    
@@ -298,7 +298,7 @@ class BitDeParidade:
         for item in self.encoded_lista:
             aux = 0                                      # Contador de bits '1'
             for j in range(len(item)):                   # Conta quantos bits
-                bit = int(item[j]-1)
+                bit = int(item[j])
                 aux += bit
             bit_paridade = int(item[-1])                 # O último bit é o de paridade
             if (aux % 2) == bit_paridade:                # Verifica se o calculado é igual o esperado

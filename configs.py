@@ -34,7 +34,8 @@ def config_enquadramento(binWord):
         insByte = insByte.inserir_bytes()
         return insByte
 def config_deteccao(binWord):
-    if config["deteccao_erro"] =='paridade':
+
+    if config["deteccao_erro"] == 'paridade':
         parity = BitDeParidade(binWord)  # Cria instância de verificação de paridade
         parity = parity.bit_de_paridade()  # Calcula o bit de paridade
         return parity  # Retorna a palavra binária com bit de paridade
@@ -59,22 +60,17 @@ def config_deteccao(binWord):
         binWord = encode_hamming(binWord)
         return binWord
 def demod_detect(binword):
-    if config["deteccao_erro"]=='paridade':
-        # binWord = removeLSBit(binWord)
-        binWord,erro = BitDeParidade().decode_bit_de_paridade([binWord])
-        return binWord[0],erro
-
-    if config["deteccao_erro"]=='CRC':
-        # print("This is CRC: ",binWord)
-        # crc = CRC_32(binWord)
-        # error_ocurred = crc.verifica_crc()
-        # return crc.remove_crc(), error_ocurred
-        print("This is CRC: ",binword)
-        binword = binword[:-3]
-        return binword
+    if config["deteccao_erro"] == 'paridade':
+        # binword = removeLSBit(binword)  # Remove o bit menos significativo se for paridade
+        binword,erro = BitDeParidade().decode_bit_de_paridade([binword])
+        return binword[0],erro  # Retorna a palavra binária após remoção do bit de paridade
+    if config["deteccao_erro"] == 'CRC':
+        crc = CRC_32(binword)
+        error_ocurred = crc.verifica_crc()
+        return crc.remove_crc(), error_ocurred
     if config["deteccao_erro"] == "Hamming":
-        error_ocurred = verify_hamming([binWord])
-        return demodularHamming(binWord),error_ocurred
+        error_ocurred = verify_hamming([binword])
+        return demodularHamming(binword),error_ocurred
 
 def demod_enq(binword):
     """
