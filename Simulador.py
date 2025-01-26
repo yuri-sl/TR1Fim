@@ -76,6 +76,9 @@ def demodularSinal():
         #print("Palavra sendo demodulada:", word)
         demoduled_word,erro = demod_detect(word[:]) #remove detecao de erro
         demoduled_word = demod_enq(demoduled_word[:])
+        if demoduled_word==None:
+            print("Amigo você fez coisa errada aí")
+        demoduled_word = demod_mod(demoduled_word[:])
         #print("Enquadramento desfeito!",demoduled_word)
         if demoduled_word == None:
             continue

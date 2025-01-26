@@ -333,13 +333,21 @@ class MyWindow(Gtk.Window):
             tuple.extend(tupla)  # Adiciona os dados processados à tupla
             #saved_message.clear()  # Limpa a mensagem salva
             print(tuple)
-            print(sendMessage(utfWord))  # Envia a mensagem
-            print(saved_message)
+            print(sendMessage(utfWord))
+            print("Depois de sendMessage em notebbok",saved_message)
 
-            # Aqui, a comunicação é feita e o resultado pode ser exibido ou processado
 
-        # Se o servidor não está ativo, exibe uma janela de erro
+
+            #print(binWord)
+            #print(sendMessage(sentText))
+            #print("o received atualizado é ",received)
+            #print(item)
+            #item = saved_message[0]
+            #self.entryMsgRecv.set_text(item)
+            
         if servidorAtivo == False:
+            popup = erroEnviarMensagem()  # Cria a janela de erro
+            popup.show_all()  # Exibe a janela de erro
             popup = erroEnviarMensagem()  # Cria a janela de erro
             popup.show_all()  # Exibe a janela de erro
         else:

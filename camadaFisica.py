@@ -74,7 +74,7 @@ def convertNRZ(byteMSG):
 
 #Simulação de erro no meio fisico
 class ErroMeioFisico:
-    def __init__(self, lista = [], chance = 0.011):
+    def __init__(self, lista = [], chance = 0):
         self.lista = lista
         self.chance = chance
 
