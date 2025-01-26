@@ -8,7 +8,6 @@ from convertions import *
 from processSignal import length
 from tuple import *
 from configs import *
-#from insertTextToScreen import *
 
 n=0
 server_running = True  # Controle global de iniciar/fechar o servidor
@@ -60,37 +59,8 @@ def receberSinal():
 
     word,x_axis = buildNRZ(word)
     return data_y,data_x
-def demodularSinal():
-    global saved_message
-    global saved_message_puro
-    #print("DEMODULANDO O SINAL!!!!!!")
-    if len(saved_message_puro) == 0:
-        saved_message_puro = saved_message.copy()
-    else:
-        saved_message = saved_message_puro.copy()
-    demoduled = []
-    
-    for word in saved_message:
-        #print("Palavra sendo demodulada:", word)
-        demoduled_word = demodularHamming(word[:])  # Usar uma cópia de `word`
-        #print("Hamming Removido:", demoduled_word)
-        demoduled_word = demod_detect(demoduled_word[:])
-        demoduled_word = demod_enq(demoduled_word[:])
-        #print("Enquadramento desfeito!",demoduled_word)
-        if demoduled_word == None:
-            continue
-        #print(demoduled)
-        #demoduled.append(demoduled_word)
-        #print("Bit de paridade/CRC removido: ",demoduled)
-    print(demoduled)
-    filtered_list = [item for item in demoduled if item is not None]
-    print(filtered_list)
-    
-    # Atualiza `saved_message` com os dados demodulados
-    saved_message = demoduled
-    return demoduled
 
-def demodularSinalToChar():
+def demodularSinal():
     global saved_message
     global saved_message_puro
     #print("DEMODULANDO O SINAL!!!!!!")
