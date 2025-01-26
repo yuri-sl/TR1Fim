@@ -89,7 +89,16 @@ def demod_enq(binword):
             print("Esta é a binword da demod. enq", binword)  # Exibe a palavra binária após a remoção
             if not binword == None:  # Verifica se a palavra não está vazia
                 return binword  # Retorna a palavra binária desencaixada
-
-    if config["enquadramento"] == 'insByte':
-        # A lógica para desencaixar bytes ainda não está implementada
-        return binword  # Retorna a palavra binária sem alteração
+        else:
+            return binword
+            
+    if config["enquadramento"]=='insByte':
+        print("Em desenquadramento, a BinWord está como: ",binword)
+        if (binword == [0,0,0,0,0,1,0,0]) or (binword==[0,0,0,0,0,0,0,1]) or (binword==[1,0,0,0,0,0,0,1]):
+            return None
+        else:
+            return binword
+def demod_mod(binword):
+    if config["modulacao"]=="Manchester":
+        print("Você está demodulando um sinal Manchester")
+        print("Esta é a sua binword",binword)

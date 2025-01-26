@@ -18,6 +18,7 @@ lock = threading.Lock()
 saved_message = []
 saved_message_puro = []
 
+#Desfaz a detecção de erro do byte
 def config_u_dectError(word):
     global config
     if config["deteccao_erro"] == 'paridade':
