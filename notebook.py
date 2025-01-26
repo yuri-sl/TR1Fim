@@ -18,6 +18,8 @@ from clientTCP import *
 from configs import *
 from convertions import *
 from tuple import *
+from popUps.serverWindows import *
+from popUps.messagesWindows import *
 
 
 def addCSS():
@@ -28,163 +30,6 @@ def addCSS():
             Gdk.Screen.get_default(),css_provider,Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
         ) # Aplica o provedor de estilos (`css_provider`) ao contexto global da tela padrão utilizando `Gdk.Screen.get_default()`.
 
-
-
-
-
-class serverStartedWindow(Gtk.Window):
-    def okayBtn(self, widget):  # Oculta a janela ao clicar no botão "Ok"
-        self.hide()
-
-    def __init__(self):
-        super().__init__(title="Servidor iniciado com sucesso!")  # Define o título da janela
-        self.set_default_size(200, 100)  # Define o tamanho padrão da janela
-
-        lblSuccMsg = Gtk.Label(label="Servidor Iniciado com sucesso")  # Cria um label com a mensagem de sucesso
-        lblDoorMsg = Gtk.Label(label="Endereço: Localhost. Porta: 8030")  # Cria um label com o endereço e porta
-
-        btnOk = Gtk.Button()  # Cria o botão "Ok"
-        lblOk = Gtk.Label(label="Ok")  # Cria o label para o botão "Ok"
-        btnOk.add(lblOk)  # Adiciona o label ao botão
-        btnOk.connect("clicked", self.okayBtn)  # Conecta o clique do botão à função okayBtn
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)  # Cria um container vertical com espaçamento
-        vbox.set_name("box-container")  # Define o nome para o container (útil para estilização)
-        vbox.pack_start(lblSuccMsg, True, True, 0)  # Adiciona o label de sucesso ao container
-        vbox.pack_start(lblDoorMsg, True, True, 0)  # Adiciona o label de endereço ao container
-        vbox.pack_start(btnOk, True, True, 0)  # Adiciona o botão "Ok" ao container
-
-        self.add(vbox)  # Adiciona o container à janela
-        self.connect("destroy", self.hide)  # Conecta o evento de fechamento da janela à função hide
-
-        addCSS()  # Aplica o estilo CSS à janela
-
-class serverEndedWindow(Gtk.Window):
-    def okayBtn(self, widget):  # Oculta a janela ao clicar no botão "Ok"
-        self.hide()
-
-    def __init__(self):
-        super().__init__(title="Encerrar o servidor")  # Define o título da janela
-        self.set_default_size(200, 100)  # Define o tamanho padrão da janela
-
-        lblSuccMsg = Gtk.Label(label="Você acabou de fechar o servidor")  # Cria um label com a mensagem de encerramento
-        btnOk = Gtk.Button()  # Cria o botão "Ok"
-        lblOk = Gtk.Label(label="Ok")  # Cria o label para o botão "Ok"
-        btnOk.add(lblOk)  # Adiciona o label ao botão
-        btnOk.connect("clicked", self.okayBtn)  # Conecta o clique do botão à função okayBtn
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)  # Cria um container vertical com espaçamento
-        vbox.set_name("box-container")  # Define o nome para o container (útil para estilização)
-        vbox.pack_start(lblSuccMsg, True, True, 0)  # Adiciona o label de mensagem ao container
-        vbox.pack_start(btnOk, True, True, 0)  # Adiciona o botão "Ok" ao container
-
-        self.add(vbox)  # Adiciona o container à janela
-        self.connect("destroy", self.hide)  # Conecta o evento de fechamento da janela à função hide
-
-        addCSS()  # Aplica o estilo CSS à janela
-
-class erroEnviarMensagem(Gtk.Window):
-    def okayBtn(self, widget):  # Função para esconder a janela ao clicar no botão "Ok"
-        self.hide()
-
-    def __init__(self):
-        super().__init__(title="Erro ao enviar a mensagem")  # Define o título da janela de erro
-        self.set_default_size(200, 100)  # Define o tamanho padrão da janela (largura x altura)
-
-        lblErroMsg = Gtk.Label(label="Servidor não foi iniciado!")  # Cria um label com a mensagem de erro
-
-        addCSS()  # Aplica o estilo CSS à janela
-
-        btnOk = Gtk.Button()  # Cria o botão "Ok"
-        lblOk = Gtk.Label(label="Ok")  # Cria o label "Ok" para o botão
-        btnOk.add(lblOk)  # Adiciona o label ao botão
-        btnOk.connect("clicked", self.okayBtn)  # Conecta o clique do botão à função que oculta a janela
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)  # Cria um container vertical com espaçamento
-        vbox.set_name("box-container")  # Define o nome para o container (útil para estilização com CSS)
-        vbox.pack_start(lblErroMsg, True, True, 0)  # Adiciona o label de erro ao container
-        vbox.pack_start(btnOk, True, True, 0)  # Adiciona o botão "Ok" ao container
-
-        self.add(vbox)  # Adiciona o container à janela
-        self.connect("destroy", self.hide)  # Conecta o evento de fechamento da janela à função hide
-
-class mensagemEnviada(Gtk.Window):
-    def okayBtn(self, widget):  # Função para esconder a janela ao clicar no botão "Ok"
-        self.hide()
-
-    def __init__(self):
-        super().__init__(title="Mensagem Enviada!")  # Define o título da janela de sucesso
-        self.set_default_size(200, 100)  # Define o tamanho padrão da janela (largura x altura)
-
-        wndwLabel = Gtk.Label(label="Mensagem foi enviada com sucesso!")  # Cria um label com a mensagem de sucesso
-
-        addCSS()  # Aplica o estilo CSS à janela
-
-        btnOk = Gtk.Button()  # Cria o botão "Ok"
-        lblOk = Gtk.Label(label="Ok")  # Cria o label "Ok" para o botão
-        btnOk.add(lblOk)  # Adiciona o label ao botão
-        btnOk.connect("clicked", self.okayBtn)  # Conecta o clique do botão à função que oculta a janela
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)  # Cria um container vertical com espaçamento
-        vbox.set_name("box-container")  # Define o nome para o container (útil para estilização com CSS)
-        vbox.pack_start(wndwLabel, True, True, 0)  # Adiciona o label de sucesso ao container
-        vbox.pack_start(btnOk, True, True, 0)  # Adiciona o botão "Ok" ao container
-
-        self.add(vbox)  # Adiciona o container à janela
-
-        self.connect("destroy", self.hide)  # Conecta o evento de fechamento da janela à função hide
-
-class textoVazio(Gtk.Window):
-    def okayBtn(self, widget):  # Função para esconder a janela ao clicar no botão "Ok"
-        self.hide()
-
-    def __init__(self):
-        super().__init__(title="Erro")  # Define o título da janela de erro
-        self.set_default_size(200, 100)  # Define o tamanho padrão da janela (largura x altura)
-
-        wndwLabel = Gtk.Label(label="O campo de mensagem está vazio")  # Cria um label com a mensagem de erro
-
-        addCSS()  # Aplica o estilo CSS à janela
-
-        btnOk = Gtk.Button()  # Cria o botão "Ok"
-        lblOk = Gtk.Label(label="Ok")  # Cria o label "Ok" para o botão
-        btnOk.add(lblOk)  # Adiciona o label ao botão
-        btnOk.connect("clicked", self.okayBtn)  # Conecta o clique do botão à função que oculta a janela
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)  # Cria um container vertical com espaçamento
-        vbox.set_name("box-container")  # Define o nome para o container (útil para estilização com CSS)
-        vbox.pack_start(wndwLabel, True, True, 0)  # Adiciona o label de erro ao container
-        vbox.pack_start(btnOk, True, True, 0)  # Adiciona o botão "Ok" ao container
-
-        self.add(vbox)  # Adiciona o container à janela
-
-        self.connect("destroy", self.hide)  # Conecta o evento de fechamento da janela à função hide
-
-class noSignal(Gtk.Window):
-    def okayBtn(self, widget):  # Função para esconder a janela ao clicar no botão "Ok"
-        self.hide()
-
-    def __init__(self):
-        super().__init__(title="Erro")  # Define o título da janela de erro
-        self.set_default_size(200, 100)  # Define o tamanho padrão da janela (largura x altura)
-
-        wndwLabel = Gtk.Label(label="Nenhum sinal foi recebido ainda")  # Cria um label com a mensagem de erro
-
-        addCSS()  # Aplica o estilo CSS à janela
-
-        btnOk = Gtk.Button()  # Cria o botão "Ok"
-        lblOk = Gtk.Label(label="Ok")  # Cria o label "Ok" para o botão
-        btnOk.add(lblOk)  # Adiciona o label ao botão
-        btnOk.connect("clicked", self.okayBtn)  # Conecta o clique do botão à função que oculta a janela
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)  # Cria um container vertical com espaçamento
-        vbox.set_name("box-container")  # Define o nome para o container (útil para estilização com CSS)
-        vbox.pack_start(wndwLabel, True, True, 0)  # Adiciona o label de erro ao container
-        vbox.pack_start(btnOk, True, True, 0)  # Adiciona o botão "Ok" ao container
-
-        self.add(vbox)  # Adiciona o container à janela
-
-        self.connect("destroy", self.hide)  # Conecta o evento de fechamento da janela à função hide
 
 class MyWindow(Gtk.Window):
     global tuple  # Define a variável 'tuple' como global para poder ser acessada em qualquer lugar da classe
@@ -304,6 +149,7 @@ class MyWindow(Gtk.Window):
                 binWord8QAM = convert8QAM(binWord)  # Converte para formato 8-QAM
                 binWord8QAM, x_axis = buildPortadora(binWord8QAM)  # Gera os dados do gráfico 8-QAM
                 self.show_graph(binWord8QAM, x_axis, "Gráfico 8-QAM", "Sinal 8-QAM", step=False)  # Exibe o gráfico 8-QAM
+
     def on_button_clicked(self, widget):
         # Criação da janela pop-up
         global sentText  # Variável global que armazena o texto enviado
@@ -313,10 +159,15 @@ class MyWindow(Gtk.Window):
         global size  # Variável global para o tamanho da mensagem
         global length  # Variável global para o comprimento da mensagem
         global tamanho  # Variável global para o tamanho da mensagem
+        global entryBoxPreenchida
 
         # Verifica se o comprimento da mensagem é maior que 0
         if self.entryMessage.get_text_length() > 0:
             entryBoxPreenchida = True  # Marca que a caixa de mensagem está preenchida
+        else:
+            entryBoxPreenchida = False
+            janelaVazio = textoVazio()  # Cria uma janela de erro (campo de mensagem vazio)
+            janelaVazio.show_all()  # Exibe a janela de erro
 
         # Se a caixa de mensagem está preenchida e o servidor está ativo, inicia a transmissão
         if entryBoxPreenchida == True and servidorAtivo == True:
@@ -335,23 +186,12 @@ class MyWindow(Gtk.Window):
             print(sendMessage(utfWord))
             print("Depois de sendMessage em notebbok",saved_message)
 
-
-
-            #print(binWord)
-            #print(sendMessage(sentText))
-            #print("o received atualizado é ",received)
-            #print(item)
-            #item = saved_message[0]
-            #self.entryMsgRecv.set_text(item)
+            popup = mensagemEnviada()  # Caso contrário, exibe uma janela de confirmação de envio
+            popup.show_all()  # Exibe a janela de confirmação
             
         if servidorAtivo == False:
             popup = erroEnviarMensagem()  # Cria a janela de erro
             popup.show_all()  # Exibe a janela de erro
-            popup = erroEnviarMensagem()  # Cria a janela de erro
-            popup.show_all()  # Exibe a janela de erro
-        else:
-            popup = mensagemEnviada()  # Caso contrário, exibe uma janela de confirmação de envio
-            popup.show_all()  # Exibe a janela de confirmação
     def graphBfr(self, widget):
         # Exibe o gráfico do sinal recebido antes de ser demodulado
 
@@ -683,20 +523,6 @@ class MyWindow(Gtk.Window):
         # Adiciona os radio buttons à caixa
         hboxCheckError.pack_start(self.rdSimErro, False, False, 0)
         hboxCheckError.pack_start(self.rdNaoErro, False, False, 0)
-
-        # Onde ocorreu erro?
-        # lblWhereError = Gtk.Label(label="Em qual processo ocorreu o erro?")
-        # lblWhereError.get_style_context().add_class("lblSection")
-        # hboxWhereError = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-        # hboxWhereError.set_halign(Gtk.Align.CENTER)
-        # rdEnquadramento = Gtk.RadioButton.new_with_label_from_widget(None, "Enquadramento")
-        # rdEnquadramento.set_sensitive(False)
-        # rdPropQuadro = Gtk.RadioButton.new_with_label_from_widget(rdEnquadramento, "Propagação do quadro")
-        # rdPropQuadro.set_sensitive(False)
-
-        # Adiciona os radio buttons à caixa
-        # hboxWhereError.pack_start(rdEnquadramento, False, False, 0)
-        # hboxWhereError.pack_start(rdPropQuadro, False, False, 0)
 
         # Encerrar Servidor
         # Criação de botão para encerrar o servidor
