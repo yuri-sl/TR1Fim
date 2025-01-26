@@ -31,26 +31,12 @@ def processSignal(sentText):
     print("Binword após erro em enq: ",binWord)
     #Hamming para corrigir o erro
     verify_hamming(binWord)
-    if errorOcurred == True:
-        erroEnquad = True
     
     #Erro na propagação
     print("Erro na propagação---")
     erro = ErroMeioFisico(binWord)
     binWord = erro.erro()
     print("Binword com erro na propagação: ",binWord)        
-    #utfWord = convertUTF(binWord)
     output_bytearray,original_lengths = convert_to_bytearray(binWord)
     print(output_bytearray)
     return output_bytearray,original_lengths
-    #ans = executeSecondHalf(blist,tamanho)
-    #print("THE EXECUTION WAS A SUCCEEEEEEEEEEEEEEEEEEEESSSSSSSSSSSS")
-    #print(ans)
-    #return utfWord
-
-def copy_length(alist):
-    global length
-    print("O length é: ",length)
-    length = alist.copy()
-    print("O length atualizado é: ",length)
-    return length

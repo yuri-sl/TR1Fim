@@ -13,128 +13,6 @@ from convertions import *
 # Importa configurações de configs (comentado)
 #from configs import *
 
-# Função que calcula o bit de paridade para os índices fornecidos
-def calculate_parity(bits, positions):
-    """
-    Calcula o bit de paridade para os índices fornecidos.
-    """
-    # Inicializa o bit de paridade como 0
-    parity = 0
-
-    # Itera sobre as posições fornecidas
-    for pos in positions:
-        # Verifica se a posição fornecida está dentro do tamanho da lista de bits
-        if pos - 1 < len(bits):  # Em cada posição do vetor de bits
-            # Aplica a operação XOR entre o valor da paridade e o bit na posição atual
-            parity ^= bits[pos - 1]  # XOR nos bits especificados
-
-    # Retorna o bit de paridade calculado
-    return parity
-
-# Função que codifica os dados usando o código de Hamming (12,8)
-def encode_hamming_12_8(data_bits):
-    """
-    Codifica os dados usando o código de Hamming (12,8).
-    """
-    # Obtém o tamanho dos dados fornecidos
-    data_size = len(data_bits)
-
-    # Inicializa a lista 'encoded' com 13 bits (dados + paridade)
-    # A lista começa com todos os bits em 0
-    encoded = [0] * data_size  # Total de 13 bits (dados + paridade)
-
-    # Insere os bits de dados nas posições não-paridade
-    j = 0
-    for i in range(1, len(encoded) + 1):  # Para cada uma das 12 posições de dados
-        if i & (i - 1) != 0:  # Verifica se i não é potência de 2
-            # Se não for, significa que é uma posição de dado, então coloca o bit de dado na posição correta
-            encoded[i - 1] = int(data_bits[j])
-            j += 1  # Avança para o próximo bit de dados
-
-    # Calcula os bits de paridade e os coloca nas posições certas
-    for i in range(len(encoded)):
-        # Verifica se a posição atual (i + 1) é uma potência de 2
-        if (i + 1) & i == 0:  # A posição é potência de 2 (bit de paridade)
-            positions = []  # Lista para armazenar as posições que contribuem para o cálculo da paridade
-            for j in range(len(encoded)):
-                position = j + 1
-                if position & (i + 1) != 0:  # Verifica se esse bit faz parte da contagem de paridade
-                    positions.append(position)  # Adiciona a posição à lista
-            # Calcula e coloca o bit de paridade na posição correta
-            encoded[i] = calculate_parity(encoded, positions)
-
-    # Retorna a lista de bits codificados
-    return encoded
-# Função que decodifica a mensagem codificada pelo código de Hamming (12,8)
-# E também corrige um único erro, caso exista
-def decode_hamming_12_8(encoded):
-    """
-    Decodifica a mensagem e corrige um único erro, se houver.
-    """
-    # Exibe a mensagem codificada recebida
-    print("this is a encoded:",encoded)
-
-    # Converte a entrada (lista de listas) em uma lista plana de bits
-    encoded = [int(bit) for sublist in encoded for bit in sublist]
-
-    # Obtém o número de bits codificados
-    n = len(encoded)
-    print("Received encoded is: ",encoded)
-
-    # Converte os bits para inteiros
-    encoded = [int(bit) for bit in encoded]
-
-    # Inicializa a variável para calcular a posição do erro (se houver)
-    error_position = 0
-
-    # Verifica as posições de paridade (potências de 2) para encontrar o erro
-    for i in range(n):
-        if (i + 1) & i == 0:  # Verifica se a posição i + 1 é potência de 2
-            # Calcula as posições dos bits que fazem parte do cálculo da paridade
-            positions = [j + 1 for j in range(n) if (j + 1) & (i + 1) != 0]
-            # Calcula o bit de paridade
-            parity = calculate_parity(encoded, positions)
-            # Se a paridade não for 0, marca a posição do erro
-            if parity != 0:
-                error_position += i + 1
-
-    # Corrige o erro, se necessário
-    if error_position > 0:
-        # Inverte o bit errado na posição do erro
-        encoded[error_position - 1] ^= 1
-
-    # Extrai os bits de dados (removendo os bits de paridade)
-    data_bits = []
-    for i in range(n):
-        if (i + 1) & i != 0:  # Se a posição não for potência de 2 (não é bit de paridade)
-            data_bits.append(encoded[i])
-
-    # Retorna os dados decodificados e a posição do erro (0 se não houver erro)
-    return data_bits, error_position
-
-# Função que codifica os dados usando o código de Hamming (12,8) e retorna o valor codificado
-def hamming(data):  # Exemplo: ["01010101"] -> "000110100101"
-    # Converte os dados para o formato de byte
-    data = convertToByte(data)
-    # Codifica os dados usando o código de Hamming (12,8)
-    encoded = encode_hamming_12_8(data)
-    return encoded
-
-# Função que decodifica e corrige os dados codificados usando Hamming (12,8)
-# Retorna a mensagem decodificada
-def dec_hamming_correct(data):  # Exemplo: "000110100101" → "01010101"
-    # Decodifica os dados e corrige erros, se necessário
-    decoded, error_position = decode_hamming_12_8(data)
-    # Retorna a mensagem decodificada como uma string
-    return ''.join(map(str, decoded))
-
-# Função que apenas retorna a posição do erro no código Hamming, se houver
-# Caso contrário, retorna 0
-def dec_hamming_position(data):  # Exemplo: "000110100101" se tiver erro retorna a posição, senão 0
-    # Decodifica os dados e encontra a posição do erro
-    decoded, error_position = decode_hamming_12_8(data)
-    # Retorna a posição do erro (0 se não houver erro)
-    return error_position
 
 # Função que codifica uma lista de listas de inteiros no formato de um código de Hamming
 def encode_hamming(data_bits_list):
@@ -421,17 +299,6 @@ class BitDeParidade:
                 erro = True
         return self.decoded_lista,erro  # Retorna a lista de bits decodificados
 
-    def remover_bit_de_paridade(self, lista):
-        """
-        Remove o bit de paridade de uma lista de bits.
-
-        :param lista: Lista de bits com paridade a ser modificada
-        :return: Lista de bits sem o bit de paridade
-        """
-        lista = convertToByteDetect(lista)  # Converte a lista de bits para byte
-        lista = removeLSBit(lista)  # Remove o último bit (bit de paridade)
-        return lista  # Retorna a lista de bits sem o bit de paridade
-    
 # Classe para contar e manipular caracteres em uma lista de strings binárias
 class ContagemDeCaracteres:
     def __init__(self, lista=None):
@@ -458,14 +325,6 @@ class ContagemDeCaracteres:
         self.lista.insert(0, bin_tamanho[0])  # Insere o tamanho binário como o primeiro item da lista
         return self.lista  # Retorna a lista com o tamanho binário adicionado
 
-    def desenquadrar_caracteres(self, data):
-        """
-        Remove o primeiro item da lista, que é o tamanho da lista (em binário), retornando apenas os dados.
-
-        :param data: Lista com o primeiro item sendo o tamanho binário
-        :return: Lista de caracteres sem o tamanho inicial, ou seja, os dados binários originais.
-        """
-        return data[1:]  # Retorna a lista sem o primeiro item, ou seja, os dados originais
 # Classe para inserir e remover bytes de controle em uma lista de dados binários
 class InsercaoDeBytes:
     def __init__(self, lista=None):
@@ -476,8 +335,6 @@ class InsercaoDeBytes:
         """
         # Definindo os bytes de controle para sinalizar diferentes estágios da transmissão
         self.comeco = 0x01   # Byte 01: Iniciar a transmissão
-        self.inicioTx = 0x02  # Byte 02: Iniciar o texto
-        self.fimTX = 0x03     # Byte 03: Terminar o texto
         self.fim = 0x04       # Byte 04: Terminar a transmissão
 
         # Se não for fornecida uma lista, inicializa uma lista vazia
@@ -509,44 +366,3 @@ class InsercaoDeBytes:
         self.lista.insert(0, self.byte_to_bits(self.comeco))  # Inserir byte de início
         self.lista.append(self.byte_to_bits(self.fim))        # Inserir byte de fim
         return self.lista  # Retorna a lista com os bytes de controle
-
-    def tirar_bytes_flags(self, data):
-        """
-        Remove os bytes de controle da lista de dados.
-
-        - Remove o primeiro byte (início de transmissão) e o último byte (fim de transmissão).
-
-        :param data: A lista de dados binários com bytes de controle
-        :return: A lista de dados binários sem os bytes de controle
-        """
-        # Remove o primeiro e o último item da lista de dados (bytes de controle)
-        return data[1:len(data)-1]  # Retorna a lista sem o primeiro e o último byte de controle
-"""
-def criar_quadro_binario(dados_binarios):
-
-    Cria um quadro com contagem de caracteres para dados binários.
-
-    Prefixa os dados com o tamanho em 2 bytes (unsigned short, 16 bits).
-    tamanho = len(dados_binarios)
-    tamanho_binario = tamanho.to_bytes(2, byteorder='big')  # 2 bytes para o tamanho
-    return tamanho_binario + dados_binarios
-
-
-def extrair_quadro_binario(quadro_binario):
-
-    Extrai o dado do quadro binário utilizando a contagem de caracteres.
-
-    tamanho = int.from_bytes(quadro_binario[:2], byteorder='big')  # Lê os 2 primeiros bytes
-    dados_binarios = quadro_binario[2:2 + tamanho]  # Extrai os dados com base no tamanho
-    return dados_binarios
-
-
-# Teste
-mensagem = b"Hello, Layer 2 in binary!"  # Dados em binário
-quadro = criar_quadro_binario(mensagem)
-print(f"Quadro criado (hex): {quadro.hex()}")
-
-dados_recebidos = extrair_quadro_binario(quadro)
-print(f"Dados recebidos (binário): {dados_recebidos}")
-print(f"Dados recebidos (texto): {dados_recebidos.decode('utf-8')}")
-"""

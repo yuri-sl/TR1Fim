@@ -11,7 +11,6 @@ import matplotlib.pyplot as plt             # Chamar a biblioteca como PLT
 import threading
 
 from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
-from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3
 from camadaFisica import *                  # Arquivos de
 from camadaEnlace import *
 from Simulador import *
@@ -475,7 +474,6 @@ class MyWindow(Gtk.Window):
         comboMod = Gtk.ComboBoxText()
         comboMod.append_text("Selecione um gráfico")
         comboMod.set_active(0)
-        lblPreview = Gtk.Label(label="Pré-Visualização")
         hboxModDigIntro.pack_start(comboMod, False, False, 0)
 
         # Lista de gráficos de modulação digital para o dropdown
@@ -523,8 +521,6 @@ class MyWindow(Gtk.Window):
         comboPort.append_text("Selecione um gráfico de portadora")
         comboPort.set_active(0)
 
-        # Label de pré-visualização
-        lblPreviewMod = Gtk.Label(label="Pré-Visualização")
         hboxModPort.pack_start(comboPort, False, False, 0)
 
         # Lista de gráficos de modulação por portadora

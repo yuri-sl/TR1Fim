@@ -8,23 +8,7 @@ from gi.repository import Gtk
 
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvas
-from matplotlib.figure import Figure
 
-
-def text_from_bits(bits, encoding = 'ascii'):
-    if len(bits) % 8 != 0:
-        raise ValueError("QUADRO COM ERRO: Os bits não têm comprimento múltiplo de 8.")
-    # Converte a string de bits para decimal e depois para caractere ASCII
-    decimal = int(bits, 2)  # Converte os bits (base 2) para decimal
-    char = chr(decimal)  # Converte o decimal para o caractere correspondente
-    return char
-
-def converterTexto(binarios):#print(converterTexto(["01100100", "01101100", "01110010", "00110001", "01110001"]))→"dlr1q"
-    palavra = ""
-    for i in binarios:
-        letra = text_from_bits(i)
-        palavra += letra
-    return palavra
 
 def converterBinario(palavra):
     binarios = []
@@ -32,32 +16,6 @@ def converterBinario(palavra):
         valor_binario = format(ord(char), '08b')
         binarios.append([int(bit) for bit in valor_binario])  # Adiciona o valor binário à lista        
     return binarios
-
-def convertUTF(word):
-    ans = bytearray()  # Use a bytearray para armazenar múltiplos bytes
-    binary_char_string = ''  # Para armazenar a string binária concatenada
-    print("A palavra recebida está como: ", word)
-
-    for byte in word:
-        binary_string = ''.join(map(str, byte))  # Converte a lista de binários para string
-        print("A string binária é: ", binary_string)
-
-        # Concatena a string binária para exibir no final
-        binary_char_string += binary_string
-
-        # Divide a string binária em blocos de 8 bits
-        for i in range(0, len(binary_string), 8):
-            block = binary_string[i:i + 8]  # Obtém um bloco de 8 bits
-            if len(block) < 8:  # Preenche com zeros à esquerda, se necessário
-                block = block.zfill(8)
-
-            # Converte o bloco de 8 bits para um valor inteiro e adiciona ao bytearray
-            byte_value = int(block, 2)
-            ans.append(byte_value)  # Adiciona o byte ao array final
-    
-    print("A palavra em string de binário é: ", binary_char_string)
-    return ans
-
 
 def convertNRZ(byteMSG):
     for i in range(0,len(byteMSG)):
@@ -74,7 +32,7 @@ def convertNRZ(byteMSG):
 
 #Simulação de erro no meio fisico
 class ErroMeioFisico:
-    def __init__(self, lista = [], chance = 0):
+    def __init__(self, lista = [], chance = 0.00011):
         self.lista = lista
         self.chance = chance
 
@@ -239,7 +197,6 @@ def convert8QAM(byteMSG:list[list[float]]) -> list[list[float]]:
                 aq = -raiz3
 
         for i in range(resolucao):
-            fase = math.atan2(aq,ai)
             qam.append(ai*math.sin(2*math.pi*frequencia*tempo) + aq*math.cos(2*math.pi*frequencia*tempo)) 
             tempo += 1/resolucao
 
@@ -257,214 +214,3 @@ def buildPortadora(binWordPortadora:list[list[float]]):
 
     print("O x_axis é ",x_axis)
     return binWordPortadora,x_axis
-
-def deConvertASK(binWordASK:list[list[float]]) -> list[list[int]]:
-    dBinWord = []
-    for byte in binWordASK:
-        dByte = []
-        for i in range(0, len(byte), resolucao):
-            bit = byte[i:i+resolucao]
-            if any(bit):
-                dByte.append(1)
-            else:
-                dByte.append(0)
-        dBinWord.append(dByte)
-        
-    return dBinWord
-
-
-def deConvertFSK(binWordFSK:list[list[float]]) -> list[list[int]]:
-    dBinWord = []
-    for byte in binWordFSK:
-        dByte = []
-        for i in range(0, len(byte), resolucao):
-            bit = byte[i:i+resolucao]
-            teste = math.acos(bit[1])
-            comp = 3*math.pi*frequencia*(1/resolucao)
-            if teste > comp:
-                dByte.append(1)
-            else:
-                dByte.append(0)
-        dBinWord.append(dByte)
-        
-    return dBinWord
-
-def deConvert8QAM(binWord8QAM:list[list[float]], reenquadrar=True) -> list[list[int]]:
-    '''Caso reenquadrar = True, a funcao ira remover os bits adicionais que foram adicinados por causa de padding, considerando que a mensagem original é divisivel por 8 (bytes)'''
-
-    def reenquadrarEmBytes(bits):
-        bytes = []
-        for i in range(0, len(bits)-7,8):
-            bytes.append(bits[i:i+8])
-        return bytes
-
-    raiz = 1/(math.sqrt(3)+1)
-    menosRaiz = -raiz
-
-    pontos = [-1,menosRaiz,0,raiz,1]
-
-    dBinWord = []
-    tempo = 0
-
-    #só haverá um byte
-    byte = binWord8QAM[0]
-    dbits = []
-    dbit = []
-    for i in range(0, len(byte), resolucao):
-        bitq = byte[i:i+resolucao]
-        biti = byte[i:i+resolucao]
-        for point in range(len(bitq)):
-            bitq[point] *= math.cos(2*math.pi*frequencia*tempo)
-            biti[point] *= math.sin(2*math.pi*frequencia*tempo)
-            tempo += 1/resolucao
-
-        ai = max(biti) + min(biti)
-        ai = min(pontos, key=lambda x: abs(x-ai))
-
-        aq = max(bitq) + min(bitq)
-        aq = min(pontos, key=lambda x: abs(x-aq))
-
-        match ai,aq:
-            case 1,0:
-                dbit = [0,0,0]
-            case (x,y) if x == raiz and y == raiz: 
-                dbit = [0,0,1] 
-            case (x,y) if x == menosRaiz and y == raiz: 
-                dbit = [0,1,0]
-            case 0,1:
-                dbit = [0,1,1]
-            case (x,y) if x == raiz and y == menosRaiz: 
-                dbit = [1,0,0]
-            case 0,-1:
-                dbit = [1,0,1]
-            case -1,0:
-                dbit = [1,1,0]
-            case (x,y) if x == menosRaiz and y == menosRaiz: 
-                dbit = [1,1,1]
-
-        dbits.extend(dbit)
-
-    if reenquadrar == True:
-        dBinWord = reenquadrarEmBytes(dbits)
-    else:
-        dBinWord = dbits
-
-
-    return dBinWord
-
-#Gráfico NRZ
-class Apper_graph_nrz:
-    def __init__(self, a = []):
-        self.a = a
-        self.apper_new_graph()
-
-    def apper_new_graph(self):
-        fig = Figure(figsize=(5, 4), dpi=100)
-        ax = fig.add_subplot(111)
-        t = np.arange(len(self.a))
-
-        # Plotando o sinal digital NRZ
-        ax.step(t, self.a, where='post', label='Sinal NRZ', linewidth=2)  # 'post' garante que o valor seja mantido após a transição
-        ax.set_title("Sinal Digital NRZ")
-        ax.set_xlabel("Tempo")
-        ax.set_ylabel("Valor")
-        ax.legend()
-        #Se quiser voltar para o codigo anterior tire as "" e
-        #essas duas linhas abaixo
-        canvas = FigureCanvas(fig)
-        return canvas
-   
-#Gráfico Manchester
-class Apper_graph_manchester:
-    def __init__(self, a = []):
-        self.a = a
-        self.apper_new_graph()
-
-    def apper_new_graph(self):
-        fig = Figure(figsize=(5, 4), dpi=100)
-        ax = fig.add_subplot(111)
-        t = np.arange(len(self.a))
-
-        # Plotando o sinal digital NRZ
-        ax.step(t, self.a, where='post', label='Sinal Manchester', linewidth=2)  # 'post' garante que o valor seja mantido após a transição
-        ax.set_title("Sinal Digital Manchester")
-        ax.set_xlabel("Tempo")
-        ax.set_ylabel("Valor")
-        ax.legend()
-        #Se quiser voltar para o codigo anterior tire as "" e
-        #essas duas linhas abaixo
-        canvas = FigureCanvas(fig)
-        return canvas 
-
-    def apper_new_graph(self):
-        fig = Figure(figsize=(5, 4), dpi=100)
-        ax = fig.add_subplot(111)
-        t = np.arange(len(self.a))
-
-        # Plotando o sinal digital NRZ
-        ax.step(t, self.a, where='post', label='Sinal NRZ', linewidth=2)  # 'post' garante que o valor seja mantido após a transição
-        ax.set_title("Sinal Digital NRZ")
-        ax.set_xlabel("Tempo")
-        ax.set_ylabel("Valor")
-        ax.legend()
-        #Se quiser voltar para o codigo anterior tire as "" e
-        #essas duas linhas abaixo
-        canvas = FigureCanvas(fig)
-        return canvas
-
-#Gráfico Bipolar
-class Apper_graph_bipolar:
-    def __init__(self, a = []):
-        self.a = a
-        self.apper_new_graph()
-
-    def apper_new_graph(self):
-        fig = Figure(figsize=(5, 4), dpi=100)
-        ax = fig.add_subplot(111)
-        t = np.arange(len(self.a))
-
-        # Plotando o sinal digital NRZ
-        ax.step(t, self.a, where='post', label='Sinal Bipolar', linewidth=2)  # 'post' garante que o valor seja mantido após a transição
-        ax.set_title("Sinal Digital Bipolar")
-        ax.set_xlabel("Tempo")
-        ax.set_ylabel("Valor")
-        #essas duas linhas abaixo
-        canvas = FigureCanvas(fig)
-        return canvas
-
-
-class Apper_graph:
-    """### Classe para criar um gráfico genérico"""
-
-    def __init__(self, dados:list, titulo:str, caption_label:str="", xlabel:str="Tempo", ylabel:str="Amplitude", step:bool=True, resolucao:int=1):
-        """### Classe para criar um gráfico genérico 
-        ---
-        Exemplo de uso: Apper_graph([], "Sinal ASK", "Sinal ASK", "Tempo", "Amplitude", step=false)"""
-
-        self.dados = dados
-        self.titulo = titulo
-        self.caption_label = caption_label
-        self.xlabel = xlabel
-        self.ylabel = ylabel
-        self.step = step
-        self.resolucao = resolucao
-        self.apper_graph()
-
-    def apper_graph(self) -> FigureCanvas:
-        """Usando as opções do construtor cria um novo FigureCanvas"""
-
-        fig = Figure(figsize=(5, 4), dpi=100)
-        ax = fig.add_subplot(111)
-        t = np.arange(0,len(self.dados)/self.resolucao,1/self.resolucao)
-
-        # Plotando o sinal
-        if self.step == False:
-            ax.plot(t, self.dados, label=self.caption_label, linewidth=2)
-        else:
-            ax.step(t, self.dados, where='post', label=self.caption_label, linewidth=2)  # 'post' garante que o valor seja mantido após a transição
-        ax.set_title(self.titulo)
-        ax.set_xlabel(self.xlabel)
-        ax.set_ylabel(self.ylabel)
-
-        canvas = FigureCanvas(fig)
-        return canvas

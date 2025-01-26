@@ -4,11 +4,6 @@ from camadaFisica import convert_Manchester  # Importa a função de conversão 
 # Variáveis de controle de estado
 servidorAtivo = False  # Define se o servidor está ativo ou não
 entryBoxPreenchida = False  # Define se a caixa de entrada foi preenchida
-errorOcurred = False  # Define se ocorreu um erro
-ocorreuErro = False  # Define se um erro ocorreu (dupla definição com errorOcurred)
-erroEnquad = False  # Define se há erro de enquadramento
-erroTransmit = False  # Define se há erro de transmissão
-size = []  # Lista para armazenar o tamanho de dados ou informações
 
 # Configurações do sistema
 config = {
@@ -48,8 +43,6 @@ def config_deteccao(binWord):
             bit = convertToString(bit) # Converte a palavra binária para string
             crc_class = CRC_32(bit) # Cria instância de cálculo de CRC-32
             a = crc_class.data_crc()
-            b = CRC_32(a)
-            resultado = b.remove_crc()
             print("O CRC INSERIDO NA STRING FICOU: ",a)
             a = convertToByteCRCAdapt(a) # Converte o CRC calculado para bytes
             print("crc_class em bytes ficou como: ", crc_class)  # Exibe o CRC em bytes
