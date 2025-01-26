@@ -8,25 +8,26 @@ e recepção de dados.
 - Este programa funciona com o uso de sockets e threads.
 
 ## Como rodar o programa:
-##Importante! Para que a aplicação rode, é necessário que você esteja com o matplotlib instalado! Para rodá-lo, baixe:
+## Importante! Para que a aplicação rode, é necessário que você esteja com algumas bibliotecas instaladas! Para rodá-lo, baixe:
+- Para rodar no Ubunto é preciso instalar:
 ```bash
 pip install matplotlib
+sudo apt install python3-gi python3-gi-cairo gir1.2-gtk-4.0 gir1.2-gtk-3.0
 ```
-- Para que a simulação funcione, é necessário ter dois terminais abertos.
-(um para o cliente e outro para o servidor)
-- Para que o programa funcione, primeiro inicialize o Simulador.py (servidor)
-## !Importante: Tenha certeza de que está inicializando o simulador como ADMIN!
+- Para rodar no Windows é preciso instalar:
 ```bash
-sudo python Simulador.py
-```
-O cliente que vamos usar para enviar a informação é o arquivo ClienteTCP.py
-Para que a simulação funcione, execute o arquivo:
-```bash
-sudo python ClienteTCP.py
-```
-Em seguida, execute o arquivo de interface GUI para que você possa visualizar
-a página!
-```bash
-sudo python InterfaceGUI.py
+winget install MSYS2.MSYS2 (ou instala normal)
+*adiciona c:/msys64/ucrt64/bin e c:/msys64/usr/bin para o PATH
+pacman -Suy
+pacman -S mingw-w64-ucrt-x86_64-toolchain
+pacman -S mingw-w64-ucrt-x86_64-python-gobject
+pacman -S mingw-w64-ucrt-x86_64-gtk3
+pacman -S mingw-w64-ucrt-x86_64-python
+pacman -S mingw-w64-ucrt-x86_64-python-matplotlib
 ```
 
+- Para inicializar o programa basta rodar
+```bash
+python notebook.py
+```
+- No caso do Windows, assegure de usar o python instalado na pasta c:/msys64/ucrt64/bin
