@@ -34,15 +34,21 @@ def config_u_dectError(word):
 def receberSinal():
     #Acessar a variavel global saved_message
     global saved_message_puro
+    global saved_message
     data_y = []
     data_x = []
-    
-    print("A saved message é: ",saved_message_puro)
-    print("Atual o tamanho de mensage é: ",len(saved_message_puro))
+    print("Em receber Sinal, A saved message é: ",saved_message)
+    print("Em receber Sinal, a saved message pura é: ",saved_message_puro)
+    if len(saved_message_puro) == 0:
+        saved_message_puro = saved_message.copy()
+    else:
+        saved_message = saved_message_puro.copy()
     #Pegar a primeira mensagem enviada
-    word = saved_message_puro[0]
+    print("Em receber Sinal, DEPOIS DO ELSE A saved message é: ",saved_message)
+    print("Em receber Sinal, DEPOIS DO ELSE a saved message pura é: ",saved_message_puro)
+    word = saved_message[0]
     print(word)
-    for word in saved_message_puro:
+    for word in saved_message:
         for data in word:
             data_y.append(data)
     print(data_y)
@@ -56,26 +62,26 @@ def receberSinal():
 
 def demodularSinal():
     global saved_message
-    print("DEMODULANDO O SINAL!!!!!!")
+    #print("DEMODULANDO O SINAL!!!!!!")
     
     demoduled = []
     
     for word in saved_message:
-        print("Palavra sendo demodulada:", word)
+        #print("Palavra sendo demodulada:", word)
         demoduled_word = demodularHamming(word[:])  # Usar uma cópia de `word`
-        print("Hamming Removido:", demoduled_word)
+        #print("Hamming Removido:", demoduled_word)
         demoduled_word = demod_detect(demoduled_word[:])
         demoduled_word = demod_enq(demoduled_word[:])
-        print("Enquadramento desfeito!",demoduled_word)
+        #print("Enquadramento desfeito!",demoduled_word)
         if demoduled_word == None:
             continue
         demoduled.append(demoduled_word)
         #print(demoduled)
         #demoduled.append(demoduled_word)
         #print("Bit de paridade/CRC removido: ",demoduled)
-    print("O demoduled é",demoduled)
+    #print("O demoduled é",demoduled)
     filtered_list = [item for item in demoduled if item is not None]
-    print("A filtered_list é ",filtered_list)
+    #print("A filtered_list é ",filtered_list)
     
     # Atualiza `saved_message` com os dados demodulados
     saved_message = demoduled
@@ -119,7 +125,7 @@ def start_server():
         global tamanho
         global n
         global saved_message_puro
-
+        global saved_message
         print("Entrou em handle client")
         print("O global tuple é: ",tuple)
         try:
@@ -152,8 +158,6 @@ def start_server():
             saved_message.clear()
             print("This is saved_message",saved_message)
             saved_message.extend(received)
-            saved_message_puro = saved_message.copy()
-            print("This is saved_message_puro: ",saved_message_puro)
             received.clear()
             tuple.clear()
             #print("Mensagem salva em variável fica como: ",saved_message)

@@ -334,8 +334,8 @@ class MyWindow(Gtk.Window):
             popup.show_all()
 
     def graphBfr(self,widget):
-        print("Graph Bfr-> saved_message_puro",saved_message_puro)
-        if len(saved_message_puro) > 0:
+        print("Graph Bfr-> saved_message_puro",saved_message)
+        if len(saved_message) > 0:
             binWord,x_axis = receberSinal()
             self.showGraphBfr(binWord,x_axis,"Sinal recebido antes de demodular","Sinal recebido")
         else:
