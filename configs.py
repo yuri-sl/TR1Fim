@@ -69,7 +69,16 @@ def demod_enq(binword):
             print("Esta é a binword da demod. enq",binword)
             if not binword == None:
                 return binword
+        else:
+            return binword
             
     if config["enquadramento"]=='insByte':
-        #binword =
-        return binword
+        print("Em desenquadramento, a BinWord está como: ",binword)
+        if (binword == [0,0,0,0,0,1,0,0]) or (binword==[0,0,0,0,0,0,0,1]) or (binword==[1,0,0,0,0,0,0,1]):
+            return None
+        else:
+            return binword
+def demod_mod(binword):
+    if config["modulacao"]=="Manchester":
+        print("Você está demodulando um sinal Manchester")
+        print("Esta é a sua binword",binword)

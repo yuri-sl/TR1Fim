@@ -3,11 +3,8 @@
 #Entrada: [[0,0,1,1,1,1]] Saída: '001111'
 def convertToString(byteList):
     ans = ''
-    for byte in byteList:
-        #print('The byte is',byte)
-        for bit in byte:
-            ans += str(bit)
-            #rint('the bit is',bit)
+    for bit in byteList:
+        ans += str(bit)
     print(ans)
     return ans
 
