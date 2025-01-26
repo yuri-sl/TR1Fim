@@ -259,9 +259,12 @@ class CRC_32:
         self.aux = ""
         for i in data:
             self.aux += i
-        self.data = self.aux  # Armazena os dados em formato string
-        self.crc = None  # Inicializa o valor do CRC como None
-        self.generator = "100110000010001110110110111"  # Polinômio gerador de exemplo
+        self.data = self.aux # Armazena os dados em formato string
+        self.crc = None # Inicializa o valor do CRC como None
+        self.generator = "1011" # exemplo "1011"    
+    def data_crc(self):    # Obter os bits de dados + o CRC
+        self.crc = self.calcula_crc()
+        return self.data + self.crc
     
     def data_crc(self):
         """
@@ -322,7 +325,7 @@ class CRC_32:
 
         :return: A string de dados sem o CRC
         """
-        return self.data[:-32]  # Retorna os dados sem os últimos 32 bits (CRC)
+        return self.data[:-3]  # Retorna os dados sem os últimos 32 bits (CRC)
 """
 Como usar crc32
 junte todas as strings e retorne uma str só e passe dessa maneira ↓

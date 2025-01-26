@@ -18,12 +18,14 @@ lock = threading.Lock()
 saved_message = []
 saved_message_puro = []
 
+#Desfaz a detecção de erro do byte
 def config_u_dectError(word):
     global config
     if config["deteccao_erro"] == 'paridade':
         word = removeLSBit(word)
         return word
     if config["deteccao_erro"] == 'CRC':
+        print("Este é o CRC em word:",word)
         crc_class = CRC_32(word)
         crc_class = crc_class.verifica_crc()
         return crc_class

@@ -35,20 +35,27 @@ def config_enquadramento(binWord):
         return insByte  # Retorna a palavra binária com inserção de bytes
 
 def config_deteccao(binWord):
+
     if config["deteccao_erro"] == 'paridade':
         parity = BitDeParidade(binWord)  # Cria instância de verificação de paridade
         parity = parity.bit_de_paridade()  # Calcula o bit de paridade
         return parity  # Retorna a palavra binária com bit de paridade
-    if config["deteccao_erro"] == 'CRC':
+    if config["deteccao_erro"] =='CRC':
         print("A binword está como: ", binWord)  # Exibe a palavra binária antes da conversão
-        binWord = convertToString(binWord)  # Converte a palavra binária para string
-
-        crc_class = CRC_32(binWord)  # Cria instância de cálculo de CRC-32
-        crc_class = crc_class.calcula_crc()  # Calcula o CRC da palavra
-        crc_class = convertToByte(crc_class)  # Converte o CRC calculado para bytes
-        print("crc_class em bytes ficou como: ", crc_class)  # Exibe o CRC em bytes
-        return crc_class  # Retorna a palavra binária com CRC
-
+        crc_bit = []
+        for bit in binWord:    
+            print("O bit que vai sofrer o CRC é: ",bit)
+            bit = convertToString(bit) # Converte a palavra binária para string
+            crc_class = CRC_32(bit) # Cria instância de cálculo de CRC-32
+            a = crc_class.data_crc()
+            b = CRC_32(a)
+            resultado = b.remove_crc()
+            print("O CRC INSERIDO NA STRING FICOU: ",a)
+            a = convertToByteCRCAdapt(a) # Converte o CRC calculado para bytes
+            print("crc_class em bytes ficou como: ", crc_class)  # Exibe o CRC em bytes
+            crc_bit.append(a)
+        print("No fim, o crc ficou: ",crc_bit)
+        return crc_bit
 def demod_detect(binword):
     """
     Aplica a demodulação e verificação de erro configurada na palavra binária.
@@ -63,6 +70,7 @@ def demod_detect(binword):
         print("This is CRC: ", binword)  # Exibe a palavra binária com CRC
         return binword  # Retorna a palavra binária com CRC (sem alteração)
 
+        return binword
 def demod_enq(binword):
     """
     Aplica a demodulação de enquadramento configurada na palavra binária.
@@ -76,7 +84,17 @@ def demod_enq(binword):
             print("Esta é a binword da demod. enq", binword)  # Exibe a palavra binária após a remoção
             if not binword == None:  # Verifica se a palavra não está vazia
                 return binword  # Retorna a palavra binária desencaixada
+        else:
+            return binword
+            
+    if config["enquadramento"]=='insByte':
+        print("Em desenquadramento, a BinWord está como: ",binword)
+        if (binword == [0,0,0,0,0,1,0,0]) or (binword==[0,0,0,0,0,0,0,1]) or (binword==[1,0,0,0,0,0,0,1]):
+            return None
+        else:
+            return binword
+def demod_mod(binword):
+    if config["modulacao"]=="Manchester":
+        print("Você está demodulando um sinal Manchester")
+        print("Esta é a sua binword",binword)
 
-    if config["enquadramento"] == 'insByte':
-        # A lógica para desencaixar bytes ainda não está implementada
-        return binword  # Retorna a palavra binária sem alteração
