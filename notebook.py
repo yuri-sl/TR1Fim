@@ -334,7 +334,8 @@ class MyWindow(Gtk.Window):
             saved_message.clear()  # Limpa a mensagem salva
             print(tuple)
             print(sendMessage(utfWord))  # Envia a mensagem
-            print(saved_message)
+            print("Depois de sendMessage em notebbok",saved_message)
+
 
             # Aqui, a comunicação é feita e o resultado pode ser exibido ou processado
 
@@ -350,6 +351,10 @@ class MyWindow(Gtk.Window):
 
         print("Graph Bfr-> saved_message_puro", saved_message)  # Imprime o conteúdo da variável global saved_message
 
+
+    def graphBfr(self,widget):
+        print("Graph Bfr-> saved_message",saved_message)
+        print("Graph Bfr -> A mensagem pura é: ",saved_message_puro)
         # Verifica se há mensagens armazenadas na variável saved_message
         if len(saved_message) > 0:
             binWord, x_axis = receberSinal()  # Recebe o sinal processado e as coordenadas do gráfico
@@ -377,6 +382,9 @@ class MyWindow(Gtk.Window):
 
             # Exibe o gráfico do sinal após a demodulação
             self.show_graph(sinalProcessado, x_axis, "Sinal recebido e que sofreu demodulação", "Sinal após demodular")
+            string_resposta = bin_to_string(sinalProcessado)
+            print(string_resposta)
+            self.entryMsgRecv.set_text(string_resposta)
         else:
             # Se não houver sinal processado, exibe uma janela informando a falta de sinal
             popUp = noSignal()
